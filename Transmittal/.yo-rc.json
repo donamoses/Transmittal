@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": false,
+    "version": "1.15.2",
+    "libraryName": "transmittal",
+    "libraryId": "5acd4bf8-8980-43ba-b38c-1fe0800dca42",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "Transmittal",
+    "solutionShortDescription": "Transmittal description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
