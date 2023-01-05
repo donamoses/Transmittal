@@ -24,7 +24,7 @@ export class BaseService {
         return this.sphub.web.getList(url + "/Lists/" + listname).items();
     }
     public gethubUserMessageListItems(url: string, listname: string): Promise<any> {
-        return this.sphub.web.getList(url + "/Lists/" + listname).items.select("Title,Message").filter("PageName eq 'DocumentIndex'")()
+        return this.sphub.web.getList(url + "/Lists/" + listname).items.select("Title,Message").filter("PageName eq 'SendRequest'")()
     }
     public getLibraryItems(url: string, listname: string): Promise<any> {
         return this._sp.web.getList(url + "/" + listname).items();
@@ -84,6 +84,23 @@ export class BaseService {
     }
     public getApproverData(url: string, listname: string): Promise<any> {
         return this._sp.web.getList(url + "/Lists/" + listname).items.select("ID,Title,Approver/Title,Approver/ID,Approver/EMail").expand("Approver")()
+    }
+    public getIndexData(url: string, listname: string, ID: any): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.getById(ID).select("WorkflowStatus,SourceDocument,DocumentStatus")();
+    }
+    public getIndexDataId(url: string, listname: string, ID: any): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.getById(ID)
+            .select("DocumentID,DocumentName,DepartmentID,BusinessUnitID,Owner/ID,Owner/Title,Owner/EMail,Approver/ID,Approver/Title,Approver/EMail,Revision,SourceDocument,CriticalDocument,SourceDocumentID,Reviewers/ID,Reviewers/Title,Reviewers/EMail").expand("Owner,Approver,Reviewers")();
+    }
+    public getIndexProjectData(url: string, listname: string, ID: any): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.getById(ID)
+            .select("RevisionCodingId,RevisionLevelId,TransmittalRevision,AcceptanceCodeId,DocumentController/ID,DocumentController/Title,DocumentController/EMail").expand("DocumentController")();
+    }
+    public getRevisionLevelData(url: string, listname: string): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname).items.select("ID,Title")()
+    }
+    public getSourceLibraryItems(url: string, listname: string, ID: any): Promise<any> {
+        return this._sp.web.getList(url + "/" + listname).items.filter('DocumentIndexId eq ' + ID)()
     }
     public getpreviousheader(url: string, listname: string, IndexID: number): Promise<any> {
         return this._sp.web.getList(url + "/Lists/" + listname).items.select("ID").filter("DocumentIndex eq '" + IndexID + "' and(WorkflowStatus eq 'Returned with comments')")();
