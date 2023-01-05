@@ -104,27 +104,25 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
       validApprover: "none"
     };
     this._Service = new BaseService(this.props.context, window.location.protocol + "//" + window.location.hostname + this.props.hubUrl);
-    // this.componentDidMount = this.componentDidMount.bind(this);
-    // this._userMessageSettings = this._userMessageSettings.bind(this);
-    // this._queryParamGetting = this._queryParamGetting.bind(this);
-    // this._accessGroups = this._accessGroups.bind(this);
-    // this._checkWorkflowStatus = this._checkWorkflowStatus.bind(this);
-    // this._openRevisionHistory = this._openRevisionHistory.bind(this);
-    // this._bindSendRequestForm = this._bindSendRequestForm.bind(this);
-    // this._project = this._project.bind(this);
-    // this._revisionLevelChanged = this._revisionLevelChanged.bind(this);
-    // this._dccReviewerChange = this._dccReviewerChange.bind(this);
-    // this._reviewerChange = this._reviewerChange.bind(this);
-    // this._approverChange = this._approverChange.bind(this);
-    // this._submitSendRequest = this._submitSendRequest.bind(this);
-    // this._dccReview = this._dccReview.bind(this);
-    // this._underApprove = this._underApprove.bind(this);
-    // this._underReview = this._underReview.bind(this);
-    // this._underProjectApprove = this._underProjectApprove.bind(this);
-    // this._underProjectReview = this._underProjectReview.bind(this);
-    // this._onSameRevisionChecked = this._onSameRevisionChecked.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this._userMessageSettings = this._userMessageSettings.bind(this);
+    this._queryParamGetting = this._queryParamGetting.bind(this);
+    this._checkWorkflowStatus = this._checkWorkflowStatus.bind(this);
+    this._openRevisionHistory = this._openRevisionHistory.bind(this);
+    this._bindSendRequestForm = this._bindSendRequestForm.bind(this);
+    this._project = this._project.bind(this);
+    this._dccReviewerChange = this._dccReviewerChange.bind(this);
+    this._reviewerChange = this._reviewerChange.bind(this);
+    this._approverChange = this._approverChange.bind(this);
+    this._submitSendRequest = this._submitSendRequest.bind(this);
+    this._dccReview = this._dccReview.bind(this);
+    this._underApprove = this._underApprove.bind(this);
+    this._underReview = this._underReview.bind(this);
+    this._underProjectApprove = this._underProjectApprove.bind(this);
+    this._underProjectReview = this._underProjectReview.bind(this);
+    this._onSameRevisionChecked = this._onSameRevisionChecked.bind(this);
     // this._adaptiveCard = this._adaptiveCard.bind(this);
-    // this._LaUrlGettingAdaptive = this._LaUrlGettingAdaptive.bind(this);
+    this._LaUrlGettingAdaptive = this._LaUrlGettingAdaptive.bind(this);
   }
   // Validator
   public componentWillMount = () => {
@@ -136,6 +134,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   }
   //Page Load
   public async componentDidMount() {
+    alert("1")
     // this.reqWeb = Web(window.location.protocol + "//" + window.location.hostname + this.props.hubUrl);
     // this.redirectUrl = this.props.redirectUrl;
     this.setState({ access: "none", accessDeniedMsgBar: "none" });
