@@ -25,6 +25,23 @@
     padding-bottom: 1em;
   }
 
+  .AccordionItemButton {
+    width: 100%;
+    background-color: "[theme: themeLighter, default: #005a9e]";
+  }
+
+
+
+  .pleft {
+    margin-left: 1px;
+  }
+
+  .Accordion {
+    border: 1px solid black;
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+
   .container {
     max-width: 700px;
     margin: 0px auto;

@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
-  "id": "1a193582-803e-4248-9174-603cbb29c2ab",
+  "id": "6227fefb-ac8f-405e-9d6e-620e26bac1c2",
   "alias": "TransmittalSendRequestWebPart",
   "componentType": "WebPart",
   // The "*" signifies that the version should be taken from the package.json
@@ -24,10 +24,10 @@
         "default": "Advanced"
       },
       "title": {
-        "default": "TransmittalSendRequest"
+        "default": "transmittalSendRequest"
       },
       "description": {
-        "default": "TransmittalSendRequest description"
+        "default": "transmittalSendRequest description"
       },
       "officeFabricIconFontName": "Page",
       "properties": {

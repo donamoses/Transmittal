@@ -15,22 +15,22 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   private validator: SimpleReactValidator;
   private documentIndexID: any;
   private getSelectedReviewers: any[];
-  // private invalidUser;
-  // private currentEmail;
+  private invalidUser: string;
+  private currentEmail: string;
   private currentId: any;
   private today: any;
   // private time;
-  // private workflowStatus;
+  private workflowStatus: string;
   private sourceDocumentID: any;
   private newheaderid: any;
   private newDetailItemID: any;
   private dccReview: string;
   private underApproval: any;
   private underReview: any;
-  //   private invalidSendRequestLink;
+  private invalidSendRequestLink: string;
   // private getSelectedReviewers = [];
   // private valid;
-  // private noDocument;
+  private noDocument: string;
   private taskDelegate = "No";
   private taskDelegateDccReview: string;
   private taskDelegateUnderApproval: string;
@@ -104,27 +104,319 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
       validApprover: "none"
     };
     this._Service = new BaseService(this.props.context, window.location.protocol + "//" + window.location.hostname + this.props.hubUrl);
-    // this.componentDidMount = this.componentDidMount.bind(this);
-    // this._userMessageSettings = this._userMessageSettings.bind(this);
-    // this._queryParamGetting = this._queryParamGetting.bind(this);
-    // this._accessGroups = this._accessGroups.bind(this);
-    // this._checkWorkflowStatus = this._checkWorkflowStatus.bind(this);
-    // this._openRevisionHistory = this._openRevisionHistory.bind(this);
-    // this._bindSendRequestForm = this._bindSendRequestForm.bind(this);
-    // this._project = this._project.bind(this);
-    // this._revisionLevelChanged = this._revisionLevelChanged.bind(this);
-    // this._dccReviewerChange = this._dccReviewerChange.bind(this);
-    // this._reviewerChange = this._reviewerChange.bind(this);
-    // this._approverChange = this._approverChange.bind(this);
-    // this._submitSendRequest = this._submitSendRequest.bind(this);
-    // this._dccReview = this._dccReview.bind(this);
-    // this._underApprove = this._underApprove.bind(this);
-    // this._underReview = this._underReview.bind(this);
-    // this._underProjectApprove = this._underProjectApprove.bind(this);
-    // this._underProjectReview = this._underProjectReview.bind(this);
-    // this._onSameRevisionChecked = this._onSameRevisionChecked.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this._userMessageSettings = this._userMessageSettings.bind(this);
+    this._queryParamGetting = this._queryParamGetting.bind(this);
+    this._checkWorkflowStatus = this._checkWorkflowStatus.bind(this);
+    this._openRevisionHistory = this._openRevisionHistory.bind(this);
+    this._bindSendRequestForm = this._bindSendRequestForm.bind(this);
+    this._project = this._project.bind(this);
+    this._dccReviewerChange = this._dccReviewerChange.bind(this);
+    this._reviewerChange = this._reviewerChange.bind(this);
+    this._approverChange = this._approverChange.bind(this);
+    this._submitSendRequest = this._submitSendRequest.bind(this);
+    this._dccReview = this._dccReview.bind(this);
+    this._underApprove = this._underApprove.bind(this);
+    this._underReview = this._underReview.bind(this);
+    this._underProjectApprove = this._underProjectApprove.bind(this);
+    this._underProjectReview = this._underProjectReview.bind(this);
+    this._onSameRevisionChecked = this._onSameRevisionChecked.bind(this);
     // this._adaptiveCard = this._adaptiveCard.bind(this);
-    // this._LaUrlGettingAdaptive = this._LaUrlGettingAdaptive.bind(this);
+    this._LaUrlGettingAdaptive = this._LaUrlGettingAdaptive.bind(this);
+  }
+  // Validator
+  public componentWillMount = () => {
+    this.validator = new SimpleReactValidator({
+      messages: {
+        required: "This field is mandatory"
+      }
+    });
+  }
+  //Page Load
+  public async componentDidMount() {
+    alert("1")
+    // this.reqWeb = Web(window.location.protocol + "//" + window.location.hostname + this.props.hubUrl);
+    // this.redirectUrl = this.props.redirectUrl;
+    this.setState({ access: "none", accessDeniedMsgBar: "none" });
+    // Get User Messages
+    await this._userMessageSettings();
+    //Get Current User
+    const user = await this._Service.getCurrentUser();
+    this.currentEmail = user.Email;
+    this.currentId = user.Id;
+    //Get Parameter from URL
+    this._queryParamGetting();
+
+    if (this.props.project) {
+      this.setState({ hideProject: false });
+    }
+
+    let currentUserReviewer = [];
+    currentUserReviewer.push(this.currentId);
+    //Get Today
+    this.today = new Date();
+    this.setState({
+      currentUser: user.Title,
+      currentUserReviewer: currentUserReviewer
+    });
+
+
+  }
+  //Messages
+  private async _userMessageSettings() {
+    const userMessageSettings: any[] = await this._Service.gethubUserMessageListItems(this.props.hubUrl, this.props.userMessageSettings);
+    console.log(userMessageSettings);
+    for (var i in userMessageSettings) {
+      if (userMessageSettings[i].Title == "InvalidSendRequestUser") {
+        this.invalidUser = userMessageSettings[i].Message;
+      }
+      if (userMessageSettings[i].Title == "InvalidSendRequestLink") {
+        this.invalidSendRequestLink = userMessageSettings[i].Message;
+      }
+      if (userMessageSettings[i].Title == "NoDocument") {
+        this.noDocument = userMessageSettings[i].Message;
+      }
+      if (userMessageSettings[i].Title == "WorkflowStatusError") {
+        this.workflowStatus = userMessageSettings[i].Message;
+      }
+      if (userMessageSettings[i].Title == "DccReview") {
+        var DccReview = userMessageSettings[i].Message;
+        this.dccReview = replaceString(DccReview, '[DocumentName]', this.state.documentName);
+
+      }
+      if (userMessageSettings[i].Title == "UnderApproval") {
+        var UnderApproval = userMessageSettings[i].Message;
+        this.underApproval = replaceString(UnderApproval, '[DocumentName]', this.state.documentName);
+
+      }
+      if (userMessageSettings[i].Title == "UnderReview") {
+        var UnderReview = userMessageSettings[i].Message;
+        this.underReview = replaceString(UnderReview, '[DocumentName]', this.state.documentName);
+
+      }
+      if (userMessageSettings[i].Title == "TaskDelegateDccReview") {
+        var TaskDelegateDccReview = userMessageSettings[i].Message;
+        this.taskDelegateDccReview = replaceString(TaskDelegateDccReview, '[DocumentName]', this.state.documentName);
+
+      }
+      if (userMessageSettings[i].Title == "TaskDelegateUnderApproval") {
+        var TaskDelegateUnderApproval = userMessageSettings[i].Message;
+        this.taskDelegateUnderApproval = replaceString(TaskDelegateUnderApproval, '[DocumentName]', this.state.documentName);
+
+      }
+      if (userMessageSettings[i].Title == "TaskDelegateUnderReview") {
+        var TaskDelegateUnderReview = userMessageSettings[i].Message;
+        this.taskDelegateUnderReview = replaceString(TaskDelegateUnderReview, '[DocumentName]', this.state.documentName);
+
+      }
+    }
+
+  }
+  //Get Parameter from URL
+  private async _queryParamGetting() {
+    //Query getting...
+    let params = new URLSearchParams(window.location.search);
+    let documentindexid = params.get('did');
+
+    if (documentindexid != "" && documentindexid != null) {
+      this.documentIndexID = parseInt(documentindexid);
+      //Get Access
+      this.setState({ access: "none", accessDeniedMsgBar: "none" });
+      if (this.props.project) {
+        await this._checkWorkflowStatus();
+        // this._checkPermission('Project_SendRequest');
+      }
+      else {
+        // await this._accessGroups();
+        await this._checkWorkflowStatus();
+      }
+    }
+    else {
+      this.setState({
+        accessDeniedMsgBar: "",
+        statusMessage: { isShowMessage: true, message: this.invalidSendRequestLink, messageType: 1 },
+      });
+      setTimeout(() => {
+        window.location.replace(this.props.siteUrl);
+      }, 10000);
+    }
+  }
+  //Workflow Status Checking
+  private async _checkWorkflowStatus() {
+    const documentIndexItem: any = await this._Service.getIndexData(this.props.siteUrl, this.props.documentIndexList, this.documentIndexID);
+    if (documentIndexItem.WorkflowStatus == "Under Review" || documentIndexItem.WorkflowStatus == "Under Approval") {
+      this.setState({
+        loaderDisplay: "none",
+        accessDeniedMsgBar: "",
+        statusMessage: { isShowMessage: true, message: this.workflowStatus, messageType: 1 },
+      });
+      setTimeout(() => {
+        this.setState({ accessDeniedMsgBar: 'none', });
+        window.location.replace(window.location.protocol + "//" + window.location.hostname + this.props.siteUrl + "/Lists/" + this.props.documentIndexList);
+      }, 10000);
+    }
+    else if (documentIndexItem.DocumentStatus != "Active") {
+      this.setState({
+        loaderDisplay: "none",
+        accessDeniedMsgBar: "",
+        statusMessage: { isShowMessage: true, message: "Document is not currently Active", messageType: 1 },
+      });
+      setTimeout(() => {
+        this.setState({ accessDeniedMsgBar: 'none', });
+        window.location.replace(window.location.protocol + "//" + window.location.hostname + this.props.siteUrl + "/Lists/" + this.props.documentIndexList);
+      }, 10000);
+    }
+    else if (documentIndexItem.SourceDocument == null) {
+      this.setState({
+        loaderDisplay: "none",
+        accessDeniedMsgBar: "",
+        access: "none",
+        statusMessage: { isShowMessage: true, message: this.noDocument, messageType: 1 },
+      });
+      setTimeout(() => {
+        this.setState({ accessDeniedMsgBar: 'none', });
+        window.location.replace(window.location.protocol + "//" + window.location.hostname + this.props.siteUrl + "/Lists/" + this.props.documentIndexList);
+      }, 10000);
+    }
+    else {
+      this.setState({ access: "", accessDeniedMsgBar: "none", loaderDisplay: "none" });
+      await this._bindSendRequestForm();
+    }
+    if (this.props.project) {
+      this.setState({ hideProject: false });
+      await this._project();
+    }
+  }
+  //Bind Send Request Form
+  public async _bindSendRequestForm() {
+    await this._Service.getItemById(this.props.siteUrl, this.props.documentIndexList, this.documentIndexID).then(async indexItems => {
+      console.log("dataForEdit", indexItems);
+      let documentID;
+      let documentName;
+      let ownerName;
+      let ownerId;
+      let revision;
+      let linkToDocument;
+      let criticalDocument;
+      let approverName;
+      let approverId;
+      let approverEmail;
+      let temReviewersID = [];
+      let tempReviewers = [];
+      let businessUnitID;
+      let departmentId;
+      //Get Document Index
+      const documentIndexItem: any = await this._Service.getIndexDataId(this.props.siteUrl, this.props.documentIndexList, this.documentIndexID);
+      console.log(documentIndexItem);
+      documentID = documentIndexItem.DocumentID;
+      documentName = documentIndexItem.DocumentName;
+      ownerName = documentIndexItem.Owner.Title;
+      ownerId = documentIndexItem.Owner.ID;
+      revision = documentIndexItem.Revision;
+      linkToDocument = documentIndexItem.SourceDocument.Url;
+      // this.SourceDocumentID = DocumentIndexItem.SourceDocumentID;
+      criticalDocument = documentIndexItem.CriticalDocument;
+      approverName = documentIndexItem.Approver.Title;
+      approverId = documentIndexItem.Approver.ID;
+      approverEmail = documentIndexItem.Approver.EMail;
+      businessUnitID = documentIndexItem.BusinessUnitID;
+      departmentId = documentIndexItem.DepartmentID;
+      for (var k in documentIndexItem.Reviewers) {
+        temReviewersID.push(documentIndexItem.Reviewers[k].ID);
+        this.setState({
+          reviewers: temReviewersID,
+        });
+        tempReviewers.push(documentIndexItem.Reviewers[k].Title);
+      }
+      if (indexItems.ApproverId != null) {
+        this.setState({
+          approver: documentIndexItem.Approver.ID,
+          approverName: documentIndexItem.Approver.Title,
+          approverEmail: documentIndexItem.Approver.EMail
+        });
+      }
+      this.setState({
+        documentID: documentID,
+        documentName: documentName,
+        ownerName: ownerName,
+        ownerId: ownerId,
+        revision: revision,
+        linkToDoc: linkToDocument,
+        criticalDocument: criticalDocument,
+        approver: approverId,
+        approverName: approverName,
+        reviewersName: tempReviewers,
+        businessUnitID: businessUnitID,
+        departmentId: departmentId
+      });
+      const sourceDocumentItem: any = await this._Service.getSourceLibraryItems(this.props.siteUrl, this.props.sourceDocumentLibrary, this.documentIndexID);
+      console.log(sourceDocumentItem);
+      this.sourceDocumentID = sourceDocumentItem[0].ID;
+      await this._userMessageSettings();
+    });
+  }
+  // bind data for project
+  public async _project() {
+    await this._Service.getItemById(this.props.siteUrl, this.props.documentIndexList, this.documentIndexID).then(async (indexItems: any) => {
+      console.log("dataForEdit", indexItems);
+      let revisionLevelArray = [];
+      let sorted_RevisionLevel = [];
+      let revisionCoding;
+      let transmittalRevision;
+      let acceptanceCodeId;
+      let documentControllerName;
+      let documentControllerId;
+      const documentIndexItem: any = await this._Service.getIndexProjectData(this.props.siteUrl, this.props.documentIndexList, this.documentIndexID);
+      console.log(documentIndexItem.RevisionCodingId);
+      revisionCoding = documentIndexItem.RevisionCodingId;
+      acceptanceCodeId = documentIndexItem.AcceptanceCodeId;
+      transmittalRevision = documentIndexItem.TransmittalRevision;
+      if (indexItems.DocumentControllerId != null) {
+        this.setState({
+          dccReviewer: documentIndexItem.DocumentController.ID,
+          dccReviewerName: documentIndexItem.DocumentController.Title,
+          dccReviewerEmail: documentIndexItem.DocumentController.EMail
+        });
+      }
+      if (indexItems.RevisionLevelId != null) {
+        this.setState({
+          revisionLevelvalue: documentIndexItem.RevisionLevelId
+        });
+      }
+      const revisionLevelItem: any = await this._Service.getRevisionLevelData(this.props.siteUrl, this.props.revisionLevelList);
+      console.log(revisionLevelItem);
+      for (let i = 0; i < revisionLevelItem.length; i++) {
+        let revisionLevelItemdata = {
+          key: revisionLevelItem[i].ID,
+          text: revisionLevelItem[i].Title
+        };
+        revisionLevelArray.push(revisionLevelItemdata);
+      }
+      console.log(revisionLevelArray);
+      sorted_RevisionLevel = _.orderBy(revisionLevelArray, 'text', ['asc']);
+      this.setState({
+        revisionLevelArray: sorted_RevisionLevel,
+        revisionCoding: revisionCoding,
+        acceptanceCodeId: acceptanceCodeId,
+        transmittalRevision: transmittalRevision,
+      });
+      const projectInformation = await this._Service.getListItems(this.props.siteUrl, this.props.projectInformationListName);
+      console.log("projectInformation", projectInformation);
+      if (projectInformation.length > 0) {
+        for (var k in projectInformation) {
+          if (projectInformation[k].Key == "ProjectName") {
+            this.setState({
+              projectName: projectInformation[k].Title,
+            });
+          }
+          if (projectInformation[k].Key == "ProjectNumber") {
+            this.setState({
+              projectNumber: projectInformation[k].Title,
+            });
+          }
+        }
+      }
+    });
   }
   //Revision History Url
   private _openRevisionHistory = () => {
