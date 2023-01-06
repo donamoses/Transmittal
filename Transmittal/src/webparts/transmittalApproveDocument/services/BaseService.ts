@@ -94,7 +94,7 @@ export class BaseService {
     public gettriggerUnderApprovalPermission(url: string, listname: string): Promise<any> {
         return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("Title eq 'EMEC_DocumentPermission_UnderApproval'")()
     }
-    public getdirectpublish(url: string, listname: string): Promise<any> {
+    public getpublish(url: string, listname: string): Promise<any> {
         return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("Title eq 'EMEC_PermissionWebpart'")()
     }
     public getnotification(url: string, listname: string, emailuser: string): Promise<any> {
@@ -105,5 +105,8 @@ export class BaseService {
     }
     public gettaskdelegation(url: string, listname: string, Id: any): Promise<any> {
         return this.sphub.web.getList(url + "/Lists/" + listname).items.select("DelegatedFor/ID,DelegatedFor/Title,DelegatedFor/EMail,DelegatedTo/ID,DelegatedTo/Title,DelegatedTo/EMail,FromDate,ToDate").expand("DelegatedFor,DelegatedTo").filter("DelegatedFor/ID eq '" + Id + "' and(Status eq 'Active')")();
+    }
+    public getlogitem(url: string, listname: string, workflowHeaderID: string): Promise<any> {
+        return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("WorkflowID eq '" + workflowHeaderID + "' and (Workflow eq 'Approval')")()
     }
 } 

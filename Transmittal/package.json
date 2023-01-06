@@ -9,21 +9,23 @@
     "test": "gulp test"
   },
   "dependencies": {
-    "tslib": "2.3.1",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
-    "office-ui-fabric-react": "7.185.7",
+    "@fluentui/react": "^8.104.2",
     "@microsoft/sp-core-library": "1.15.2",
-    "@microsoft/sp-property-pane": "1.15.2",
-    "@microsoft/sp-webpart-base": "1.15.2",
     "@microsoft/sp-lodash-subset": "1.15.2",
     "@microsoft/sp-office-ui-fabric-core": "1.15.2",
+    "@microsoft/sp-property-pane": "1.15.2",
+    "@microsoft/sp-webpart-base": "1.15.2",
     "@pnp/logging": "^3.6.0",
     "@pnp/sp": "^3.6.0",
-    "simple-react-validator": "^1.6.2",
     "@pnp/spfx-controls-react": "^3.9.0",
     "moment": "^2.29.4",
-    "replace-string": "^4.0.0"
+    "office-ui-fabric-react": "7.185.7",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-html-parser": "^2.0.2",
+    "replace-string": "^4.0.0",
+    "simple-react-validator": "^1.6.2",
+    "tslib": "2.3.1"
   },
   "devDependencies": {
     "@microsoft/rush-stack-compiler-4.5": "0.2.2",
