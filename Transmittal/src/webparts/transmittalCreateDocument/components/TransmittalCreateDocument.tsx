@@ -249,7 +249,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     let categorydata;
     for (let i = 0; i < category.length; i++) {
       if (this.props.project) {
-        if (category[i].Project == true) {
+        if (category[i].Project === true) {
           categorydata = {
             key: category[i].ID,
             text: category[i].Category,
@@ -258,7 +258,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
         }
       }
       else {
-        if (category[i].QDMS == true) {
+        if (category[i].QDMS === true) {
           categorydata = {
             key: category[i].ID,
             text: category[i].Category,
@@ -329,21 +329,21 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     console.log("projectInformation", projectInformation);
     if (projectInformation.length > 0) {
       for (var k in projectInformation) {
-        if (projectInformation[k].Key == "ProjectName") {
+        if (projectInformation[k].Key === "ProjectName") {
           this.setState({
             projectName: projectInformation[k].Title,
           });
         }
-        if (projectInformation[k].Key == "ProjectNumber") {
+        if (projectInformation[k].Key === "ProjectNumber") {
           this.setState({
             projectNumber: projectInformation[k].Title,
           });
         }
-        if (projectInformation[k].Key == "BusinessUnit") {
+        if (projectInformation[k].Key === "BusinessUnit") {
           const businessUnit = await this._Service.gethubListItems(this.props.hubUrl, this.props.businessUnit);
           console.log(businessUnit);
           for (let i = 0; i < businessUnit.length; i++) {
-            if (businessUnit[i].Title == projectInformation[k].Title) {
+            if (businessUnit[i].Title === projectInformation[k].Title) {
               console.log(businessUnit[i]);
               businessCode = businessUnit[i].Title;
               BusinessUnitName = businessUnit[i].BusinessUnitName;
@@ -366,15 +366,15 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     const userMessageSettings: any[] = await this._Service.gethubUserMessageListItems(this.props.hubUrl, this.props.userMessageSettings);
     console.log(userMessageSettings);
     for (var i in userMessageSettings) {
-      if (userMessageSettings[i].Title == "CreateDocumentSuccess") {
+      if (userMessageSettings[i].Title === "CreateDocumentSuccess") {
         var successmsg = userMessageSettings[i].Message;
         this.createDocument = replaceString(successmsg, '[DocumentName]', this.state.documentName);
       }
-      if (userMessageSettings[i].Title == "DirectPublishSuccess") {
+      if (userMessageSettings[i].Title === "DirectPublishSuccess") {
         var publishmsg = userMessageSettings[i].Message;
         this.directPublish = replaceString(publishmsg, '[DocumentName]', this.state.documentName);
       }
-      if (userMessageSettings[i].Title == "NoAccess") {
+      if (userMessageSettings[i].Title === "NoAccess") {
         this.noAccess = userMessageSettings[i].Message;
 
       }
@@ -410,7 +410,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     console.log(responseJSON);
     if (response.ok) {
       console.log(responseJSON['Status']);
-      if (responseJSON['Status'] == "Valid") {
+      if (responseJSON['Status'] === "Valid") {
         this.setState({ checkdirect: "none", hideDirect: "", hidePublish: "none" });
       }
       else {
@@ -436,7 +436,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       const businessUnits = await this._Service.getBusinessUnitItem(this.props.hubUrl, this.props.businessUnit);
       console.log(businessUnits);
       for (let i = 0; i < businessUnits.length; i++) {
-        if (businessUnits[i].ID == option.key) {
+        if (businessUnits[i].ID === option.key) {
           const approve = await this._Service.getByEmail(businessUnits[i].Approver.EMail);
           console.log("approve:" + approve);
           approverEmail = businessUnits[i].Approver.EMail;
@@ -457,10 +457,10 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     this.setState({ departmentId: option.key, departmentCode: departmentCode, department: option.text, saveDisable: false });
     if (this.props.project) { }
     else {
-      if (this.state.businessUnitCode == "") {
+      if (this.state.businessUnitCode === "") {
         const departments = await this._Service.getBusinessUnitItem(this.props.hubUrl, this.props.department);
         for (let i = 0; i < departments.length; i++) {
-          if (departments[i].ID == option.key) {
+          if (departments[i].ID === option.key) {
             const deptapprove = await this._Service.getByEmail(departments[i].Approver.EMail);
             approverEmail = departments[i].Approver.EMail;
             approverName = departments[i].Approver.Title;
@@ -479,7 +479,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     let categoryCode = category.Title;
     await this._Service.gethubListItems(this.props.hubUrl, this.props.subCategory).then((subcategory: any) => {
       for (let i = 0; i < subcategory.length; i++) {
-        if (subcategory[i].CategoryId == option.key) {
+        if (subcategory[i].CategoryId === option.key) {
           let subcategorydata = {
             key: subcategory[i].ID,
             text: subcategory[i].SubCategory,
@@ -552,10 +552,10 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     }
     else {
       this.setState({ validApprover: "", approver: null, approverEmail: "", approverName: "", });
-      if (this.state.businessUnitCode != "") {
+      if (this.state.businessUnitCode !== "") {
         this._Service.getBusinessUnitItem(this.props.hubUrl, this.props.businessUnit).then(async (businessUnit: any) => {
           for (let i = 0; i < businessUnit.length; i++) {
-            if (businessUnit[i].ID == this.state.businessUnitID) {
+            if (businessUnit[i].ID === this.state.businessUnitID) {
               const approve = await this._Service.getByEmail(businessUnit[i].Approver.EMail);
               approverEmail = businessUnit[i].Approver.EMail;
               approverName = businessUnit[i].Approver.Title;
@@ -567,7 +567,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       else {
         this._Service.getBusinessUnitItem(this.props.hubUrl, this.props.department).then(async (departments: any) => {
           for (let i = 0; i < departments.length; i++) {
-            if (departments[i].ID == this.state.departmentId) {
+            if (departments[i].ID === this.state.departmentId) {
               const deptapprove = await this._Service.getByEmail(departments[i].Approver.EMail);
               approverEmail = departments[i].Approver.EMail;
               approverName = departments[i].Approver.Title;
@@ -633,10 +633,10 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       uploadOrTemplateRadioBtn: option.key,
       createDocument: true
     });
-    if (option.key == "Upload") {
+    if (option.key === "Upload") {
       this.setState({ upload: true, hideupload: "", template: false, hidesource: "none", hidetemplate: "none" });
     }
-    if (option.key == "Template") {
+    if (option.key === "Template") {
       let publishedDocumentArray = [];
       let sorted_PublishedDocument: any[];
       let qdms = window.location.protocol + "//" + window.location.hostname + "/" + this.props.QDMSUrl;
@@ -644,7 +644,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       console.log("site :" + this.props.siteUrl);
       console.log("qdms :" + qdms);
       if (!this.props.project) {
-        if (this.props.siteUrl == qdms) {
+        if (this.props.siteUrl === qdms) {
           this.setState({ hidesource: "none" })
         }
 
@@ -654,7 +654,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
         this.setState({ template: true, upload: false, hideupload: "none", hidetemplate: "" });
         let publishedDocument: any[] = await this._Service.getLibraryItems(this.props.siteUrl, this.props.publisheddocumentLibrary);
         for (let i = 0; i < publishedDocument.length; i++) {
-          if (publishedDocument[i].Template == true) {
+          if (publishedDocument[i].Template === true) {
             let publishedDocumentdata = {
               key: publishedDocument[i].ID,
               text: publishedDocument[i].DocumentName,
@@ -694,7 +694,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     // let docsplit =splitted.slice(0, -1).join('.')+"."+splitted[splitted.length - 1];
     // alert(docsplit);
     type = splitted[splitted.length - 1];
-    if (type == "docx") {
+    if (type === "docx") {
       this.setState({ isdocx: "", nodocx: "none" });
     }
     else {
@@ -707,10 +707,10 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     let sorted_PublishedDocument: any[];
     // this.QDMSUrl = Web(window.location.protocol + "//" + window.location.hostname + "/sites/" + this.props.QDMSUrl);
     //alert(this.QDMSUrl);
-    if (option.key == "QDMS") {
+    if (option.key === "QDMS") {
       let publishedDocument: any[] = await this._Service.getqdmsLibraryItems(this.props.QDMSUrl, this.props.publisheddocumentLibrary);
       for (let i = 0; i < publishedDocument.length; i++) {
-        if (publishedDocument[i].Template == true) {
+        if (publishedDocument[i].Template === true) {
           let publishedDocumentdata = {
             key: publishedDocument[i].ID,
             text: publishedDocument[i].DocumentName,
@@ -723,7 +723,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     else {
       let publishedDocument: any[] = await this._Service.getLibraryItems(this.props.siteUrl, this.props.publisheddocumentLibrary);
       for (let i = 0; i < publishedDocument.length; i++) {
-        if (publishedDocument[i].Template == true) {
+        if (publishedDocument[i].Template === true) {
           let publishedDocumentdata = {
             key: publishedDocument[i].ID,
             text: publishedDocument[i].DocumentName,
@@ -742,18 +742,18 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     let type: any;
     let publishName: any;
     this.isDocument = "Yes";
-    if (this.state.sourceId == "QDMS") {
+    if (this.state.sourceId === "QDMS") {
       await this._Service.getqdmsselectLibraryItems(this.props.QDMSUrl, this.props.publisheddocumentLibrary).then((publishdoc: any) => {
         console.log(publishdoc);
         for (let i = 0; i < publishdoc.length; i++) {
-          if (publishdoc[i].Id == this.state.templateId) {
+          if (publishdoc[i].Id === this.state.templateId) {
 
             publishName = publishdoc[i].LinkFilename;
           }
         }
         var split = publishName.split(".", 2);
         type = split[1];
-        if (type == "docx") {
+        if (type === "docx") {
           this.setState({ isdocx: "", nodocx: "none" });
         }
         else {
@@ -765,13 +765,13 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       await this._Service.getselectLibraryItems(this.props.siteUrl, this.props.publisheddocumentLibrary).then((publishdoc: any) => {
         console.log(publishdoc);
         for (let i = 0; i < publishdoc.length; i++) {
-          if (publishdoc[i].Id == this.state.templateId) {
+          if (publishdoc[i].Id === this.state.templateId) {
             publishName = publishdoc[i].LinkFilename;
           }
         }
         var split = publishName.split(".", 2);
         type = split[1];
-        if (type == "docx") {
+        if (type === "docx") {
           this.setState({ isdocx: "", nodocx: "none" });
         }
         else {
@@ -828,8 +828,8 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
   }
   //On create button click
   public async _onCreateDocument() {
-    if (this.state.createDocument == true && this.isDocument == "Yes" || this.state.createDocument == false) {
-      if (this.state.expiryDate != null || this.state.expiryDate != undefined) {
+    if (this.state.createDocument === true && this.isDocument === "Yes" || this.state.createDocument === false) {
+      if (this.state.expiryDate !== null || this.state.expiryDate !== undefined) {
         if (this.props.project) {
           //Validation without direct publish
           if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver')
@@ -843,7 +843,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             this.validator.hideMessages();
           }
           //Validation with direct publish
-          else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && (this.state.directPublishCheck == true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner')
+          else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && (this.state.directPublishCheck === true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner')
             && this.validator.fieldValid('Approver') && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod') && this.validator.fieldValid('Revision') && this.validator.fieldValid('DocumentController')) {
             this.setState({
               saveDisable: true, hideloader: false, hideCreateLoading: " ",
@@ -868,7 +868,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             this.validator.hideMessages();
           }
           //Validation with direct publish
-          else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && (this.state.directPublishCheck == true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver') && this.validator.fieldValid('legalentity') && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod')) {
+          else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && (this.state.directPublishCheck === true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver') && this.validator.fieldValid('legalentity') && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod')) {
             this.setState({
               saveDisable: true, hideloader: false, hideCreateLoading: " ",
               norefresh: " "
@@ -896,7 +896,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
           }
           //Validation with direct publish
           else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep')
-            && (this.state.directPublishCheck == true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner')
+            && (this.state.directPublishCheck === true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner')
             && this.validator.fieldValid('Approver') && this.validator.fieldValid('Revision') && this.validator.fieldValid('DocumentController')) {
             this.setState({
               saveDisable: true, hideloader: false, hideCreateLoading: " ",
@@ -921,7 +921,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             this.validator.hideMessages();
           }
           //Validation with direct publish
-          else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && (this.state.directPublishCheck == true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver') && this.validator.fieldValid('legalentity')) {
+          else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && (this.state.directPublishCheck === true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver') && this.validator.fieldValid('legalentity')) {
             this.setState({
               saveDisable: true, hideloader: false, hideCreateLoading: " ",
               norefresh: " "
@@ -961,7 +961,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     sequenceNumber = documentIdSettings[0].SequenceDigit;
     // Project id prefix
     if (this.props.project) {
-      if (this.state.businessUnitCode != "") {
+      if (this.state.businessUnitCode !== "") {
         idcode = this.state.businessUnitCode + separator + this.state.projectNumber + separator + this.state.categoryCode;
       }
       else {
@@ -970,7 +970,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     }
     // Qdms id prefix
     else {
-      // if (this.state.businessUnitCode != "") {
+      // if (this.state.businessUnitCode !== "") {
       //   idcode = this.state.legalEntity;
       // }
       // else {
@@ -982,7 +982,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       const documentIdSequenceSettings = await this._Service.getListItems(this.props.siteUrl, this.props.documentIdSequenceSettings);
       console.log("documentIdSequenceSettings", documentIdSequenceSettings);
       for (var k in documentIdSequenceSettings) {
-        if (documentIdSequenceSettings[k].Title == idcode) {
+        if (documentIdSequenceSettings[k].Title === idcode) {
           counter = documentIdSequenceSettings[k].Sequence;
           settingsid = documentIdSequenceSettings[k].ID;
           isValue = "true";
@@ -990,7 +990,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       }
       if (documentIdSequenceSettings) {
         // No sequence
-        if (isValue == "false") {
+        if (isValue === "false") {
           increment = 1;
           incrementstring = increment.toString();
           const idseq = {
@@ -1004,7 +1004,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
               documentid = idcode + separator + this.state.incrementSequenceNumber;
             }
             else {
-              if (this.state.departmentCode != "") {
+              if (this.state.departmentCode !== "") {
                 documentid = this.state.legalEntity + separator + this.state.departmentCode + separator + this.state.incrementSequenceNumber;
               }
               else {
@@ -1033,7 +1033,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
               documentid = idcode + separator + this.state.incrementSequenceNumber;
             }
             else {
-              if (this.state.departmentCode != "") {
+              if (this.state.departmentCode !== "") {
                 documentid = this.state.legalEntity + separator + this.state.departmentCode + separator + this.state.incrementSequenceNumber;
               }
               else {
@@ -1042,7 +1042,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
               // documentid = idcode+ separator + this.state.incrementSequenceNumber;
             }
             if (this.props.project) {
-              if (this.state.bulkDocumentIndex == " ") {
+              if (this.state.bulkDocumentIndex === " ") {
                 documentname = documentid + " " + this.state.title + " " + this.state.counter;
               }
               else {
@@ -1088,11 +1088,11 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       upload = "#addqdms";
     }
     // With document
-    if (this.state.createDocument == true) {
+    if (this.state.createDocument === true) {
       // Create document index item
       await this._createDocumentIndex();
       // Get file from form
-      if ((document.querySelector(upload) as HTMLInputElement).files[0] != null) {
+      if ((document.querySelector(upload) as HTMLInputElement).files[0] !== null) {
         let myfile = (document.querySelector(upload) as HTMLInputElement).files[0];
         console.log(myfile);
         var splitted = myfile.name.split(".");
@@ -1108,7 +1108,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             const item = await fileUploaded.file.getItem();
             console.log(item);
             sourceDocumentId = item["ID"];
-            // if(splitted[1] == "pdf"||splitted[1] == "Pdf"||splitted[1] == "PDF"){
+            // if(splitted[1] === "pdf"||splitted[1] === "Pdf"||splitted[1] === "PDF"){
             //   documenturl = this.props.siteUrl + "/" + this.props.sourceDocumentLibrary  + "/" + documentNameExtension;
             //   // documenturl = item["ServerRedirectedEmbedUrl"];
             // }
@@ -1137,7 +1137,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
               }
               const log = await this._Service.createNewItem(this.props.siteUrl, this.props.documentRevisionLogList, logdata);
               // update document index
-              if (this.state.directPublishCheck == false) {
+              if (this.state.directPublishCheck === false) {
                 let diupdatedata = {
                   SourceDocumentID: parseInt(this.state.sourceDocumentId),
                   DocumentName: this.documentNameExtension,
@@ -1172,7 +1172,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
 
               }
               await this._triggerPermission(sourceDocumentId);
-              if (this.state.directPublishCheck == true) {
+              if (this.state.directPublishCheck === true) {
                 this.setState({ hideLoading: false, hideCreateLoading: "none" });
                 await this._publish();
               }
@@ -1186,16 +1186,16 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
           }
         }
       }
-      else if (this.state.templateId != "") {
+      else if (this.state.templateId !== "") {
         let publishName: any;
         let extension: any;
         let newDocumentName;
         // Get template
-        if (this.state.sourceId == "QDMS") {
+        if (this.state.sourceId === "QDMS") {
           await this._Service.getqdmsselectLibraryItems(this.props.QDMSUrl, this.props.publisheddocumentLibrary).then((publishdoc: any) => {
             console.log(publishdoc);
             for (let i = 0; i < publishdoc.length; i++) {
-              if (publishdoc[i].Id == this.state.templateId) {
+              if (publishdoc[i].Id === this.state.templateId) {
                 publishName = publishdoc[i].LinkFilename;
               }
             }
@@ -1235,7 +1235,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                     DocumentIndexId: parseInt(this.state.newDocumentId),
                   }
                   let log = await this._Service.createNewItem(this.props.siteUrl, this.props.documentRevisionLogList, logdata)
-                  if (this.state.directPublishCheck == false) {
+                  if (this.state.directPublishCheck === false) {
                     let indexdata = {
                       SourceDocumentID: parseInt(this.state.sourceDocumentId),
                       DocumentName: this.documentNameExtension,
@@ -1270,7 +1270,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
 
                   }
                   await this._triggerPermission(sourceDocumentId);
-                  if (this.state.directPublishCheck == true) {
+                  if (this.state.directPublishCheck === true) {
                     this.setState({ hideLoading: false, hideCreateLoading: "none" });
                     await this._publish();
                   }
@@ -1288,7 +1288,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
           await this._Service.getselectLibraryItems(this.props.siteUrl, this.props.publisheddocumentLibrary).then((publishdoc: any) => {
             console.log(publishdoc);
             for (let i = 0; i < publishdoc.length; i++) {
-              if (publishdoc[i].Id == this.state.templateId) {
+              if (publishdoc[i].Id === this.state.templateId) {
                 publishName = publishdoc[i].LinkFilename;
               }
             }
@@ -1308,7 +1308,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                 fileUploaded.file.getItem().then(async (item: any) => {
                   console.log(item);
                   sourceDocumentId = item["ID"];
-                  // if(extension == "pdf"||extension == "Pdf"||extension == "PDF"){
+                  // if(extension === "pdf"||extension === "Pdf"||extension === "PDF"){
                   //   documenturl = item["ServerRedirectedEmbedUrl"];
                   // }
                   // else{
@@ -1334,7 +1334,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                     DocumentIndexId: parseInt(this.state.newDocumentId),
                   }
                   const log = await this._Service.createNewItem(this.props.siteUrl, this.props.documentRevisionLogList, revlog);
-                  if (this.state.directPublishCheck == false) {
+                  if (this.state.directPublishCheck === false) {
                     let indexdata = {
                       SourceDocumentID: parseInt(this.state.sourceDocumentId),
                       DocumentName: this.documentNameExtension,
@@ -1367,7 +1367,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
 
                   }
                   await this._triggerPermission(sourceDocumentId);
-                  if (this.state.directPublishCheck == true) {
+                  if (this.state.directPublishCheck === true) {
                     this.setState({ hideLoading: false, hideCreateLoading: "none" });
                     await this._publish();
                   }
@@ -1389,8 +1389,8 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       await this._createDocumentIndex();
 
       this.setState({ statusMessage: { isShowMessage: true, message: this.createDocument, messageType: 4 }, norefresh: "none", hideCreateLoading: "none" });
-      if (this.state.bulkDocumentIndex == " ") {
-        if (this.Count == this.currentCount) {
+      if (this.state.bulkDocumentIndex === " ") {
+        if (this.Count === this.currentCount) {
           // alert("current count reached")
           window.location.replace(this.props.siteUrl);
         }
@@ -1432,8 +1432,8 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
   public async _createDocumentIndex() {
     let documentIndexId;
     // Without Expiry date
-    // if (this.state.expiryCheck == false) {
-    if (this.state.expiryDate == null || this.state.expiryDate == undefined) {
+    // if (this.state.expiryCheck === false) {
+    if (this.state.expiryDate === null || this.state.expiryDate === undefined) {
       // DMS
       if (this.props.project) {
         let index1 = {
@@ -1608,8 +1608,8 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
   // Add Source Document metadata
   public async _addSourceDocument() {
     // Without Expiry Date
-    // if (this.state.expiryCheck == false) {
-    if (this.state.expiryDate == null || this.state.expiryDate == undefined) {
+    // if (this.state.expiryCheck === false) {
+    if (this.state.expiryDate === null || this.state.expiryDate === undefined) {
       // DMS
       if (this.props.project) {
         let sourceitem1 = {
@@ -1796,11 +1796,11 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     let updateindex = await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, updateindexdata, this.documentIndexID)
 
 
-    if (this.state.owner != this.state.currentUserId) {
+    if (this.state.owner !== this.state.currentUserId) {
       this._sendMail(this.state.ownerEmail, "DocPublish", this.state.ownerName);
     }
     if (this.props.project) {
-      if (this.state.dcc != this.state.owner) {
+      if (this.state.dcc !== this.state.owner) {
         this._sendMail(this.state.dccEmail, "DocPublish", this.state.dccName);
       }
     }
@@ -1832,51 +1832,51 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     let endWith = '0';
     let minN = revisionItem.MinN;
     let maxN = '0';
-    let isAutoIncrement = revisionItem.AutoIncrement == 'TRUE';
+    let isAutoIncrement = revisionItem.AutoIncrement === 'TRUE';
     let firstChar = currentRevision.substring(0, 1);
     let currentNumber = currentRevision.substring(1, currentRevision.length);
     let startWith = revisionItem.StartWith;
 
-    if (revisionItem.EndWith != null)
+    if (revisionItem.EndWith !== null)
       endWith = revisionItem.EndWith;
 
-    if (revisionItem.MaxN != null)
+    if (revisionItem.MaxN !== null)
       maxN = revisionItem.MaxN;
 
-    if (revisionItem.StartPrefix != null)
+    if (revisionItem.StartPrefix !== null)
       startPrefix = revisionItem.StartPrefix.toString();
 
     //splitting pattern values
     let incrementValue = 1;
-    let isAlphaIncrement = pattern.split('+')[0] == 'A';
-    let isNumericIncrement = pattern.split('+')[0] == 'N';
-    if (pattern.split('+').length == 2) {
+    let isAlphaIncrement = pattern.split('+')[0] === 'A';
+    let isNumericIncrement = pattern.split('+')[0] === 'N';
+    if (pattern.split('+').length === 2) {
       incrementValue = Number(pattern.split('+')[1]);
     }
     //Resetting current revision as blank if current revisionsetting id is different.
-    if (this.state.revisionItemID != this.state.previousRevisionItemID) {
+    if (this.state.revisionItemID !== this.state.previousRevisionItemID) {
       currentRevision = '-';
     }
     try {
       //Getting first revision value.
-      if (currentRevision == '-') {
+      if (currentRevision === '-') {
         if (!isAutoIncrement) // Not an auto increment pattern, splitting the pattern with command reading the first value.
         {
           newRevision = pattern.split(',')[0];
         }
         else {
-          if (startPrefix != '-' && startPrefix.split(',').length > 0)  //Auto increment   with startPrefix eg. A1,A2, A3 etc., then handling both single and multple startPrefix
+          if (startPrefix !== '-' && startPrefix.split(',').length > 0)  //Auto increment   with startPrefix eg. A1,A2, A3 etc., then handling both single and multple startPrefix
           {
             startPrefix = startPrefix.split(',')[0];
           }
-          if (startWith != null) // 
+          if (startWith !== null) // 
           {
             newRevision = startWith; //assigning startWith as newRevision for the first time.
           }
           else {
             newRevision = startPrefix + '' + minN;
           }
-          if (startWith == null && startPrefix == '-') // Assigning minN if startWith and StartPrefix are null.
+          if (startWith === null && startPrefix === '-') // Assigning minN if startWith and StartPrefix are null.
           {
             newRevision = minN;
           }
@@ -1889,7 +1889,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
         /* let prevRevision = patternArray[0];
          for(let i= 0;i < patternArray.length; i++)
          {
-           if(i > 0 && String(currentRevision) == String(patternArray[i]))
+           if(i > 0 && String(currentRevision) === String(patternArray[i]))
            {
              prevRevision = String(patternArray[i-1]);
              break;
@@ -1900,7 +1900,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
         for (let i = 0; i < patternArray.length; i++) {
           {
             //B,C,D,C,E,G
-            if (String(currentRevision) == patternArray[i] && (i + 1) < patternArray.length) {
+            if (String(currentRevision) === patternArray[i] && (i + 1) < patternArray.length) {
               newRevision = patternArray[i + 1];
               break;
             }
@@ -1909,9 +1909,9 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       }
       else if (isAutoIncrement)// current revision is not blank and auto increment pattern .
       {
-        if (startWith != null && String(currentRevision) == String(startWith)) // Revision code with startWith  and startWith already set as Revision
+        if (startWith !== null && String(currentRevision) === String(startWith)) // Revision code with startWith  and startWith already set as Revision
         {
-          if (startPrefix == '-') // second revision without startPrefix / '-' no StartPrefix
+          if (startPrefix === '-') // second revision without startPrefix / '-' no StartPrefix
           {
             newRevision = minN;
           }
@@ -1921,9 +1921,9 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
           }
         }
         // For all other cases
-        else if (startPrefix != '-') // Handling revisions with startPrefix here first char will be alpha
+        else if (startPrefix !== '-') // Handling revisions with startPrefix here first char will be alpha
         {
-          if (startPrefix.split(',').length == 1) // Single startPrefix eg. A1,A2,A3 etc with startPrefix 'A' and patter N+1
+          if (startPrefix.split(',').length === 1) // Single startPrefix eg. A1,A2,A3 etc with startPrefix 'A' and patter N+1
           {
             if (this.isNotANumber(minN)) // Alpha increment.
             {
@@ -1936,23 +1936,23 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
           }
           else // startPrefix with multiple values
           {
-            if (maxN != '0') {
+            if (maxN !== '0') {
               if (this.isNotANumber(currentRevision)) //MaxN set and not a number.
               {
                 if (Number(currentNumber) < Number(maxN)) // alpha type revision
                 {
                   newRevision = firstChar + (Number(currentNumber) + Number(incrementValue)).toString();
                 }
-                else if (Number(currentNumber) == Number(maxN)) {
+                else if (Number(currentNumber) === Number(maxN)) {
                   // if current number part is same as maxN, get the next StartPrefix value from startPrefix.split(',')
                   let startPrefixArray = startPrefix.split(',');
                   for (let i = 0; i < startPrefixArray.length; i++) {
-                    if (firstChar == startPrefixArray[i] && (i + 1) < startPrefixArray.length) {
+                    if (firstChar === startPrefixArray[i] && (i + 1) < startPrefixArray.length) {
                       firstChar = startPrefixArray[i + 1];
                       break;
                     }
                   }
-                  if (firstChar == " ") // " " will denote a number
+                  if (firstChar === " ") // " " will denote a number
                   {
                     newRevision = minN;
                   }
@@ -1966,7 +1966,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                 if (Number(currentRevision) < Number(maxN)) {
                   newRevision = (Number(currentRevision) + Number(incrementValue)).toString(); // current revision s not an alpha 
                 }
-                else if (Number(currentRevision) == Number(maxN)) {
+                else if (Number(currentRevision) === Number(maxN)) {
                   {
                     if (!this.isNotANumber(currentRevision)) // for setting a default value after the last item
                     {
@@ -1975,12 +1975,12 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                     // if current number part is same as maxN, get the next StartPrefix value from startPrefix.split(',')
                     let startPrefixArray = startPrefix.split(',');
                     for (let i = 0; i < startPrefixArray.length; i++) {
-                      if (firstChar == startPrefixArray[i] && (i + 1) < startPrefixArray.length) {
+                      if (firstChar === startPrefixArray[i] && (i + 1) < startPrefixArray.length) {
                         firstChar = startPrefixArray[i + 1];
                         break;
                       }
                     }
-                    if (firstChar == " ") // Assigning number for blank array.
+                    if (firstChar === " ") // Assigning number for blank array.
                     {
                       newRevision = minN;
                     }
@@ -1993,7 +1993,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             }
           }
         }
-        if (newRevision == '' && startPrefix == '-' && endWith == '0') // No StartPrefix and No EndWith
+        if (newRevision === '' && startPrefix === '-' && endWith === '0') // No StartPrefix and No EndWith
         {
           if (isAlphaIncrement) // Alpha increment.
           {
@@ -2003,26 +2003,26 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             newRevision = (Number(currentRevision) + Number(incrementValue)).toString();
           }
         }
-        else if (startPrefix == '-' && endWith != '0') // No StartPrefix and with EndWith 
+        else if (startPrefix === '-' && endWith !== '0') // No StartPrefix and with EndWith 
         {
           // cases A to E  then 0,1, 2,3 etc,
-          if (currentRevision == endWith) {
+          if (currentRevision === endWith) {
             newRevision = minN;
           }
-          else// if(currentRevision != '0')
+          else// if(currentRevision !== '0')
           {
             if (this.isNotANumber(currentRevision)) // Alpha increment.
             {
               newRevision = this.nextChar(firstChar, incrementValue);
             }
-            else // (currentRevision == startWith && endWith != null) // always alpha increment "X,,B"
+            else // (currentRevision === startWith && endWith !== null) // always alpha increment "X,,B"
             {
               newRevision = (Number(currentRevision) + Number(incrementValue)).toString();
             }
           }
         }
       }
-      if (newRevision.indexOf('undefined') > -1 || newRevision == '') // Assigning with zero if array value exceeds.
+      if (newRevision.indexOf('undefined') > -1 || newRevision === '') // Assigning with zero if array value exceeds.
       {
         newRevision = '0';
       }
@@ -2038,7 +2038,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
   }
   // Craeting next alpha char.
   private nextChar(currentChar: any, increment: any) {
-    if (currentChar == 'Z')
+    if (currentChar === 'Z')
       return 'A';
     else
       return String.fromCharCode(currentChar.charCodeAt(0) + increment);
@@ -2067,24 +2067,24 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     const notificationPreference: any[] = await this._Service.getnotification(this.props.hubUrl, this.props.notificationPreference, emailuser);
     console.log(notificationPreference[0].Preference);
     if (notificationPreference.length > 0) {
-      if (notificationPreference[0].Preference == "Send all emails") {
+      if (notificationPreference[0].Preference === "Send all emails") {
         mailSend = "Yes";
       }
-      else if (notificationPreference[0].Preference == "Send mail for critical document" && this.state.criticalDocument == true) {
+      else if (notificationPreference[0].Preference === "Send mail for critical document" && this.state.criticalDocument === true) {
         mailSend = "Yes";
       }
       else {
         mailSend = "No";
       }
     }
-    else if (this.state.criticalDocument == true) {
+    else if (this.state.criticalDocument === true) {
       mailSend = "Yes";
     }
-    if (mailSend == "Yes") {
+    if (mailSend === "Yes") {
       const emailNotification: any[] = await this._Service.gethubListItems(this.props.hubUrl, this.props.emailNotification);
       console.log(emailNotification);
       for (var k in emailNotification) {
-        if (emailNotification[k].Title == type) {
+        if (emailNotification[k].Title === type) {
           Subject = emailNotification[k].Subject;
           Body = emailNotification[k].Body;
         }

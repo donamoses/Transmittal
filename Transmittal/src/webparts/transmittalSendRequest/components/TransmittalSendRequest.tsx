@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styles from './TransmittalSendRequest.module.scss';
 import { ITransmittalSendRequestProps, ITransmittalSendRequestState } from './ITransmittalSendRequestProps';
-import { escape } from '@microsoft/sp-lodash-subset';
 import { BaseService } from '../services';
 import SimpleReactValidator from 'simple-react-validator';
 import { Checkbox, DatePicker, DefaultButton, Dialog, DialogFooter, DialogType, ITooltipHostStyles, Label, Link, MessageBar, PrimaryButton, ProgressIndicator, Spinner, TextField, TooltipHost } from '@fluentui/react';
@@ -163,46 +162,46 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   private async _userMessageSettings() {
     const userMessageSettings: any[] = await this._Service.gethubUserMessageListItems(this.props.hubUrl, this.props.userMessageSettings);
     console.log(userMessageSettings);
-    for (var i in userMessageSettings) {
-      if (userMessageSettings[i].Title == "InvalidSendRequestUser") {
+    for (let i in userMessageSettings) {
+      if (userMessageSettings[i].Title === "InvalidSendRequestUser") {
         this.invalidUser = userMessageSettings[i].Message;
       }
-      if (userMessageSettings[i].Title == "InvalidSendRequestLink") {
+      if (userMessageSettings[i].Title === "InvalidSendRequestLink") {
         this.invalidSendRequestLink = userMessageSettings[i].Message;
       }
-      if (userMessageSettings[i].Title == "NoDocument") {
+      if (userMessageSettings[i].Title === "NoDocument") {
         this.noDocument = userMessageSettings[i].Message;
       }
-      if (userMessageSettings[i].Title == "WorkflowStatusError") {
+      if (userMessageSettings[i].Title === "WorkflowStatusError") {
         this.workflowStatus = userMessageSettings[i].Message;
       }
-      if (userMessageSettings[i].Title == "DccReview") {
-        var DccReview = userMessageSettings[i].Message;
+      if (userMessageSettings[i].Title === "DccReview") {
+        let DccReview = userMessageSettings[i].Message;
         this.dccReview = replaceString(DccReview, '[DocumentName]', this.state.documentName);
 
       }
-      if (userMessageSettings[i].Title == "UnderApproval") {
-        var UnderApproval = userMessageSettings[i].Message;
+      if (userMessageSettings[i].Title === "UnderApproval") {
+        let UnderApproval = userMessageSettings[i].Message;
         this.underApproval = replaceString(UnderApproval, '[DocumentName]', this.state.documentName);
 
       }
-      if (userMessageSettings[i].Title == "UnderReview") {
-        var UnderReview = userMessageSettings[i].Message;
+      if (userMessageSettings[i].Title === "UnderReview") {
+        let UnderReview = userMessageSettings[i].Message;
         this.underReview = replaceString(UnderReview, '[DocumentName]', this.state.documentName);
 
       }
-      if (userMessageSettings[i].Title == "TaskDelegateDccReview") {
-        var TaskDelegateDccReview = userMessageSettings[i].Message;
+      if (userMessageSettings[i].Title === "TaskDelegateDccReview") {
+        let TaskDelegateDccReview = userMessageSettings[i].Message;
         this.taskDelegateDccReview = replaceString(TaskDelegateDccReview, '[DocumentName]', this.state.documentName);
 
       }
-      if (userMessageSettings[i].Title == "TaskDelegateUnderApproval") {
-        var TaskDelegateUnderApproval = userMessageSettings[i].Message;
+      if (userMessageSettings[i].Title === "TaskDelegateUnderApproval") {
+        let TaskDelegateUnderApproval = userMessageSettings[i].Message;
         this.taskDelegateUnderApproval = replaceString(TaskDelegateUnderApproval, '[DocumentName]', this.state.documentName);
 
       }
-      if (userMessageSettings[i].Title == "TaskDelegateUnderReview") {
-        var TaskDelegateUnderReview = userMessageSettings[i].Message;
+      if (userMessageSettings[i].Title === "TaskDelegateUnderReview") {
+        let TaskDelegateUnderReview = userMessageSettings[i].Message;
         this.taskDelegateUnderReview = replaceString(TaskDelegateUnderReview, '[DocumentName]', this.state.documentName);
 
       }
@@ -215,7 +214,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     let params = new URLSearchParams(window.location.search);
     let documentindexid = params.get('did');
 
-    if (documentindexid != "" && documentindexid != null) {
+    if (documentindexid !== "" && documentindexid !== null) {
       this.documentIndexID = parseInt(documentindexid);
       //Get Access
       this.setState({ access: "none", accessDeniedMsgBar: "none" });
@@ -241,7 +240,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   //Workflow Status Checking
   private async _checkWorkflowStatus() {
     const documentIndexItem: any = await this._Service.getIndexData(this.props.siteUrl, this.props.documentIndexList, this.documentIndexID);
-    if (documentIndexItem.WorkflowStatus == "Under Review" || documentIndexItem.WorkflowStatus == "Under Approval") {
+    if (documentIndexItem.WorkflowStatus === "Under Review" || documentIndexItem.WorkflowStatus === "Under Approval") {
       this.setState({
         loaderDisplay: "none",
         accessDeniedMsgBar: "",
@@ -252,7 +251,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
         window.location.replace(window.location.protocol + "//" + window.location.hostname + this.props.siteUrl + "/Lists/" + this.props.documentIndexList);
       }, 10000);
     }
-    else if (documentIndexItem.DocumentStatus != "Active") {
+    else if (documentIndexItem.DocumentStatus !== "Active") {
       this.setState({
         loaderDisplay: "none",
         accessDeniedMsgBar: "",
@@ -263,7 +262,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
         window.location.replace(window.location.protocol + "//" + window.location.hostname + this.props.siteUrl + "/Lists/" + this.props.documentIndexList);
       }, 10000);
     }
-    else if (documentIndexItem.SourceDocument == null) {
+    else if (documentIndexItem.SourceDocument === null) {
       this.setState({
         loaderDisplay: "none",
         accessDeniedMsgBar: "",
@@ -318,14 +317,14 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
       approverEmail = documentIndexItem.Approver.EMail;
       businessUnitID = documentIndexItem.BusinessUnitID;
       departmentId = documentIndexItem.DepartmentID;
-      for (var k in documentIndexItem.Reviewers) {
+      for (let k in documentIndexItem.Reviewers) {
         temReviewersID.push(documentIndexItem.Reviewers[k].ID);
         this.setState({
           reviewers: temReviewersID,
         });
         tempReviewers.push(documentIndexItem.Reviewers[k].Title);
       }
-      if (indexItems.ApproverId != null) {
+      if (indexItems.ApproverId !== null) {
         this.setState({
           approver: documentIndexItem.Approver.ID,
           approverName: documentIndexItem.Approver.Title,
@@ -356,26 +355,24 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   public async _project() {
     await this._Service.getItemById(this.props.siteUrl, this.props.documentIndexList, this.documentIndexID).then(async (indexItems: any) => {
       console.log("dataForEdit", indexItems);
-      let revisionLevelArray = [];
+      const revisionLevelArray = [];
       let sorted_RevisionLevel = [];
       let revisionCoding;
       let transmittalRevision;
       let acceptanceCodeId;
-      let documentControllerName;
-      let documentControllerId;
       const documentIndexItem: any = await this._Service.getIndexProjectData(this.props.siteUrl, this.props.documentIndexList, this.documentIndexID);
       console.log(documentIndexItem.RevisionCodingId);
       revisionCoding = documentIndexItem.RevisionCodingId;
       acceptanceCodeId = documentIndexItem.AcceptanceCodeId;
       transmittalRevision = documentIndexItem.TransmittalRevision;
-      if (indexItems.DocumentControllerId != null) {
+      if (indexItems.DocumentControllerId !== null) {
         this.setState({
           dccReviewer: documentIndexItem.DocumentController.ID,
           dccReviewerName: documentIndexItem.DocumentController.Title,
           dccReviewerEmail: documentIndexItem.DocumentController.EMail
         });
       }
-      if (indexItems.RevisionLevelId != null) {
+      if (indexItems.RevisionLevelId !== null) {
         this.setState({
           revisionLevelvalue: documentIndexItem.RevisionLevelId
         });
@@ -400,13 +397,13 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
       const projectInformation = await this._Service.getListItems(this.props.siteUrl, this.props.projectInformationListName);
       console.log("projectInformation", projectInformation);
       if (projectInformation.length > 0) {
-        for (var k in projectInformation) {
-          if (projectInformation[k].Key == "ProjectName") {
+        for (let k in projectInformation) {
+          if (projectInformation[k].Key === "ProjectName") {
             this.setState({
               projectName: projectInformation[k].Title,
             });
           }
-          if (projectInformation[k].Key == "ProjectNumber") {
+          if (projectInformation[k].Key === "ProjectNumber") {
             this.setState({
               projectNumber: projectInformation[k].Title,
             });
@@ -432,9 +429,9 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     console.log(items);
     let getSelecteddccreviewer = [];
     for (let item in items) {
-      dccreviewerEmail = items[item].secondaryText,
-        dccreviewerName = items[item].text,
-        getSelecteddccreviewer.push(items[item].id);
+      dccreviewerEmail = items[item].secondaryText;
+      dccreviewerName = items[item].text;
+      getSelecteddccreviewer.push(items[item].id);
     }
     this.setState({
       dccReviewer: getSelecteddccreviewer[0],
@@ -470,10 +467,10 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     }
     else {
       this.setState({ validApprover: "", approver: null, approverEmail: "", approverName: "", });
-      if (this.state.businessUnitID != null) {
+      if (this.state.businessUnitID !== null) {
         const businessUnit = await this._Service.getApproverData(this.props.hubUrl, this.props.businessUnitList);
         for (let i = 0; i < businessUnit.length; i++) {
-          if (businessUnit[i].ID == this.state.businessUnitID) {
+          if (businessUnit[i].ID === this.state.businessUnitID) {
             const approve = await this._Service.getByEmail(businessUnit[i].Approver.EMail);
             approverEmail = businessUnit[i].Approver.EMail;
             approverName = businessUnit[i].Approver.Title;
@@ -484,7 +481,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
       else {
         const departments = await this._Service.getApproverData(this.props.hubUrl, this.props.departmentList);
         for (let i = 0; i < departments.length; i++) {
-          if (departments[i].ID == this.state.departmentId) {
+          if (departments[i].ID === this.state.departmentId) {
             const deptapprove = await this._Service.getByEmail(departments[i].Approver.EMail);
             approverEmail = departments[i].Approver.EMail;
             approverName = departments[i].Approver.Title;
@@ -514,17 +511,17 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     let previousHeaderItem = 0;
     let dcc = "dcc";
     const previousHeaderItems = await this._Service.getpreviousheader(this.props.siteUrl, this.props.workflowHeaderList, Number(this.documentIndexID));
-    if (previousHeaderItems.length != 0) {
+    if (previousHeaderItems.length !== 0) {
       sorted_previousHeaderItems = _.orderBy(previousHeaderItems, 'ID', ['desc']);
       previousHeaderItem = sorted_previousHeaderItems[0].ID;
     }
     if (this.props.project) {
       if (this.validator.fieldValid("Approver") && this.validator.fieldValid("DueDate") && this.validator.fieldValid("DocumentController")) {
-        if (this.state.dccReviewer != "" && this.state.dccReviewer != undefined) {
+        if (this.state.dccReviewer !== "" && this.state.dccReviewer !== undefined) {
           this.setState({ saveDisable: "none", hideLoading: false });
           this._dccReview(previousHeaderItem);
         }
-        else if (this.state.reviewers.length == 0) {
+        else if (this.state.reviewers.length === 0) {
           this.setState({ saveDisable: "none", hideLoading: false });
           this._underProjectApprove(previousHeaderItem);
         }
@@ -543,7 +540,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     }
     else {
       if (this.validator.fieldValid("Approver") && this.validator.fieldValid("DueDate")) {
-        if (this.state.reviewers.length == 0) {
+        if (this.state.reviewers.length === 0) {
           this.setState({ saveDisable: "none", hideLoading: false });
           this._underApprove(previousHeaderItem);
         }
@@ -565,7 +562,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   public async _dccReview(previousHeaderItem: any) {
     this._LAUrlGettingForUnderReview();
     // this._LaUrlGettingAdaptive();
-    let headerdata = {
+    const headerdata = {
       Title: this.state.documentName,
       DocumentID: this.state.documentID,
       WorkflowStatus: "Under Review",
@@ -590,7 +587,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     const header = await this._Service.createNewItem(this.props.siteUrl, this.props.workflowHeaderList, headerdata);
     if (header) {
       this.newheaderid = header.data.ID;
-      let log1 = {
+      const log1 = {
         Title: this.state.documentID,
         Status: "Workflow Initiated",
         LogDate: this.today,
@@ -632,18 +629,17 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               this.setState({
                 delegateToIdInSubSite: DelegatedTo.Id,
               });
-              let deleateforID: any;
               this._Service.getByEmail(taskDelegation[0].DelegatedFor.EMail).then(async (DelegatedFor: any) => {
                 this.setState({
                   delegateForIdInSubSite: DelegatedFor.Id,
                 });
-                let detaildata1 = {
+                const detaildata1 = {
                   HeaderIDId: Number(this.newheaderid),
                   Workflow: "DCC Review",
                   Title: this.state.documentName,
-                  ResponsibleId: (this.state.delegatedToId != "" ? this.state.delegateToIdInSubSite : this.state.dccReviewer),
+                  ResponsibleId: (this.state.delegatedToId !== "" ? this.state.delegateToIdInSubSite : this.state.dccReviewer),
                   DueDate: this.state.dueDate,
-                  DelegatedFromId: (this.state.delegatedToId != "" ? this.state.delegateForIdInSubSite : parseInt("")),
+                  DelegatedFromId: (this.state.delegatedToId !== "" ? this.state.delegateForIdInSubSite : parseInt("")),
                   ResponseStatus: "Under Review",
                   SourceDocument: {
                     Description: this.state.documentName,
@@ -655,30 +651,30 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 if (details) {
                   this.setState({ detailIdForApprover: details.data.ID });
                   this.newDetailItemID = details.data.ID;
-                  let updatedetaildata1 = {
+                  const updatedetaildata1 = {
                     Link: {
                       Description: this.state.documentName + "-Review",
                       Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + details.data.ID + "&wf=dcc"
                     }
                   }
                   await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, updatedetaildata1, details.data.ID);
-                  let updatedelegateuser = {
+                  const updatedelegateuser = {
                     DocumentControllerId: this.state.delegateToIdInSubSite,
                   }
                   await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, updatedelegateuser, this.documentIndexID);
                   await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, updatedelegateuser, this.sourceDocumentID);
                   //MY tasks list updation
-                  let taskdata1 = {
+                  const taskdata1 = {
                     Title: "Document Controller Review '" + this.state.documentName + "'",
                     Description: "DCC Review request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
                     DueDate: this.state.dueDate,
                     StartDate: this.today,
-                    AssignedToId: (this.state.delegatedToId != "" ? this.state.delegatedToId : user.Id),
+                    AssignedToId: (this.state.delegatedToId !== "" ? this.state.delegatedToId : user.Id),
                     Workflow: "DCC Review",
                     // Priority:(this.state.criticalDocument == true ? "Critical" :""),
                     DelegatedOn: (this.state.delegatedToId !== "" ? this.today : " "),
                     Source: (this.props.project ? "Project" : "QDMS"),
-                    DelegatedFromId: (this.state.delegatedToId != "" ? this.state.delegatedFromId : 0),
+                    DelegatedFromId: (this.state.delegatedToId !== "" ? this.state.delegatedFromId : 0),
                     Link: {
                       Description: this.state.documentName + "-Review",
                       Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + details.data.ID + "&wf=dcc"
@@ -687,7 +683,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                   const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata1);
                   if (task) {
                     this.TaskID = task.data.ID;
-                    let taskdata2 = {
+                    const taskdata2 = {
                       TaskID: task.data.ID,
                     }
                     await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata2, details.data.ID);
@@ -701,7 +697,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             }//DelegatedTo
           }//duedate checking
           else {
-            let detaildata2 = {
+            const detaildata2 = {
               HeaderIDId: Number(this.newheaderid),
               Workflow: "DCC Review",
               Title: this.state.documentName,
@@ -718,7 +714,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             if (detail) {
               this.setState({ detailIdForApprover: detail.data.ID });
               this.newDetailItemID = detail.data.ID;
-              let updatedetaildata2 = {
+              const updatedetaildata2 = {
                 Link: {
                   Description: this.state.documentName + "-Review",
                   Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detail.data.ID + "&wf=dcc"
@@ -726,14 +722,14 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               }
               const updatedetail = await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, updatedetaildata2, detail.data.ID);
               // my task updation
-              let taskdata3 = {
+              const taskdata3 = {
                 Title: "Document Controller Review '" + this.state.documentName + "'",
                 Description: "DCC Review request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
                 DueDate: this.state.dueDate,
                 StartDate: this.today,
                 AssignedToId: user.Id,
                 Workflow: "DCC Review",
-                Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                 Source: (this.props.project ? "Project" : "QDMS"),
                 Link: {
                   Description: this.state.documentName + "-Review",
@@ -744,14 +740,14 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata3);
               if (task) {
                 this.TaskID = task.data.ID;
-                let taskdata4 = {
+                const taskdata4 = {
                   TaskID: task.data.ID,
                 }
-                let taskdetail = await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata4, detail.data.ID);
+                const taskdetail = await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata4, detail.data.ID);
                 //notification preference checking                                 
                 this._sendmail(this.state.dccReviewerEmail, "DocDCCReview", this.state.dccReviewerName);
                 // await this._adaptiveCard("DCC Review", this.state.dccReviewerEmail, this.state.dccReviewerName, "Project", task.data.ID)
-                let dccreviewer = {
+                const dccreviewer = {
                   DocumentControllerId: this.state.dccReviewer
                 }
                 await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, dccreviewer, this.documentIndexID);
@@ -762,7 +758,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
 
         }
         else {
-          let detaildata3 = {
+          const detaildata3 = {
             HeaderIDId: Number(this.newheaderid),
             Workflow: "DCC Review",
             Title: this.state.documentName,
@@ -779,21 +775,21 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
           if (detail) {
             this.setState({ detailIdForApprover: detail.data.ID });
             this.newDetailItemID = detail.data.ID;
-            let updatedetail1 = {
+            const updatedetail1 = {
               Link: {
                 Description: this.state.documentName + "-Review",
                 Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detail.data.ID + "&wf=dcc"
               },
             }
             await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, updatedetail1, detail.data.ID);
-            let taskdata5 = {
+            const taskdata5 = {
               Title: "Document Controller Review '" + this.state.documentName + "'",
               Description: "DCC Review request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
               DueDate: this.state.dueDate,
               StartDate: this.today,
               AssignedToId: user.Id,
               Workflow: "DCC Review",
-              Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+              Priority: (this.state.criticalDocument === true ? "Critical" : ""),
               Source: (this.props.project ? "Project" : "QDMS"),
               Link: {
                 Description: this.state.documentName + "-Review",
@@ -804,7 +800,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             // my task updation
             const task = await this._Service.createNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata5);
             if (task) {
-              let taskdetail = {
+              const taskdetail = {
                 TaskID: task.data.ID,
               }
               this.TaskID = task.data.ID;
@@ -812,7 +808,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               //notification preference checking                                 
               await this._sendmail(this.state.dccReviewerEmail, "DocDCCReview", this.state.dccReviewerName);
               // await this._adaptiveCard("DCC Review", this.state.dccReviewerEmail, this.state.dccReviewerName, "Project", task.data.ID)
-              let dccid = {
+              const dccid = {
                 DocumentControllerId: this.state.dccReviewer
               }
               await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, dccid, this.documentIndexID);
@@ -821,7 +817,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
           }//r
         }//else no delegation
       }
-      let indexdata = {
+      const indexdata = {
         WorkflowStatus: "Under Review",
         Workflow: "DCC Review",
         ApproverId: this.state.approver,
@@ -829,7 +825,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
         WorkflowDueDate: this.state.dueDate
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata, this.documentIndexID);
-      let sourcedata = {
+      const sourcedata = {
         WorkflowStatus: "Under Review",
         Workflow: "DCC Review",
         ApproverId: this.state.approver,
@@ -837,7 +833,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
       }
       await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, sourcedata, this.sourceDocumentID);
       await this._triggerDocumentUnderReview(this.sourceDocumentID, "DCC Review");
-      let logdata = {
+      const logdata = {
         Title: this.state.documentID,
         Status: "Under Review",
         LogDate: this.today,
@@ -855,7 +851,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
         approverName: "",
         approver: "",
       });
-      if (this.taskDelegate == "Yes") {
+      if (this.taskDelegate === "Yes") {
         this.setState({
           hideLoading: true,
           statusMessage: { isShowMessage: true, message: this.taskDelegateDccReview, messageType: 4 },
@@ -898,10 +894,10 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     console.log(this.state.criticalDocument);
     const notificationPreference: any[] = await this._Service.getnotification(this.props.hubUrl, this.props.notificationPreference, emailuser);
     if (notificationPreference.length > 0) {
-      if (notificationPreference[0].Preference == "Send all emails") {
+      if (notificationPreference[0].Preference === "Send all emails") {
         mailSend = "Yes";
       }
-      else if (notificationPreference[0].Preference == "Send mail for critical document" && this.state.criticalDocument == true) {
+      else if (notificationPreference[0].Preference === "Send mail for critical document" && this.state.criticalDocument === true) {
         mailSend = "Yes";
 
       }
@@ -909,21 +905,21 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
         mailSend = "No";
       }
     }
-    else if (this.state.criticalDocument == true) {
+    else if (this.state.criticalDocument === true) {
       //console.log("Send mail for critical document");
       mailSend = "Yes";
     }
 
-    if (mailSend == "Yes") {
+    if (mailSend === "Yes") {
       const emailNotification: any[] = await this._Service.getemail(this.props.hubUrl, this.props.emailNotification, type);
       console.log(emailNotification);
       Subject = emailNotification[0].Subject;
       Body = emailNotification[0].Body;
-      if (type == "DocApproval") {
+      if (type === "DocApproval") {
         link = `<a href=${window.location.protocol + "//" + window.location.hostname + this.props.siteUrl + "/SitePages/" + this.props.documentApprovalPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + this.newDetailItemID}>Link</a>`;
 
       }
-      else if (type == "DocDCCReview") {
+      else if (type === "DocDCCReview") {
         link = `<a href=${window.location.protocol + "//" + window.location.hostname + this.props.siteUrl + "/SitePages/" + this.props.documentReviewPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + this.newDetailItemID + "&wf=dcc"} >Link</a>`;
       }
       else {
@@ -1024,7 +1020,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   public async _underReview(previousHeaderItem: any) {
     this._LAUrlGettingForUnderReview();
     this._LaUrlGettingAdaptive();
-    let detaildata14 = {
+    const detaildata14 = {
       Title: this.state.documentName,
       DocumentID: this.state.documentID,
       WorkflowStatus: "Under Review",
@@ -1045,7 +1041,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     const header = await this._Service.createNewItem(this.props.siteUrl, this.props.workflowHeaderList, detaildata14);
     if (header) {
       this.newheaderid = header.data.ID;
-      let logdata = {
+      const logdata = {
         Title: this.state.documentID,
         Status: "Workflow Initiated",
         LogDate: this.today,
@@ -1056,7 +1052,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
       }
       const log = await this._Service.createNewItem(this.props.siteUrl, this.props.documentRevisionLogList, logdata);
       //for reviewers if exist
-      for (var k = 0; k < this.state.reviewers.length; k++) {
+      for (let k = 0; k < this.state.reviewers.length; k++) {
         console.log(this.state.reviewers[k]);
         const user = await this._Service.getByUserId(this.state.reviewers[k]);
         if (user) {
@@ -1095,17 +1091,17 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                           delegateForIdInSubSite: DelegatedFor.Id,
                         });
                         //detail list adding an item for reviewers
-                        let index = this.state.reviewers.indexOf(DelegatedFor.Id);
+                        const index = this.state.reviewers.indexOf(DelegatedFor.Id);
                         console.log(index);
                         this.state.reviewers[index] = DelegatedTo.Id;
                         console.log(this.state.reviewers);
-                        let detaildata13 = {
+                        const detaildata13 = {
                           HeaderIDId: Number(this.newheaderid),
                           Workflow: "Review",
                           Title: this.state.documentName,
-                          ResponsibleId: (this.state.delegatedToId != "" ? DelegatedTo.Id : user.Id),
+                          ResponsibleId: (this.state.delegatedToId !== "" ? DelegatedTo.Id : user.Id),
                           DueDate: this.state.dueDate,
-                          DelegatedFromId: (this.state.delegatedToId != "" ? DelegatedFor.Id : parseInt("")),
+                          DelegatedFromId: (this.state.delegatedToId !== "" ? DelegatedFor.Id : parseInt("")),
                           ResponseStatus: "Under Review",
                           SourceDocument: {
                             Description: this.state.documentName,
@@ -1117,7 +1113,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                         if (detail) {
                           this.setState({ detailIdForApprover: detail.data.ID });
                           this.newDetailItemID = detail.data.ID;
-                          let taskdata14 = {
+                          const taskdata14 = {
                             Link: {
                               Description: this.state.documentName + "-Review",
                               Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detail.data.ID + ""
@@ -1127,16 +1123,16 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                           //Update link
 
                           //MY tasks list updation with delegated from
-                          let taskdata13 = {
+                          const taskdata13 = {
                             Title: "Review '" + this.state.documentName + "'",
                             Description: "Review request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
                             DueDate: this.state.dueDate,
                             StartDate: this.today,
-                            AssignedToId: (this.state.delegatedToId != "" ? this.state.delegatedToId : hubsieUser.Id),
-                            Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                            AssignedToId: (this.state.delegatedToId !== "" ? this.state.delegatedToId : hubsieUser.Id),
+                            Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                             DelegatedOn: (this.state.delegatedToId !== "" ? this.today : " "),
                             Source: (this.props.project ? "Project" : "QDMS"),
-                            DelegatedFromId: (this.state.delegatedToId != "" ? this.state.delegatedFromId : parseInt("")),
+                            DelegatedFromId: (this.state.delegatedToId !== "" ? this.state.delegatedFromId : parseInt("")),
                             Workflow: "Review",
                             Link: {
                               Description: this.state.documentName + "-Review",
@@ -1146,7 +1142,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                           const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata13);
                           if (task) {
                             this.TaskID = task.data.ID;
-                            let taskdata12 = {
+                            const taskdata12 = {
                               TaskID: task.data.ID,
                             }
                             await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata12, detail.data.ID);
@@ -1159,7 +1155,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 }
                 else {
                   //detail list adding an item for reviewers
-                  let detaildata12 = {
+                  const detaildata12 = {
                     HeaderIDId: Number(this.newheaderid),
                     Workflow: "Review",
                     Title: this.state.documentName,
@@ -1176,7 +1172,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                   if (details) {
                     this.setState({ detailIdForApprover: details.data.ID });
                     this.newDetailItemID = details.data.ID;
-                    let updatedetaildata4 = {
+                    const updatedetaildata4 = {
                       Link: {
                         Description: this.state.documentName + "-Review",
                         Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + details.data.ID + ""
@@ -1184,13 +1180,13 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                     }
                     const updatedetail = await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, updatedetaildata4, details.data.ID);
                     //MY tasks list updation with delegated from
-                    let taskdata11 = {
+                    const taskdata11 = {
                       Title: "Review '" + this.state.documentName + "'",
                       Description: "Review request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
                       DueDate: this.state.dueDate,
                       StartDate: this.today,
                       AssignedToId: hubsieUser.Id,
-                      Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                      Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                       Source: (this.props.project ? "Project" : "QDMS"),
                       Workflow: "Review",
                       Link: {
@@ -1200,7 +1196,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                     }
                     const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata11);
                     if (task) {
-                      let updatetaskdetail = {
+                      const updatetaskdetail = {
                         TaskID: task.data.ID,
                       }
                       const updatetask = await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, updatetaskdetail, details.data.ID);
@@ -1216,7 +1212,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               //If no task delegation
               else {
                 //detail list adding an item for reviewers
-                let detaildata11 = {
+                const detaildata11 = {
                   HeaderIDId: Number(this.newheaderid),
                   Workflow: "Review",
                   Title: this.state.documentName,
@@ -1233,7 +1229,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 if (details) {
                   this.setState({ detailIdForApprover: details.data.ID });
                   this.newDetailItemID = details.data.ID;
-                  let updatedetaildata3 = {
+                  const updatedetaildata3 = {
                     Link: {
                       Description: this.state.documentName + "-Review",
                       Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + details.data.ID + ""
@@ -1241,13 +1237,13 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                   }
                   const updatedetail = await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, updatedetaildata3, details.data.ID);
                   //MY tasks list updation with delegated from
-                  let taskdata10 = {
+                  const taskdata10 = {
                     Title: "Review '" + this.state.documentName + "'",
                     Description: "Review request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
                     DueDate: this.state.dueDate,
                     StartDate: this.today,
                     AssignedToId: hubsieUser.Id,
-                    Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                    Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                     Source: (this.props.project ? "Project" : "QDMS"),
                     Workflow: "Review",
                     Link: {
@@ -1258,7 +1254,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                   const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata10);
                   if (task) {
                     this.TaskID = task.data.ID;
-                    let taskdata9 = {
+                    const taskdata9 = {
                       TaskID: task.data.ID,
                     }
                     const updatetask = await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata9, details.data.ID);
@@ -1272,7 +1268,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             });//hubsiteuser
         }//user
       }
-      let indexdata2 = {
+      const indexdata2 = {
         WorkflowStatus: "Under Review",
         Workflow: "Review",
         ApproverId: this.state.approver,
@@ -1280,19 +1276,19 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
         WorkflowDueDate: this.state.dueDate
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata2, this.documentIndexID);
-      let sourcedata = {
+      const sourcedata = {
         WorkflowStatus: "Under Review",
         Workflow: "Review",
         ApproverId: this.state.approver,
         ReviewersId: this.state.reviewers,
       }
       await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, sourcedata, this.sourceDocumentID);
-      let headeritem1 = {
+      const headeritem1 = {
         ReviewersId: { results: this.state.reviewers }
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, headeritem1, parseInt(this.newheaderid));
       await this._triggerDocumentUnderReview(this.sourceDocumentID, "Review");
-      let logitem1 = {
+      const logitem1 = {
         Title: this.state.documentID,
         Status: "Under Review",
         LogDate: this.today,
@@ -1303,7 +1299,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
         DueDate: this.state.dueDate,
       }
       await this._Service.createNewItem(this.props.siteUrl, this.props.documentRevisionLogList, logitem1);
-      if (this.taskDelegate == "Yes") {
+      if (this.taskDelegate === "Yes") {
         this.setState({
           hideLoading: true,
           statusMessage: { isShowMessage: true, message: this.taskDelegateUnderReview, messageType: 4 },
@@ -1327,7 +1323,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   public async _underProjectReview(previousHeaderItem: any) {
     this._LAUrlGettingForUnderReview();
     this._LaUrlGettingAdaptive();
-    let headerdata2 = {
+    const headerdata2 = {
       Title: this.state.documentName,
       DocumentID: this.state.documentID,
       WorkflowStatus: "Under Review",
@@ -1352,7 +1348,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     const header = await this._Service.createNewItem(this.props.siteUrl, this.props.workflowHeaderList, headerdata2);
     if (header) {
       this.newheaderid = header.data.ID;
-      let logdata1 = {
+      const logdata1 = {
         Title: this.state.documentID,
         Status: "Workflow Initiated",
         LogDate: this.today,
@@ -1363,7 +1359,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
       }
       await this._Service.createNewItem(this.props.siteUrl, this.props.documentRevisionLogList, logdata1);
       //for reviewers if exist
-      for (var k = 0; k < this.state.reviewers.length; k++) {
+      for (let k = 0; k < this.state.reviewers.length; k++) {
         console.log(this.state.reviewers[k]);
         const user = await this._Service.getByUserId(this.state.reviewers[k]);
         if (user) {
@@ -1401,18 +1397,18 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                     this.setState({
                       delegateForIdInSubSite: DelegatedFor.Id,
                     });
-                    let index = this.state.reviewers.indexOf(DelegatedFor.Id);
+                    const index = this.state.reviewers.indexOf(DelegatedFor.Id);
                     console.log(index);
                     this.state.reviewers[index] = DelegatedTo.Id;
                     console.log(this.state.reviewers);
                     //detail list adding an item for reviewers
-                    let detaildata21 = {
+                    const detaildata21 = {
                       HeaderIDId: Number(this.newheaderid),
                       Workflow: "Review",
                       Title: this.state.documentName,
-                      ResponsibleId: (this.state.delegatedToId != "" ? DelegatedTo.Id : user.Id),
+                      ResponsibleId: (this.state.delegatedToId !== "" ? DelegatedTo.Id : user.Id),
                       DueDate: this.state.dueDate,
-                      DelegatedFromId: (this.state.delegatedToId != "" ? DelegatedFor.Id : parseInt("")),
+                      DelegatedFromId: (this.state.delegatedToId !== "" ? DelegatedFor.Id : parseInt("")),
                       ResponseStatus: "Under Review",
                       SourceDocument: {
                         Description: this.state.documentName,
@@ -1424,7 +1420,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                     if (detail) {
                       this.setState({ detailIdForApprover: detail.data.ID });
                       this.newDetailItemID = detail.data.ID;
-                      let detaildata22 = {
+                      const detaildata22 = {
                         Link: {
                           Description: this.state.documentName + "-Review",
                           Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detail.data.ID + ""
@@ -1433,16 +1429,16 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                       //Update link
                       this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, detaildata22, detail.data.ID);
                       //MY tasks list updation with delegated from
-                      let taskdata21 = {
+                      const taskdata21 = {
                         Title: "Review '" + this.state.documentName + "'",
                         Description: "Review request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
                         DueDate: this.state.dueDate,
                         StartDate: this.today,
-                        AssignedToId: (this.state.delegatedToId != "" ? this.state.delegatedToId : hubsieUser.Id),
-                        Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                        AssignedToId: (this.state.delegatedToId !== "" ? this.state.delegatedToId : hubsieUser.Id),
+                        Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                         DelegatedOn: (this.state.delegatedToId !== "" ? this.today : " "),
                         Source: (this.props.project ? "Project" : "QDMS"),
-                        DelegatedFromId: (this.state.delegatedToId != "" ? this.state.delegatedFromId : parseInt("")),
+                        DelegatedFromId: (this.state.delegatedToId !== "" ? this.state.delegatedFromId : parseInt("")),
                         Workflow: "Review",
                         Link: {
                           Description: this.state.documentName + "-Review",
@@ -1452,7 +1448,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                       const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata21)
                       if (task) {
                         this.TaskID = task.data.ID;
-                        let taskdata22 = {
+                        const taskdata22 = {
                           TaskID: task.data.ID,
                         }
                         this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata22, detail.data.ID);
@@ -1466,7 +1462,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               }
               else {
                 //detail list adding an item for reviewers
-                let detaildata23 = {
+                const detaildata23 = {
                   HeaderIDId: Number(this.newheaderid),
                   Workflow: "Review",
                   Title: this.state.documentName,
@@ -1483,7 +1479,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 if (detail) {
                   this.setState({ detailIdForApprover: detail.data.ID });
                   this.newDetailItemID = detail.data.ID;
-                  let detaildata24 = {
+                  const detaildata24 = {
                     Link: {
                       Description: this.state.documentName + "-Review",
                       Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detail.data.ID + ""
@@ -1491,13 +1487,13 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                   }
                   await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, detaildata24, detail.data.ID);
                   //MY tasks list updation with delegated from
-                  let taskdata23 = {
+                  const taskdata23 = {
                     Title: "Review '" + this.state.documentName + "'",
                     Description: "Review request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
                     DueDate: this.state.dueDate,
                     StartDate: this.today,
                     AssignedToId: hubsieUser.Id,
-                    Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                    Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                     Source: (this.props.project ? "Project" : "QDMS"),
                     Workflow: "Review",
                     Link: {
@@ -1508,7 +1504,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                   const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata23);
                   if (task) {
                     this.TaskID = task.data.ID;
-                    let taskdata24 = {
+                    const taskdata24 = {
                       TaskID: task.data.ID,
                     }
                     await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata24, detail.data.ID);
@@ -1523,7 +1519,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             //If no task delegation
             else {
               //detail list adding an item for reviewers
-              let detaildata25 = {
+              const detaildata25 = {
                 HeaderIDId: Number(this.newheaderid),
                 Workflow: "Review",
                 Title: this.state.documentName,
@@ -1540,7 +1536,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               if (detail) {
                 this.setState({ detailIdForApprover: detail.data.ID });
                 this.newDetailItemID = detail.data.ID;
-                let detaildata26 = {
+                const detaildata26 = {
                   Link: {
                     Description: this.state.documentName + "-Review",
                     Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detail.data.ID + ""
@@ -1548,13 +1544,13 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 }
                 await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, detaildata26, detail.data.ID);
                 //MY tasks list updation with delegated from
-                let taskdata25 = {
+                const taskdata25 = {
                   Title: "Review '" + this.state.documentName + "'",
                   Description: "Review request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
                   DueDate: this.state.dueDate,
                   StartDate: this.today,
                   AssignedToId: hubsieUser.Id,
-                  Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                  Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                   Source: (this.props.project ? "Project" : "QDMS"),
                   Workflow: "Review",
                   Link: {
@@ -1565,7 +1561,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata25);
                 if (task) {
                   this.TaskID = task.data.ID;
-                  let taskdata26 = {
+                  const taskdata26 = {
                     TaskID: task.data.ID
                   }
                   this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata26, detail.data.ID);
@@ -1578,7 +1574,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
           }//hubsiteuser
         }//user
       }
-      let indexdata3 = {
+      const indexdata3 = {
         WorkflowStatus: "Under Review",
         Workflow: "Review",
         ApproverId: this.state.approver,
@@ -1586,19 +1582,19 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
         ReviewersId: { results: this.state.reviewers }
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata3, this.documentIndexID);
-      let sourcedata = {
+      const sourcedata = {
         WorkflowStatus: "Under Review",
         Workflow: "Review",
         ApproverId: this.state.approver,
         ReviewersId: this.state.reviewers,
       }
       await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, sourcedata, this.sourceDocumentID);
-      let headerdata3 = {
+      const headerdata3 = {
         ReviewersId: { results: this.state.reviewers }
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, headerdata3, parseInt(this.newheaderid));
       await this._triggerDocumentUnderReview(this.sourceDocumentID, "Review");
-      let logdata2 = {
+      const logdata2 = {
         Title: this.state.documentID,
         Status: "Under Review",
         LogDate: this.today,
@@ -1619,7 +1615,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             approver: "",
             delegateForIdInSubSite: ""
           });
-          if (this.taskDelegate == "Yes") {
+          if (this.taskDelegate === "Yes") {
             this.setState({
               hideLoading: true,
               statusMessage: { isShowMessage: true, message: this.taskDelegateUnderReview, messageType: 4 },
@@ -1642,7 +1638,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   public async _underApprove(previousHeaderItem: any) {
     this._LAUrlGetting();
     this._LaUrlGettingAdaptive();
-    let headerdata1 = {
+    const headerdata1 = {
       Title: this.state.documentName,
       DocumentID: this.state.documentID,
       WorkflowStatus: "Under Approval",
@@ -1664,7 +1660,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     const header = await this._Service.createNewItem(this.props.siteUrl, this.props.workflowHeaderList, headerdata1);
     if (header) {
       this.newheaderid = header.data.ID;
-      let logitem = {
+      const logitem = {
         Title: this.state.documentID,
         Status: "Workflow Initiated",
         LogDate: this.today,
@@ -1674,7 +1670,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
         DueDate: this.state.dueDate,
       }
       const log = await this._Service.createNewItem(this.props.siteUrl, this.props.documentRevisionLogList, logitem);
-      let detaildata15 = {
+      const detaildata15 = {
         HeaderIDId: Number(this.newheaderid),
         Workflow: "Review",
         Title: this.state.documentName,
@@ -1692,7 +1688,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
       if (detailadd) {
         this.setState({ detailIdForApprover: detailadd.data.ID });
         this.newDetailItemID = detailadd.data.ID;
-        let detailtask = {
+        const detailtask = {
           Link: {
             Description: this.state.documentName + "-Review",
             Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detailadd.data.ID + ""
@@ -1738,13 +1734,13 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 this.setState({
                   delegateForIdInSubSite: DelegatedFor.Id,
                 });
-                let detaildata16 = {
+                const detaildata16 = {
                   HeaderIDId: Number(this.newheaderid),
                   Workflow: "Approval",
                   Title: this.state.documentName,
-                  ResponsibleId: (this.state.delegatedToId != "" ? this.state.delegateToIdInSubSite : this.state.approver),
+                  ResponsibleId: (this.state.delegatedToId !== "" ? this.state.delegateToIdInSubSite : this.state.approver),
                   DueDate: this.state.dueDate,
-                  DelegatedFromId: (this.state.delegatedToId != "" ? this.state.delegateForIdInSubSite : parseInt("")),
+                  DelegatedFromId: (this.state.delegatedToId !== "" ? this.state.delegateForIdInSubSite : parseInt("")),
                   ResponseStatus: "Under Approval",
                   SourceDocument: {
                     Description: this.state.documentName,
@@ -1756,21 +1752,21 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 if (detailsAdd) {
                   this.setState({ detailIdForApprover: detailsAdd.data.ID });
                   this.newDetailItemID = detailsAdd.data.ID;
-                  let detaildata17 = {
+                  const detaildata17 = {
                     Link: {
                       Description: this.state.documentName + "-Approve",
                       Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detailsAdd.data.ID + ""
                     }
                   }
                   await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, detaildata17, detailsAdd.data.ID);
-                  let approverdata2 = {
+                  const approverdata2 = {
                     ApproverId: this.state.delegateToIdInSubSite,
                   }
                   await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, approverdata2, this.documentIndexID);
                   await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, approverdata2, this.sourceDocumentID);
                   await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, approverdata2, this.newheaderid);
                   //MY tasks list updation
-                  let taskdata16 = {
+                  const taskdata16 = {
                     Title: "Approve '" + this.state.documentName + "'",
                     Description: "Approval request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
                     DueDate: this.state.dueDate,
@@ -1780,7 +1776,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                     // Priority:(this.state.criticalDocument == true ? "Critical" :""),
                     DelegatedOn: (this.state.delegatedToId !== "" ? this.today : " "),
                     Source: (this.props.project ? "Project" : "QDMS"),
-                    DelegatedFromId: (this.state.delegatedToId != "" ? this.state.delegatedFromId : 0),
+                    DelegatedFromId: (this.state.delegatedToId !== "" ? this.state.delegatedFromId : 0),
                     Link: {
                       Description: this.state.documentName + "-Approve",
                       Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detailsAdd.data.ID + ""
@@ -1789,7 +1785,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                   }
                   const task = await this._Service.createNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata16);
                   if (task) {
-                    let taskdata17 = {
+                    const taskdata17 = {
                       TaskID: task.data.ID,
                     }
                     this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata17, detailsAdd.data.ID);
@@ -1804,7 +1800,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             }//DelegatedTo
           }//duedate checking
           else {
-            let detaildata18 = {
+            const detaildata18 = {
               HeaderIDId: Number(this.newheaderid),
               Workflow: "Approval",
               Title: this.state.documentName,
@@ -1821,28 +1817,28 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             if (detail) {
               this.setState({ detailIdForApprover: detail.data.ID });
               this.newDetailItemID = detail.data.ID;
-              let detaildata19 = {
+              const detaildata19 = {
                 Link: {
                   Description: this.state.documentName + "-Approve",
                   Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detail.data.ID + ""
                 }
               }
               await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, detaildata19, detail.data.ID);
-              let approverdata3 = {
+              const approverdata3 = {
                 ApproverId: this.state.approver
               }
               await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, approverdata3, this.documentIndexID);
               await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, approverdata3, this.sourceDocumentID);
               await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, approverdata3, this.newheaderid);
               //MY tasks list updation
-              let taskdata20 = {
+              const taskdata20 = {
                 Title: "Approve '" + this.state.documentName + "'",
                 Description: "Approval request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
                 DueDate: this.state.dueDate,
                 StartDate: this.today,
                 AssignedToId: user.Id,
                 Workflow: "Approval",
-                Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                 Source: (this.props.project ? "Project" : "QDMS"),
                 Link: {
                   Description: this.state.documentName + "-Approve",
@@ -1851,7 +1847,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               }
               const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata20);
               if (task) {
-                let taskdata19 = {
+                const taskdata19 = {
                   TaskID: task.data.ID,
                 }
                 await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata19, detail.data.ID);
@@ -1866,7 +1862,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
 
         }
         else {
-          let detaildata20 = {
+          const detaildata20 = {
             HeaderIDId: Number(this.newheaderid),
             Workflow: "Approval",
             Title: this.state.documentName,
@@ -1883,14 +1879,14 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
           if (detail) {
             this.setState({ detailIdForApprover: detail.data.ID });
             this.newDetailItemID = detail.data.ID;
-            let detaildata21 = {
+            const detaildata21 = {
               Link: {
                 Description: this.state.documentName + "-Approve",
                 Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detail.data.ID + ""
               }
             }
             await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, detaildata21, detail.data.ID);
-            let approverdata4 = {
+            const approverdata4 = {
               ApproverId: this.state.approver
             }
             await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, approverdata4, this.documentIndexID);
@@ -1898,14 +1894,14 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, approverdata4, this.newheaderid);
 
             //MY tasks list updation
-            let taskdata15 = {
+            const taskdata15 = {
               Title: "Approve '" + this.state.documentName + "'",
               Description: "Approval request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
               DueDate: this.state.dueDate,
               StartDate: this.today,
               AssignedToId: user.Id,
               Workflow: "Approval",
-              Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+              Priority: (this.state.criticalDocument === true ? "Critical" : ""),
               Source: (this.props.project ? "Project" : "QDMS"),
               Link: {
                 Description: this.state.documentName + "-Approve",
@@ -1915,7 +1911,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata15);
             if (task) {
               this.TaskID = task.data.ID
-              let taskdata18 = {
+              const taskdata18 = {
                 TaskID: task.data.ID,
               }
               await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata18, detail.data.ID);
@@ -1927,20 +1923,20 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
           }//r
         }//else no delegation
       }
-      let indexdata = {
+      const indexdata = {
         WorkflowStatus: "Under Approval",
         Workflow: "Approval",
         ReviewersId: { results: this.state.currentUserReviewer },
         WorkflowDueDate: this.state.dueDate
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata, this.documentIndexID);
-      let sourcedata = {
+      const sourcedata = {
         WorkflowStatus: "Under Approval",
         Workflow: "Approval",
         ReviewersId: { results: this.state.currentUserReviewer },
       }
       await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, sourcedata, this.sourceDocumentID);
-      let logdata = {
+      const logdata = {
         Title: this.state.documentID,
         Status: "Under Approval",
         LogDate: this.today,
@@ -1959,7 +1955,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
         approverName: "",
         approver: "",
       });
-      if (this.taskDelegate == "Yes") {
+      if (this.taskDelegate === "Yes") {
         this.setState({
           hideLoading: true,
           statusMessage: { isShowMessage: true, message: this.taskDelegateUnderApproval, messageType: 4 },
@@ -1983,7 +1979,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   public async _underProjectApprove(previousHeaderItem: any) {
     this._LAUrlGetting();
     // this._LaUrlGettingAdaptive();
-    let headerdata = {
+    const headerdata = {
       Title: this.state.documentName,
       DocumentID: this.state.documentID,
       WorkflowStatus: "Under Approval",
@@ -2009,7 +2005,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     const header = await this._Service.createNewItem(this.props.siteUrl, this.props.workflowHeaderList, headerdata);
     if (header) {
       this.newheaderid = header.data.ID;
-      let logdata = {
+      const logdata = {
         Title: this.state.documentID,
         Status: "Workflow Initiated",
         LogDate: this.today,
@@ -2019,7 +2015,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
         DueDate: this.state.dueDate,
       }
       await this._Service.createNewItem(this.props.siteUrl, this.props.documentRevisionLogList, logdata);
-      let detaildata4 = {
+      const detaildata4 = {
         HeaderIDId: Number(this.newheaderid),
         Workflow: "Review",
         Title: this.state.documentName,
@@ -2037,7 +2033,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
         .then(async (detail: any) => {
           this.setState({ detailIdForApprover: detail.data.ID });
           this.newDetailItemID = detail.data.ID;
-          let detaildata5 = {
+          const detaildata5 = {
             Link: {
               Description: this.state.documentName + "-Review",
               Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detail.data.ID + ""
@@ -2083,13 +2079,13 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 this.setState({
                   delegateForIdInSubSite: DelegatedFor.Id,
                 });
-                let detaildata = {
+                const detaildata = {
                   HeaderIDId: Number(this.newheaderid),
                   Workflow: "Approval",
                   Title: this.state.documentName,
-                  ResponsibleId: (this.state.delegatedToId != "" ? this.state.delegateToIdInSubSite : this.state.approver),
+                  ResponsibleId: (this.state.delegatedToId !== "" ? this.state.delegateToIdInSubSite : this.state.approver),
                   DueDate: this.state.dueDate,
-                  DelegatedFromId: (this.state.delegatedToId != "" ? this.state.delegateForIdInSubSite : parseInt("")),
+                  DelegatedFromId: (this.state.delegatedToId !== "" ? this.state.delegateForIdInSubSite : parseInt("")),
                   ResponseStatus: "Under Approval",
                   SourceDocument: {
                     Description: this.state.documentName,
@@ -2101,31 +2097,31 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 if (detail) {
                   this.setState({ detailIdForApprover: detail.data.ID });
                   this.newDetailItemID = detail.data.ID;
-                  let detaildata6 = {
+                  const detaildata6 = {
                     Link: {
                       Description: this.state.documentName + "-Approve",
                       Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detail.data.ID + ""
                     },
                   }
                   this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, detaildata6, detail.data.ID);
-                  let delegateApprover = {
+                  const delegateApprover = {
                     ApproverId: this.state.delegateToIdInSubSite
                   }
                   await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, delegateApprover, this.documentIndexID);
                   await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, delegateApprover, this.sourceDocumentID);
                   await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, delegateApprover, this.newheaderid);
                   //MY tasks list updation
-                  let taskdata6 = {
+                  const taskdata6 = {
                     Title: "Approve '" + this.state.documentName + "'",
                     Description: "Approval request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
                     DueDate: this.state.dueDate,
                     StartDate: this.today,
-                    AssignedToId: (this.state.delegatedToId != "" ? this.state.delegatedToId : user.Id),
+                    AssignedToId: (this.state.delegatedToId !== "" ? this.state.delegatedToId : user.Id),
                     Workflow: "Approval",
                     // Priority:(this.state.criticalDocument == true ? "Critical" :""),
                     DelegatedOn: (this.state.delegatedToId !== "" ? this.today : " "),
                     Source: (this.props.project ? "Project" : "QDMS"),
-                    DelegatedFromId: (this.state.delegatedToId != "" ? this.state.delegatedFromId : 0),
+                    DelegatedFromId: (this.state.delegatedToId !== "" ? this.state.delegatedFromId : 0),
                     Link: {
                       Description: this.state.documentName + "-Approve",
                       Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detail.data.ID + ""
@@ -2134,7 +2130,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                   const task = await this._Service.createNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata6)
                   if (task) {
                     this.TaskID = task.data.ID;
-                    let taskdetail1 = {
+                    const taskdetail1 = {
                       TaskID: task.data.ID,
                     }
                     await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdetail1, detail.data.ID);
@@ -2148,7 +2144,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             }//DelegatedTo
           }//duedate checking
           else {
-            let detaildata7 = {
+            const detaildata7 = {
               HeaderIDId: Number(this.newheaderid),
               Workflow: "Approval",
               Title: this.state.documentName,
@@ -2165,28 +2161,28 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             if (detail) {
               this.setState({ detailIdForApprover: detail.data.ID });
               this.newDetailItemID = detail.data.ID;
-              let detaildata8 = {
+              const detaildata8 = {
                 Link: {
                   Description: this.state.documentName + "-Approve",
                   Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detail.data.ID + ""
                 }
               }
               await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, detaildata8, detail.data.ID);
-              let approverdata = {
+              const approverdata = {
                 ApproverId: this.state.approver
               }
               await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, approverdata, this.documentIndexID);
               await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, approverdata, this.sourceDocumentID);
               await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, approverdata, this.newheaderid);
               //MY tasks list updation
-              let taskdata7 = {
+              const taskdata7 = {
                 Title: "Approve '" + this.state.documentName + "'",
                 Description: "Approval request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
                 DueDate: this.state.dueDate,
                 StartDate: this.today,
                 AssignedToId: user.Id,
                 Workflow: "Approval",
-                Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                 Source: (this.props.project ? "Project" : "QDMS"),
                 Link: {
                   Description: this.state.documentName + "-Approve",
@@ -2196,7 +2192,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata7);
               if (task) {
                 this.TaskID = task.data.ID;
-                let updatedetail2 = {
+                const updatedetail2 = {
                   TaskID: task.data.ID,
                 }
                 this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, updatedetail2, detail.data.ID);
@@ -2209,7 +2205,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
 
         }
         else {
-          let detaildata9 = {
+          const detaildata9 = {
             HeaderIDId: Number(this.newheaderid),
             Workflow: "Approval",
             Title: this.state.documentName,
@@ -2226,28 +2222,28 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
           if (detail) {
             this.setState({ detailIdForApprover: detail.data.ID });
             this.newDetailItemID = detail.data.ID;
-            let detaildata10 = {
+            const detaildata10 = {
               Link: {
                 Description: this.state.documentName + "-Approve",
                 Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detail.data.ID + ""
               }
             }
             await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, detaildata10, detail.data.ID)
-            let approverdata1 = {
+            const approverdata1 = {
               ApproverId: this.state.approver,
             }
             await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, approverdata1, this.documentIndexID);
             await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, approverdata1, this.sourceDocumentID);
             await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, approverdata1, this.newheaderid);
             //MY tasks list updation
-            let taskdata8 = {
+            const taskdata8 = {
               Title: "Approve '" + this.state.documentName + "'",
               Description: "Approval request for  '" + this.state.documentName + "' by '" + this.state.currentUser + "' on '" + this.today + "'",
               DueDate: this.state.dueDate,
               StartDate: this.today,
               AssignedToId: user.Id,
               Workflow: "Approval",
-              Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+              Priority: (this.state.criticalDocument === true ? "Critical" : ""),
               Source: (this.props.project ? "Project" : "QDMS"),
               Link: {
                 Description: this.state.documentName + "-Approve",
@@ -2258,7 +2254,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata8);
             if (task) {
               this.TaskID = task.data.ID;
-              let updatedetail3 = {
+              const updatedetail3 = {
                 TaskID: task.data.ID,
               }
               this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, updatedetail3, detail.data.ID);
@@ -2269,20 +2265,20 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
           }//r
         }//else no delegation
       }
-      let updateindex1 = {
+      const updateindex1 = {
         WorkflowStatus: "Under Approval",
         Workflow: "Approval",
         WorkflowDueDate: this.state.dueDate,
         ReviewersId: { results: this.state.currentUserReviewer },
       }
       this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, updateindex1, this.documentIndexID);
-      let updatesource1 = {
+      const updatesource1 = {
         WorkflowStatus: "Under Approval",
         Workflow: "Approval",
         ReviewersId: { results: this.state.currentUserReviewer },
       }
       await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocumentLibrary, updatesource1, this.sourceDocumentID);
-      let logitem1 = {
+      const logitem1 = {
         Title: this.state.documentID,
         Status: "Under Approval",
         LogDate: this.today,
@@ -2301,7 +2297,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
         approverName: "",
         approver: "",
       });
-      if (this.taskDelegate == "Yes") {
+      if (this.taskDelegate === "Yes") {
         this.setState({
           hideLoading: true,
           statusMessage: { isShowMessage: true, message: this.taskDelegateUnderApproval, messageType: 4 },
@@ -2327,7 +2323,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     const laUrl: any[] = await this._Service.getListItems(this.props.hubUrl, this.props.requestList);
     console.log("Posturl" + laUrl);
     for (let i = 0; i < laUrl.length; i++) {
-      if (laUrl[i].Title == "Adaptive _Card") {
+      if (laUrl[i].Title === "Adaptive _Card") {
         this.postUrlForAdaptive = laUrl[i].PostUrl;
       }
     }
@@ -2380,10 +2376,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   };
   // on format date
   private _onFormatDate = (date: Date): string => {
-    const dat = date;
-    console.log(moment(date).format("DD/MM/YYYY"));
-    let selectd = moment(date).format("DD/MM/YYYY");
-    return selectd;
+    return moment(date).format("DD/MM/YYYY");
   };
   public render(): React.ReactElement<ITransmittalSendRequestProps> {
     const calloutProps = { gapSpace: 0 };

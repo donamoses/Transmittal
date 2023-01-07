@@ -157,7 +157,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
     this.approverEmail = headerItem.Approver.EMail;
     this.documentIndexID = headerItem.DocumentIndexID;
 
-    if (this.valid == "ok") {
+    if (this.valid === "ok") {
       //Get Access
       if (this.props.project) {
         await this._checkCurrentUser();
@@ -175,26 +175,26 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
   private async _userMessageSettings() {
     const userMessageSettings: any[] = await this._Service.gethubUserMessageListItems(this.props.hubUrl, this.props.userMessageSettings);
     console.log(userMessageSettings);
-    for (var i in userMessageSettings) {
-      if (userMessageSettings[i].Title == "ApproveSubmitSuccess") {
-        var successmsg = userMessageSettings[i].Message;
+    for (let i in userMessageSettings) {
+      if (userMessageSettings[i].Title === "ApproveSubmitSuccess") {
+        let successmsg = userMessageSettings[i].Message;
         this.documentApprovedSuccess = replaceString(successmsg, '[DocumentName]', this.state.documentName);
       }
-      else if (userMessageSettings[i].Title == "ApproveDraftSuccess") {
+      else if (userMessageSettings[i].Title === "ApproveDraftSuccess") {
         this.documentSavedAsDraft = userMessageSettings[i].Message;
       }
-      else if (userMessageSettings[i].Title == "InvalidApprovalLink") {
+      else if (userMessageSettings[i].Title === "InvalidApprovalLink") {
         this.invalidApprovalLink = userMessageSettings[i].Message;
       }
-      else if (userMessageSettings[i].Title == "InvalidApproverUser") {
+      else if (userMessageSettings[i].Title === "InvalidApproverUser") {
         this.invalidUser = userMessageSettings[i].Message;
       }
-      else if (userMessageSettings[i].Title == "ApproveRejectSuccess") {
-        var rejectmsg = userMessageSettings[i].Message;
+      else if (userMessageSettings[i].Title === "ApproveRejectSuccess") {
+        let rejectmsg = userMessageSettings[i].Message;
         this.documentRejectSuccess = replaceString(rejectmsg, '[DocumentName]', this.state.documentName);
       }
-      else if (userMessageSettings[i].Title == "ApproveReturnSuccess") {
-        var returnmsg = userMessageSettings[i].Message;
+      else if (userMessageSettings[i].Title === "ApproveReturnSuccess") {
+        let returnmsg = userMessageSettings[i].Message;
         this.documentReturnSuccess = replaceString(returnmsg, '[DocumentName]', this.state.documentName);
       }
     }
@@ -208,7 +208,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
 
     let headerid = params.get('hid');
     let detailid = params.get('dtlid');
-    if (headerid != "" && headerid != null && detailid != "" && detailid != null) {
+    if (headerid !== "" && headerid !== null && detailid !== "" && detailid !== null) {
       this.workflowHeaderID = parseInt(headerid);
       this.workflowDetailID = parseInt(detailid);
       this.valid = "ok";
@@ -228,7 +228,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
   }
   //Check Current User is approver
   public async _checkCurrentUser() {
-    if (this.currentEmail == this.approverEmail) {
+    if (this.currentEmail === this.approverEmail) {
       this.setState({ access: "", accessDeniedMsgBar: "none", loaderDisplay: "none" });
       if (this.props.project) {
         this.setState({ hideProject: false });
@@ -261,7 +261,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
     const DocumentIndexItem: any = await this._Service.getItemById(this.props.siteUrl, this.props.documentIndexList, this.documentIndexID);
     console.log("DocumentIndexItem", DocumentIndexItem);
     //cheching if department selected
-    if (DocumentIndexItem.DepartmentID != null) {
+    if (DocumentIndexItem.DepartmentID !== null) {
       this.departmentExists = "Exists";
       let deptid = parseInt(DocumentIndexItem.DepartmentID);
       const departmentItem: any = await this._Service.gethubItemById(this.props.hubUrl, this.props.departmentList, deptid);
@@ -272,7 +272,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
       let accessGroupID;
       console.log(accessGroupItem.length);
       for (let a = 0; a < accessGroupItem.length; a++) {
-        if (accessGroupItem[a].Title == accessGroupvar) {
+        if (accessGroupItem[a].Title === accessGroupvar) {
           accessGroupID = accessGroupItem[a].GroupID;
           this.GetGroupMembers(this.props.context, accessGroupID);
         }
@@ -281,8 +281,8 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
     //if no department
     else {
       //alert("with bussinessUnit");
-      if (DocumentIndexItem.BusinessUnitID != null) {
-        this.departmentExists == "Exists";
+      if (DocumentIndexItem.BusinessUnitID !== null) {
+        this.departmentExists === "Exists";
         let bussinessUnitID = parseInt(DocumentIndexItem.BusinessUnitID);
         const bussinessUnitItem: any = await this._Service.gethubItemById(this.props.hubUrl, this.props.businessUnit, bussinessUnitID);
         console.log("departmentItem", bussinessUnitItem);
@@ -292,7 +292,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
         let accessGroupID;
         console.log(accessGroupItem.length);
         for (let a = 0; a < accessGroupItem.length; a++) {
-          if (accessGroupItem[a].Title == accessGroupvar) {
+          if (accessGroupItem[a].Title === accessGroupvar) {
             accessGroupID = accessGroupItem[a].GroupID;
             this.GetGroupMembers(this.props.context, accessGroupID);
           }
@@ -327,7 +327,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
     if (users.length > 0) {
       this._checkingCurrent(users);
     }
-    else if (this.departmentExists == "Exists") {
+    else if (this.departmentExists === "Exists") {
       this.setState({
         loaderDisplay: "none",
         accessDeniedMsgBar: "",
@@ -343,8 +343,8 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
   }
   // Checking current user email
   private async _checkingCurrent(userEmail: any) {
-    for (var k in userEmail) {
-      if (this.currentEmail == userEmail[k].mail) {
+    for (let k in userEmail) {
+      if (this.currentEmail === userEmail[k].mail) {
         this.setState({ access: "none", accessDeniedMsgBar: "none" });
         this.valid = "Yes";
         await this._checkCurrentUser();
@@ -352,7 +352,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
         break;
       }
     }
-    if (this.valid != "Yes") {
+    if (this.valid !== "Yes") {
 
       this.setState({
         loaderDisplay: "none",
@@ -381,7 +381,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
     let revision;
     let linkToDocument;
     let approverComment;
-    var reviewerArr: any[] = [];
+    let reviewerArr: any[] = [];
     let reviewDate;
     let criticalDocument;
     let taskID;
@@ -396,12 +396,12 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
     this.documentIndexID = headerItem.DocumentIndexID;
     requesterName = headerItem.Requester.Title;
     requesterEmail = headerItem.Requester.EMail;
-    if (headerItem.RequestedDate != null) {
-      var reqdate = new Date(headerItem.RequestedDate);
+    if (headerItem.RequestedDate !== null) {
+      let reqdate = new Date(headerItem.RequestedDate);
       requestedDate = moment(reqdate).format('DD-MM-YYYY HH:mm');
     }
     requesterComment = headerItem.RequesterComment;
-    var duedate = new Date(headerItem.DueDate);
+    let duedate = new Date(headerItem.DueDate);
     dueDate = moment(duedate).format('DD-MM-YYYY');
     publishOption = headerItem.PublishFormat;
     //Get Document Index
@@ -417,9 +417,9 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
     this.sourceDocumentID = documentIndexItem.SourceDocumentID;
     //Get Workflow Details
     const detailItem: any[] = await this._Service.getdetailbinddata(this.props.siteUrl, this.props.workflowDetailsList, this.workflowHeaderID);
-    for (var k in detailItem) {
-      if (detailItem[k].Workflow == 'Review') {
-        var rewdate = new Date(detailItem[k].ResponseDate);
+    for (let k in detailItem) {
+      if (detailItem[k].Workflow === 'Review') {
+        let rewdate = new Date(detailItem[k].ResponseDate);
         reviewDate = moment(rewdate).format('DD-MMM-YYYY HH:mm');
         reviewerArr.push({
           ResponseDate: reviewDate,
@@ -427,10 +427,10 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
           ResponsibleComment: detailItem[k].ResponsibleComment
         });
       }
-      else if (detailItem[k].Workflow == 'Approval') {
+      else if (detailItem[k].Workflow === 'Approval') {
         approverComment = detailItem[k].ResponsibleComment;
         taskID = detailItem[k].TaskID;
-        if (detailItem[k].ResponseStatus == "Published") {
+        if (detailItem[k].ResponseStatus === "Published") {
           status = "Approved";
           this.setState({
             hidepublish: false,
@@ -443,10 +443,10 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
         else {
           status = detailItem[k].ResponseStatus;
         }
-        if (detailItem[k].ResponseStatus != "Under Approval") {
+        if (detailItem[k].ResponseStatus !== "Under Approval") {
           this.setState({ savedisable: "none", hideButton: true });
         }
-        if (detailItem[k].ResponseStatus == "Under Approval") {
+        if (detailItem[k].ResponseStatus === "Under Approval") {
           this.setState({ statusKey: "" });
         }
       }
@@ -462,9 +462,9 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
         reviewersTableDiv: "none",
       });
     }
-    var split = documentName.split(".", 2);
+    let split = documentName.split(".", 2);
     type = split[1];
-    if (type == "docx") {
+    if (type === "docx") {
       this.setState({ isdocx: "", nodocx: "none" });
     }
     else {
@@ -518,24 +518,24 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
     const projectInformation = await this._Service.getListItems(this.props.siteUrl, this.props.projectInformationListName);
     console.log("projectInformation", projectInformation);
     if (projectInformation.length > 0) {
-      for (var k in projectInformation) {
-        if (projectInformation[k].Key == "ProjectName") {
+      for (let k in projectInformation) {
+        if (projectInformation[k].Key === "ProjectName") {
           this.setState({
             projectName: projectInformation[k].Title,
           });
         }
-        if (projectInformation[k].Key == "ProjectNumber") {
+        if (projectInformation[k].Key === "ProjectNumber") {
           this.setState({
             projectNumber: projectInformation[k].Title,
           });
         }
       }
     }
-    if (dcc != null) {
+    if (dcc !== null) {
       const detailItem: any[] = await this._Service.getprojectdetailbinddata(this.props.siteUrl, this.props.workflowDetailsList, this.workflowHeaderID)
-      for (var l in detailItem) {
-        if (detailItem[l].Workflow == 'DCC Review') {
-          var rewdate = new Date(detailItem[l].ResponseDate);
+      for (let l in detailItem) {
+        if (detailItem[l].Workflow === 'DCC Review') {
+          let rewdate = new Date(detailItem[l].ResponseDate);
           reviewDate = moment(rewdate).format('DD-MM-YYYY HH:mm');
           dccReviewerArr.push({
             ResponseDate: reviewDate,
@@ -545,12 +545,12 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
         }
       }
     }
-    if (externalDocument == true) {
+    if (externalDocument === true) {
       this.setState({ hideacceptance: false });
       const transmittalcodeitems: any[] = await this._Service.getListItems(this.props.siteUrl, this.props.transmittalCodeSettingsList);
 
       for (let i = 0; i < transmittalcodeitems.length; i++) {
-        if (transmittalcodeitems[i].AcceptanceCode == true) {
+        if (transmittalcodeitems[i].AcceptanceCode === true) {
           let transmittalcodedata = {
             key: transmittalcodeitems[i].ID,
             text: transmittalcodeitems[i].Description
@@ -562,7 +562,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
       sorted_Acceptance = _.orderBy(acceptanceArray, 'text', ['asc']);
 
     }
-    if (transmittalDocument == true) {
+    if (transmittalDocument === true) {
       this.setState({ hidetransmittalrevision: false });
     }
     if (dccReviewerArr.length > 0) {
@@ -591,7 +591,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
   //Status Change
   public _status(option: { key: any; text: any }) {
     //console.log(option.key);
-    if (option.key == 'Approved') {
+    if (option.key === 'Approved') {
       this.setState({ hidepublish: false, commentRequired: false, commentValid: "none" });
     }
     else {
@@ -614,7 +614,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
   }
   //Save as Draft
   public _saveAsDraft = async () => {
-    let commentadd = {
+    const commentadd = {
       ResponsibleComment: this.state.comments
     }
     await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, commentadd, this.workflowDetailID);
@@ -631,11 +631,11 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
       this.revisionLogId = ifyes[0].ID;
     });
 
-    if (this.state.hidepublish == false) {
-      if (this.validator.fieldValid("publish") && (this.state.statusKey != "")) {
+    if (this.state.hidepublish === false) {
+      if (this.validator.fieldValid("publish") && (this.state.statusKey !== "")) {
         this.validator.hideMessages();
         this.setState({ hideLoading: false, savedisable: "none" });
-        let publishdata = {
+        const publishdata = {
           PublishFormat: this.state.publishOption
         }
         await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, publishdata, this.workflowHeaderID);
@@ -649,9 +649,9 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
       }
     }
     else {
-      if ((this.state.statusKey != "") && this.validator.fieldValid("comments")) {
+      if ((this.state.statusKey !== "") && this.validator.fieldValid("comments")) {
         this.validator.hideMessages();
-        let detaildata = {
+        const detaildata = {
           ResponsibleComment: this.state.comments,
           ResponseStatus: this.state.status,
           ResponseDate: this.today
@@ -673,10 +673,10 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
   //Document Published
   protected async _publish() {
     if (this.props.project) {
-      if (this.state.sameRevision == "Yes") {
+      if (this.state.sameRevision === "Yes") {
         this.setState({ newRevision: this.state.revision });
       }
-      else if (this.state.revisionItemID == null) {
+      else if (this.state.revisionItemID === null) {
         this._revisionCoding();
       }
       else {
@@ -725,7 +725,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
   }
   public _revisionCoding = async () => {
     let intrev;
-    if (this.state.revision == "-") {
+    if (this.state.revision === "-") {
       intrev = 0;
     }
     else {
@@ -759,51 +759,51 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
     let endWith = '0';
     let minN = revisionItem.MinN;
     let maxN = '0';
-    let isAutoIncrement = revisionItem.AutoIncrement == 'TRUE';
+    let isAutoIncrement = revisionItem.AutoIncrement === 'TRUE';
     let firstChar = currentRevision.substring(0, 1);
     let currentNumber = currentRevision.substring(1, currentRevision.length);
     let startWith = revisionItem.StartWith;
 
-    if (revisionItem.EndWith != null)
+    if (revisionItem.EndWith !== null)
       endWith = revisionItem.EndWith;
 
-    if (revisionItem.MaxN != null)
+    if (revisionItem.MaxN !== null)
       maxN = revisionItem.MaxN;
 
-    if (revisionItem.StartPrefix != null)
+    if (revisionItem.StartPrefix !== null)
       startPrefix = revisionItem.StartPrefix.toString();
 
     //splitting pattern values
     let incrementValue = 1;
-    let isAlphaIncrement = pattern.split('+')[0] == 'A';
-    let isNumericIncrement = pattern.split('+')[0] == 'N';
-    if (pattern.split('+').length == 2) {
+    let isAlphaIncrement = pattern.split('+')[0] === 'A';
+    let isNumericIncrement = pattern.split('+')[0] === 'N';
+    if (pattern.split('+').length === 2) {
       incrementValue = Number(pattern.split('+')[1]);
     }
     //Resetting current revision as blank if current revisionsetting id is different.
-    if (this.state.revisionItemID != this.state.previousRevisionItemID) {
+    if (this.state.revisionItemID !== this.state.previousRevisionItemID) {
       currentRevision = '-';
     }
     try {
       //Getting first revision value.
-      if (currentRevision == '-') {
+      if (currentRevision === '-') {
         if (!isAutoIncrement) // Not an auto increment pattern, splitting the pattern with command reading the first value.
         {
           newRevision = pattern.split(',')[0];
         }
         else {
-          if (startPrefix != '-' && startPrefix.split(',').length > 0)  //Auto increment   with startPrefix eg. A1,A2, A3 etc., then handling both single and multple startPrefix
+          if (startPrefix !== '-' && startPrefix.split(',').length > 0)  //Auto increment   with startPrefix eg. A1,A2, A3 etc., then handling both single and multple startPrefix
           {
             startPrefix = startPrefix.split(',')[0];
           }
-          if (startWith != null) // 
+          if (startWith !== null) // 
           {
             newRevision = startWith; //assigning startWith as newRevision for the first time.
           }
           else {
             newRevision = startPrefix + '' + minN;
           }
-          if (startWith == null && startPrefix == '-') // Assigning minN if startWith and StartPrefix are null.
+          if (startWith === null && startPrefix === '-') // Assigning minN if startWith and StartPrefix are null.
           {
             newRevision = minN;
           }
@@ -816,7 +816,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
         /* let prevRevision = patternArray[0];
          for(let i= 0;i < patternArray.length; i++)
          {
-           if(i > 0 && String(currentRevision) == String(patternArray[i]))
+           if(i > 0 && String(currentRevision) === String(patternArray[i]))
            {
              prevRevision = String(patternArray[i-1]);
              break;
@@ -827,7 +827,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
         for (let i = 0; i < patternArray.length; i++) {
           {
             //B,C,D,C,E,G
-            if (String(currentRevision) == patternArray[i] && (i + 1) < patternArray.length) {
+            if (String(currentRevision) === patternArray[i] && (i + 1) < patternArray.length) {
               newRevision = patternArray[i + 1];
               break;
             }
@@ -836,9 +836,9 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
       }
       else if (isAutoIncrement)// current revision is not blank and auto increment pattern .
       {
-        if (startWith != null && String(currentRevision) == String(startWith)) // Revision code with startWith  and startWith already set as Revision
+        if (startWith !== null && String(currentRevision) === String(startWith)) // Revision code with startWith  and startWith already set as Revision
         {
-          if (startPrefix == '-') // second revision without startPrefix / '-' no StartPrefix
+          if (startPrefix === '-') // second revision without startPrefix / '-' no StartPrefix
           {
             newRevision = minN;
           }
@@ -848,9 +848,9 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
           }
         }
         // For all other cases
-        else if (startPrefix != '-') // Handling revisions with startPrefix here first char will be alpha
+        else if (startPrefix !== '-') // Handling revisions with startPrefix here first char will be alpha
         {
-          if (startPrefix.split(',').length == 1) // Single startPrefix eg. A1,A2,A3 etc with startPrefix 'A' and patter N+1
+          if (startPrefix.split(',').length === 1) // Single startPrefix eg. A1,A2,A3 etc with startPrefix 'A' and patter N+1
           {
             if (this.isNotANumber(minN)) // Alpha increment.
             {
@@ -863,23 +863,23 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
           }
           else // startPrefix with multiple values
           {
-            if (maxN != '0') {
+            if (maxN !== '0') {
               if (this.isNotANumber(currentRevision)) //MaxN set and not a number.
               {
                 if (Number(currentNumber) < Number(maxN)) // alpha type revision
                 {
                   newRevision = firstChar + (Number(currentNumber) + Number(incrementValue)).toString();
                 }
-                else if (Number(currentNumber) == Number(maxN)) {
+                else if (Number(currentNumber) === Number(maxN)) {
                   // if current number part is same as maxN, get the next StartPrefix value from startPrefix.split(',')
                   let startPrefixArray = startPrefix.split(',');
                   for (let i = 0; i < startPrefixArray.length; i++) {
-                    if (firstChar == startPrefixArray[i] && (i + 1) < startPrefixArray.length) {
+                    if (firstChar === startPrefixArray[i] && (i + 1) < startPrefixArray.length) {
                       firstChar = startPrefixArray[i + 1];
                       break;
                     }
                   }
-                  if (firstChar == " ") // " " will denote a number
+                  if (firstChar === " ") // " " will denote a number
                   {
                     newRevision = minN;
                   }
@@ -893,7 +893,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
                 if (Number(currentRevision) < Number(maxN)) {
                   newRevision = (Number(currentRevision) + Number(incrementValue)).toString(); // current revision s not an alpha 
                 }
-                else if (Number(currentRevision) == Number(maxN)) {
+                else if (Number(currentRevision) === Number(maxN)) {
                   {
                     if (!this.isNotANumber(currentRevision)) // for setting a default value after the last item
                     {
@@ -902,12 +902,12 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
                     // if current number part is same as maxN, get the next StartPrefix value from startPrefix.split(',')
                     let startPrefixArray = startPrefix.split(',');
                     for (let i = 0; i < startPrefixArray.length; i++) {
-                      if (firstChar == startPrefixArray[i] && (i + 1) < startPrefixArray.length) {
+                      if (firstChar === startPrefixArray[i] && (i + 1) < startPrefixArray.length) {
                         firstChar = startPrefixArray[i + 1];
                         break;
                       }
                     }
-                    if (firstChar == " ") // Assigning number for blank array.
+                    if (firstChar === " ") // Assigning number for blank array.
                     {
                       newRevision = minN;
                     }
@@ -920,7 +920,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
             }
           }
         }
-        if (newRevision == '' && startPrefix == '-' && endWith == '0') // No StartPrefix and No EndWith
+        if (newRevision === '' && startPrefix === '-' && endWith === '0') // No StartPrefix and No EndWith
         {
           if (isAlphaIncrement) // Alpha increment.
           {
@@ -930,26 +930,26 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
             newRevision = (Number(currentRevision) + Number(incrementValue)).toString();
           }
         }
-        else if (startPrefix == '-' && endWith != '0') // No StartPrefix and with EndWith 
+        else if (startPrefix === '-' && endWith !== '0') // No StartPrefix and with EndWith 
         {
           // cases A to E  then 0,1, 2,3 etc,
-          if (currentRevision == endWith) {
+          if (currentRevision === endWith) {
             newRevision = minN;
           }
-          else// if(currentRevision != '0')
+          else// if(currentRevision !== '0')
           {
             if (this.isNotANumber(currentRevision)) // Alpha increment.
             {
               newRevision = this.nextChar(firstChar, incrementValue);
             }
-            else // (currentRevision == startWith && endWith != null) // always alpha increment "X,,B"
+            else // (currentRevision === startWith && endWith !== null) // always alpha increment "X,,B"
             {
               newRevision = (Number(currentRevision) + Number(incrementValue)).toString();
             }
           }
         }
       }
-      if (newRevision.indexOf('undefined') > -1 || newRevision == '') // Assigning with zero if array value exceeds.
+      if (newRevision.indexOf('undefined') > -1 || newRevision === '') // Assigning with zero if array value exceeds.
       {
         newRevision = '0';
       }
@@ -965,7 +965,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
   }
   // Craeting next alpha char.
   private nextChar(currentChar: any, increment: any) {
-    if (currentChar == 'Z')
+    if (currentChar === 'Z')
       return 'A';
     else
       return String.fromCharCode(currentChar.charCodeAt(0) + increment);
@@ -976,21 +976,21 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
   }
   // Published Update
   public async _publishUpdate() {
-    if (this.state.hideProject == true) {
-      let indexdata = {
+    if (this.state.hideProject === true) {
+      const indexdata = {
         PublishFormat: this.state.publishOption,
         WorkflowStatus: "Published",
         Revision: this.state.newRevision
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata, this.documentIndexID);
-      let headerdata = {
+      const headerdata = {
         ApprovedDate: this.today,
         WorkflowStatus: "Published",
         PublishFormat: this.state.publishOption,
         Revision: this.state.newRevision,
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, headerdata, this.workflowHeaderID);
-      let detaildata = {
+      const detaildata = {
         ResponsibleComment: this.state.comments,
         ResponseStatus: "Published",
         ResponseDate: this.today
@@ -999,14 +999,14 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
 
     }
     else {
-      let indexdata1 = {
+      const indexdata1 = {
         PublishFormat: this.state.publishOption,
         WorkflowStatus: "Published",
         Revision: this.state.newRevision,
         AcceptanceCodeId: parseInt(this.state.acceptanceCode),
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata1, this.documentIndexID);
-      let headerdata1 = {
+      const headerdata1 = {
         ApprovedDate: this.today,
         WorkflowStatus: "Published",
         PublishFormat: this.state.publishOption,
@@ -1014,14 +1014,14 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
         AcceptanceCodeId: parseInt(this.state.acceptanceCode)
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, headerdata1, this.workflowHeaderID);
-      let detaildata1 = {
+      const detaildata1 = {
         ResponsibleComment: this.state.comments,
         ResponseStatus: "Published",
         ResponseDate: this.today,
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, detaildata1, this.workflowDetailID);
     }
-    if (this.state.ownerEmail == this.state.requesterEmail) {
+    if (this.state.ownerEmail === this.state.requesterEmail) {
       this._sendMail(this.state.ownerEmail, "DocPublish", this.state.ownerName);
     }
     else {
@@ -1029,13 +1029,13 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
       this._sendMail(this.state.requesterEmail, "DocPublish", this.state.requesterName);
     }
     if (this.props.project) {
-      if (this.state.ownerEmail == this.state.dccEmail) { }
-      else if (this.state.requesterEmail == this.state.dccEmail) { }
+      if (this.state.ownerEmail === this.state.dccEmail) { }
+      else if (this.state.requesterEmail === this.state.dccEmail) { }
       else {
         this._sendMail(this.state.dccEmail, "DocPublish", this.state.dccName);
       }
     }
-    let logdata = {
+    const logdata = {
       Status: "Published",
       Workflow: "Approval"
     }
@@ -1063,10 +1063,10 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
     const notificationPreference: any[] = await this._Service.getnotification(this.props.hubUrl, this.props.notificationPreference, emailuser);
     console.log(notificationPreference[0].Preference);
     if (notificationPreference.length > 0) {
-      if (notificationPreference[0].Preference == "Send all emails") {
+      if (notificationPreference[0].Preference === "Send all emails") {
         mailSend = "Yes";
       }
-      else if (notificationPreference[0].Preference == "Send mail for critical document" && this.state.criticalDocument == true) {
+      else if (notificationPreference[0].Preference === "Send mail for critical document" && this.state.criticalDocument === true) {
         mailSend = "Yes";
 
       }
@@ -1074,15 +1074,15 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
         mailSend = "No";
       }
     }
-    else if (this.state.criticalDocument == true) {
+    else if (this.state.criticalDocument === true) {
       //console.log("Send mail for critical document");
       mailSend = "Yes";
     }
-    if (mailSend == "Yes") {
+    if (mailSend === "Yes") {
       const emailNotification: any[] = await this._Service.gethubListItems(this.props.hubUrl, this.props.emailNotification);
       console.log(emailNotification);
-      for (var k in emailNotification) {
-        if (emailNotification[k].Title == type) {
+      for (let k in emailNotification) {
+        if (emailNotification[k].Title === type) {
           Subject = emailNotification[k].Subject;
           Body = emailNotification[k].Body;
         }
@@ -1131,43 +1131,43 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
     let message;
     let logstatus;
     if (this.props.project) {
-      let indexdata2 = {
+      const indexdata2 = {
         WorkflowStatus: this.state.status,
         AcceptanceCodeId: parseInt(this.state.acceptanceCode)
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata2, this.documentIndexID);
-      let headerdata2 = {
+      const headerdata2 = {
         ApprovedDate: this.today,
         WorkflowStatus: this.state.status,
         AcceptanceCodeId: parseInt(this.state.acceptanceCode)
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, headerdata2, this.workflowHeaderID);
-      let sourcedata = {
+      const sourcedata = {
         WorkflowStatus: this.state.status,
         AcceptanceCodeId: parseInt(this.state.acceptanceCode)
       }
       await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocument, sourcedata, this.sourceDocumentID);
     }
     else {
-      let indexdata3 = {
+      const indexdata3 = {
         WorkflowStatus: this.state.status
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata3, this.documentIndexID);
-      let headerdata3 = {
+      const headerdata3 = {
         ApprovedDate: this.today,
         WorkflowStatus: this.state.status
       }
       await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, headerdata3, this.workflowHeaderID);
-      let sourcedata1 = {
+      const sourcedata1 = {
         WorkflowStatus: this.state.status
       }
       await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocument, sourcedata1, this.sourceDocumentID);
     }
     await this.triggerDocumentReview(this.sourceDocumentID, this.state.status)
-    if (this.state.status == "Returned with comments") {
+    if (this.state.status === "Returned with comments") {
       message = this.documentReturnSuccess;
       logstatus = "Returned with comments";
-      if (this.state.ownerEmail == this.state.requesterEmail) {
+      if (this.state.ownerEmail === this.state.requesterEmail) {
         this._sendMail(this.state.ownerEmail, "DocReturn", this.state.ownerName);
       }
       else {
@@ -1181,7 +1181,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
       message = this.documentRejectSuccess;
       logstatus = "Rejected";
 
-      if (this.state.ownerEmail == this.state.requesterEmail) {
+      if (this.state.ownerEmail === this.state.requesterEmail) {
         this._sendMail(this.state.ownerEmail, "DocRejected", this.state.ownerName);
       }
       else {
@@ -1189,7 +1189,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
         this._sendMail(this.state.requesterEmail, "DocRejected", this.state.requesterName);
       }
     }
-    let logdata = {
+    const logdata = {
       Status: logstatus,
       Workflow: "Approval"
     }
@@ -1335,7 +1335,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
                         </AccordionItemButton>
                       </AccordionItemHeading>
                       <AccordionItemPanel>
-                        <div style={{ display: (this.state.dccreviewerData.length == 0 ? 'none' : 'block') }}>
+                        <div style={{ display: (this.state.dccreviewerData.length === 0 ? 'none' : 'block') }}>
                           <table className={styles.tableClass}   >
                             <tr className={styles.tr}>
                               <th className={styles.th}>Document Controller</th>
@@ -1369,7 +1369,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
                       </AccordionItemButton>
                     </AccordionItemHeading>
                     <AccordionItemPanel>
-                      <div style={{ display: (this.state.reviewerData.length == 0 ? 'none' : 'block') }}>
+                      <div style={{ display: (this.state.reviewerData.length === 0 ? 'none' : 'block') }}>
                         <table className={styles.tableClass}   >
                           <tr className={styles.tr}>
                             <th className={styles.th}>Reviewer</th>
