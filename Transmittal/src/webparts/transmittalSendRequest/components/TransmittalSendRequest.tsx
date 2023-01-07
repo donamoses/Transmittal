@@ -134,9 +134,6 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   }
   //Page Load
   public async componentDidMount() {
-    alert("1")
-    // this.reqWeb = Web(window.location.protocol + "//" + window.location.hostname + this.props.hubUrl);
-    // this.redirectUrl = this.props.redirectUrl;
     this.setState({ access: "none", accessDeniedMsgBar: "none" });
     // Get User Messages
     await this._userMessageSettings();
@@ -2399,7 +2396,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
         <div style={{ display: this.state.access }}>
           <div className={styles.border}>
             <div className={styles.alignCenter}> {this.props.webpartHeader}</div>
-            <br></br>
+            <br />
 
             <div className={styles.flex}>
               <div className={styles.width}><Label >Document ID : {this.state.documentID}</Label></div>
@@ -2432,17 +2429,6 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 </TooltipHost>
               </div>
 
-              {/* <div className={styles.width} style={{ paddingRight: '15px' }}>
-                  <Dropdown
-                    placeholder="Select Option"
-                    label="Revision Level"
-                    style={{ marginBottom: '10px', backgroundColor: "white", height: '34px' }}
-                    options={this.state.revisionLevelArray}
-                    onChanged={this._revisionLevelChanged}
-                    selectedKey={this.state.revisionLevelvalue}
-                    required />
-                  <div style={{ color: "#dc3545" }}>{this.validator.message("RevisionLevel", this.state.revisionLevelvalue, "required")}{" "}</div>
-                </div> */}
               <div>
                 <PeoplePicker
                   context={this.props.context as any}
@@ -2510,12 +2496,13 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                   formatDate={this._onFormatDate}
                 // className={controlClass.control}
                 // onSelectDate={this._onDatePickerChange}                 
-                /><div style={{ color: "#dc3545" }}>{this.validator.message("DueDate", this.state.dueDate, "required")}{" "}</div>
+                />
+                <div style={{ color: "#dc3545" }}>{this.validator.message("DueDate", this.state.dueDate, "required")}{" "}</div>
               </div>
             </div>
 
             <div className={styles.mt}>
-              < TextField label="Comments" id="comments" value={this.state.comments} onChange={this._commentschange} multiline required autoAdjustHeight></TextField></div>
+              < TextField label="Comments" id="comments" value={this.state.comments} onChange={this._commentschange} multiline required autoAdjustHeight /></div>
             <div style={{ color: "#dc3545" }}>{this.validator.message("comments", this.state.comments, "required")}{" "}</div>
             <div> {this.state.statusMessage.isShowMessage ?
               <MessageBar

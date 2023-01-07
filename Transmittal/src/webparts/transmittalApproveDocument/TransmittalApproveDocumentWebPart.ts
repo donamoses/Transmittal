@@ -48,7 +48,8 @@ export default class TransmittalApproveDocumentWebPart extends BaseClientSideWeb
         projectInformationListName: this.properties.projectInformationListName,
         businessUnit: this.properties.businessUnit,
         requestList: this.properties.requestList,
-        webpartHeader: this.properties.webpartHeader
+        webpartHeader: this.properties.webpartHeader,
+        RevisionSettings: this.properties.RevisionSettings
       }
     );
 
@@ -146,6 +147,9 @@ export default class TransmittalApproveDocumentWebPart extends BaseClientSideWeb
                 }),
                 PropertyPaneTextField('accessGroupDetailsList', {
                   label: 'AccessGroupDetailsList'
+                }),
+                PropertyPaneTextField('RevisionSettings', {
+                  label: 'RevisionSettings'
                 }),
               ]
             },

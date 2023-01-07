@@ -51,7 +51,8 @@
         "businessUnit": "BusinessUnit",
         "requestList": "Request",
         "hubUrl": "/sites/DigitalWorkSpace",
-        "webpartHeader": "Approval form"
+        "webpartHeader": "Approval form",
+        "RevisionSettings": "RevisionSettings"
       }
     }
   ]

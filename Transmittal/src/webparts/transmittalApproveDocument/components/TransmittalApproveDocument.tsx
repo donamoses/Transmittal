@@ -7,30 +7,33 @@ import { DefaultButton, Dialog, DialogFooter, DialogType, Dropdown, IconButton, 
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemHeading, AccordionItemPanel } from 'react-accessible-accordion';
 import * as moment from 'moment';
 import { BaseService } from '../services';
+import { IHttpClientOptions, HttpClient, MSGraphClientV3 } from '@microsoft/sp-http';
+import replaceString from 'replace-string';
+import { WebPartContext } from '@microsoft/sp-webpart-base';
+import * as _ from 'lodash';
 export default class TransmittalApproveDocument extends React.Component<ITransmittalApproveDocumentProps, ITransmittalApproveDocumentState, {}> {
   private validator: SimpleReactValidator;
   private _Service: BaseService;
   private workflowHeaderID: any;
   private documentIndexID: any;
-  // private sourceDocumentID;
+  private sourceDocumentID: any;
   private workflowDetailID: any;
-  // private currentEmail;
+  private currentEmail: string;
   // private reqWeb;
-  // private documentApprovedSuccess;
+  private documentApprovedSuccess: string;
   private documentSavedAsDraft: string;
-  // private documentRejectSuccess;
-  // private documentReturnSuccess;
+  private documentRejectSuccess: string;
+  private documentReturnSuccess: string;
   private today = new Date();
   private revisionLogId: any;
-  // private currentrevision;
-  // private invalidApprovalLink;
-  // private invalidUser;
+  private currentrevision: any;
+  private invalidApprovalLink: string;
+  private invalidUser: string;
   // private redirectUrlSuccess;
-  // private redirectUrlError;
-  // private valid;
-  // private approverEmail;
-  // private departmentExists;
-  // private postUrl;
+  private valid: string;
+  private approverEmail: string;
+  private departmentExists: string;
+  private postUrl: string;
   // private siteUrl;
   // private permissionpostUrl;
   public constructor(props: ITransmittalApproveDocumentProps) {
@@ -125,6 +128,466 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
     // this._LAUrlGetting = this._LAUrlGetting.bind(this);
     // this._checkPermission = this._checkPermission.bind(this);
   }
+  // Validator
+  public componentWillMount = () => {
+    this.validator = new SimpleReactValidator({
+      messages: {
+        required: "Please enter mandatory fields"
+      }
+    });
+
+  }
+  //Page Load
+  public async componentDidMount() {
+    this.setState({ loaderDisplay: "" });
+    // Get User Messages
+    await this._userMessageSettings();
+    //Get Current User
+    this._Service.getCurrentUser()
+      .then(async (user: any) => {
+        let userEmail = user.Email;
+        this.currentEmail = userEmail;
+      });
+    //Get Today
+    this.today = new Date();
+    //Get Parameter from URL
+    await this._queryParamGetting();
+    //Get Approver
+    const headerItem: any = await this._Service.getheaderdata(this.props.siteUrl, this.props.workflowHeaderList, this.workflowHeaderID);
+    this.approverEmail = headerItem.Approver.EMail;
+    this.documentIndexID = headerItem.DocumentIndexID;
+
+    if (this.valid == "ok") {
+      //Get Access
+      if (this.props.project) {
+        await this._checkCurrentUser();
+
+      }
+      else {
+        await this._accessGroups();
+
+      }
+
+    }
+    this._LAUrlGetting();
+  }
+  //Messages
+  private async _userMessageSettings() {
+    const userMessageSettings: any[] = await this._Service.gethubUserMessageListItems(this.props.hubUrl, this.props.userMessageSettings);
+    console.log(userMessageSettings);
+    for (var i in userMessageSettings) {
+      if (userMessageSettings[i].Title == "ApproveSubmitSuccess") {
+        var successmsg = userMessageSettings[i].Message;
+        this.documentApprovedSuccess = replaceString(successmsg, '[DocumentName]', this.state.documentName);
+      }
+      else if (userMessageSettings[i].Title == "ApproveDraftSuccess") {
+        this.documentSavedAsDraft = userMessageSettings[i].Message;
+      }
+      else if (userMessageSettings[i].Title == "InvalidApprovalLink") {
+        this.invalidApprovalLink = userMessageSettings[i].Message;
+      }
+      else if (userMessageSettings[i].Title == "InvalidApproverUser") {
+        this.invalidUser = userMessageSettings[i].Message;
+      }
+      else if (userMessageSettings[i].Title == "ApproveRejectSuccess") {
+        var rejectmsg = userMessageSettings[i].Message;
+        this.documentRejectSuccess = replaceString(rejectmsg, '[DocumentName]', this.state.documentName);
+      }
+      else if (userMessageSettings[i].Title == "ApproveReturnSuccess") {
+        var returnmsg = userMessageSettings[i].Message;
+        this.documentReturnSuccess = replaceString(returnmsg, '[DocumentName]', this.state.documentName);
+      }
+    }
+
+  }
+  //Get Parameter from URL
+  private async _queryParamGetting() {
+    await this._userMessageSettings();
+    //Query getting...
+    let params = new URLSearchParams(window.location.search);
+
+    let headerid = params.get('hid');
+    let detailid = params.get('dtlid');
+    if (headerid != "" && headerid != null && detailid != "" && detailid != null) {
+      this.workflowHeaderID = parseInt(headerid);
+      this.workflowDetailID = parseInt(detailid);
+      this.valid = "ok";
+
+    }
+    else {
+      this.setState({
+        loaderDisplay: "none",
+        accessDeniedMsgBar: "",
+        statusMessage: { isShowMessage: true, message: this.invalidApprovalLink, messageType: 1 },
+      });
+      // this.setState({ accessDeniedMsgBar: 'none', });
+      setTimeout(() => {
+        window.location.replace(this.props.siteUrl);
+      }, 10000);
+    }
+  }
+  //Check Current User is approver
+  public async _checkCurrentUser() {
+    if (this.currentEmail == this.approverEmail) {
+      this.setState({ access: "", accessDeniedMsgBar: "none", loaderDisplay: "none" });
+      if (this.props.project) {
+        this.setState({ hideProject: false });
+        await this._project();
+      }
+      await this._bindApprovalForm();
+    }
+    else {
+      this.setState({
+        loaderDisplay: "none",
+        access: "none",
+        accessDeniedMsgBar: "",
+        statusMessage: { isShowMessage: true, message: this.invalidUser, messageType: 1 }
+      });
+    }
+  }
+  // Check Access
+  private async _accessGroups() {
+    let AccessGroup = [];
+    let ok = "No";
+    if (this.props.project) {
+      AccessGroup = await this._Service.getprojectaccessgroup(this.props.hubUrl, this.props.PermissionMatrixSettings);
+    }
+    else {
+      AccessGroup = await this._Service.getqdmsaccessgroup(this.props.hubUrl, this.props.PermissionMatrixSettings);
+    }
+
+    let AccessGroupItems: any[] = AccessGroup[0].AccessGroups.split(',');
+    console.log("AccessGroupItems", AccessGroupItems);
+    const DocumentIndexItem: any = await this._Service.getItemById(this.props.siteUrl, this.props.documentIndexList, this.documentIndexID);
+    console.log("DocumentIndexItem", DocumentIndexItem);
+    //cheching if department selected
+    if (DocumentIndexItem.DepartmentID != null) {
+      this.departmentExists = "Exists";
+      let deptid = parseInt(DocumentIndexItem.DepartmentID);
+      const departmentItem: any = await this._Service.gethubItemById(this.props.hubUrl, this.props.departmentList, deptid);
+      //let AG = DepartmentItem[0].AccessGroups;
+      console.log("departmentItem", departmentItem);
+      let accessGroupvar = departmentItem.AccessGroups;
+      const accessGroupItem: any = await this._Service.gethubListItems(this.props.hubUrl, this.props.accessGroupDetailsList);
+      let accessGroupID;
+      console.log(accessGroupItem.length);
+      for (let a = 0; a < accessGroupItem.length; a++) {
+        if (accessGroupItem[a].Title == accessGroupvar) {
+          accessGroupID = accessGroupItem[a].GroupID;
+          this.GetGroupMembers(this.props.context, accessGroupID);
+        }
+      }
+    }
+    //if no department
+    else {
+      //alert("with bussinessUnit");
+      if (DocumentIndexItem.BusinessUnitID != null) {
+        this.departmentExists == "Exists";
+        let bussinessUnitID = parseInt(DocumentIndexItem.BusinessUnitID);
+        const bussinessUnitItem: any = await this._Service.gethubItemById(this.props.hubUrl, this.props.businessUnit, bussinessUnitID);
+        console.log("departmentItem", bussinessUnitItem);
+        let accessGroupvar = bussinessUnitItem.AccessGroups;
+        // alert(accessGroupvar);
+        const accessGroupItem: any = await this._Service.gethubListItems(this.props.hubUrl, this.props.accessGroupDetailsList);
+        let accessGroupID;
+        console.log(accessGroupItem.length);
+        for (let a = 0; a < accessGroupItem.length; a++) {
+          if (accessGroupItem[a].Title == accessGroupvar) {
+            accessGroupID = accessGroupItem[a].GroupID;
+            this.GetGroupMembers(this.props.context, accessGroupID);
+          }
+        }
+      }
+    }
+  }
+  // LA url getting
+  private _LAUrlGetting = async () => {
+    const laUrl = await this._Service.gettriggerUnderApprovalPermission(this.props.hubUrl, this.props.requestList);
+    console.log("Posturl", laUrl[0].PostUrl);
+    this.postUrl = laUrl[0].PostUrl;
+  }
+  // Getting group members
+  public async GetGroupMembers(context: WebPartContext, groupId: string): Promise<any[]> {
+    let users: string[] = [];
+    try {
+      let client: MSGraphClientV3 = await context.msGraphClientFactory.getClient("3");
+      let response = await client
+        .api(`/groups/${groupId}/members`)
+        .version('v1.0')
+        .select(['mail', 'displayName'])
+        .get();
+      response.value.map((item: any) => {
+        users.push(item);
+      });
+    } catch (error) {
+      console.log('MSGraphService.GetGroupMembers Error: ', error);
+    }
+    console.log('MSGraphService.GetGroupMembers: ', users, "GroupID:", groupId);
+    //checking current users 
+    if (users.length > 0) {
+      this._checkingCurrent(users);
+    }
+    else if (this.departmentExists == "Exists") {
+      this.setState({
+        loaderDisplay: "none",
+        accessDeniedMsgBar: "",
+        statusMessage: { isShowMessage: true, message: this.invalidUser, messageType: 1 },
+      });
+      setTimeout(() => {
+        this.setState({ accessDeniedMsgBar: 'none', });
+        window.location.replace(this.props.siteUrl);
+      }, 10000);
+    }
+
+    return;
+  }
+  // Checking current user email
+  private async _checkingCurrent(userEmail: any) {
+    for (var k in userEmail) {
+      if (this.currentEmail == userEmail[k].mail) {
+        this.setState({ access: "none", accessDeniedMsgBar: "none" });
+        this.valid = "Yes";
+        await this._checkCurrentUser();
+
+        break;
+      }
+    }
+    if (this.valid != "Yes") {
+
+      this.setState({
+        loaderDisplay: "none",
+        accessDeniedMsgBar: "", access: "none",
+        statusMessage: { isShowMessage: true, message: this.invalidUser, messageType: 1 },
+      });
+      setTimeout(() => {
+        this.setState({ accessDeniedMsgBar: 'none', });
+        window.location.replace(this.props.siteUrl);
+      }, 10000);
+    }
+  }
+  //Bind Approval Form
+  public async _bindApprovalForm() {
+    let approverId;
+    let approverName;
+    let requesterName;
+    let requesterEmail;
+    let requestedDate;
+    let requesterComment;
+    let dueDate;
+    let documentID;
+    let documentName;
+    let ownerName;
+    let ownerEmail;
+    let revision;
+    let linkToDocument;
+    let approverComment;
+    var reviewerArr: any[] = [];
+    let reviewDate;
+    let criticalDocument;
+    let taskID;
+    let status;
+    let publishOption;
+    let type;
+    //Get Header Item
+    const headerItem: any = await this._Service.getheaderbinddata(this.props.siteUrl, this.props.workflowHeaderList, this.workflowHeaderID);
+    approverId = headerItem.Approver.ID;
+    approverName = headerItem.Approver.Title;
+
+    this.documentIndexID = headerItem.DocumentIndexID;
+    requesterName = headerItem.Requester.Title;
+    requesterEmail = headerItem.Requester.EMail;
+    if (headerItem.RequestedDate != null) {
+      var reqdate = new Date(headerItem.RequestedDate);
+      requestedDate = moment(reqdate).format('DD-MM-YYYY HH:mm');
+    }
+    requesterComment = headerItem.RequesterComment;
+    var duedate = new Date(headerItem.DueDate);
+    dueDate = moment(duedate).format('DD-MM-YYYY');
+    publishOption = headerItem.PublishFormat;
+    //Get Document Index
+    const documentIndexItem: any = await this._Service.getindexbinddata(this.props.siteUrl, this.props.documentIndexList, this.documentIndexID);
+    console.log(documentIndexItem);
+    documentID = documentIndexItem.DocumentID;
+    documentName = documentIndexItem.DocumentName;
+    ownerName = documentIndexItem.Owner.Title;
+    ownerEmail = documentIndexItem.Owner.EMail;
+    revision = documentIndexItem.Revision;
+    linkToDocument = documentIndexItem.SourceDocument.Url;
+    criticalDocument = documentIndexItem.CriticalDocument;
+    this.sourceDocumentID = documentIndexItem.SourceDocumentID;
+    //Get Workflow Details
+    const detailItem: any[] = await this._Service.getdetailbinddata(this.props.siteUrl, this.props.workflowDetailsList, this.workflowHeaderID);
+    for (var k in detailItem) {
+      if (detailItem[k].Workflow == 'Review') {
+        var rewdate = new Date(detailItem[k].ResponseDate);
+        reviewDate = moment(rewdate).format('DD-MMM-YYYY HH:mm');
+        reviewerArr.push({
+          ResponseDate: reviewDate,
+          Reviewer: detailItem[k].Responsible.Title,
+          ResponsibleComment: detailItem[k].ResponsibleComment
+        });
+      }
+      else if (detailItem[k].Workflow == 'Approval') {
+        approverComment = detailItem[k].ResponsibleComment;
+        taskID = detailItem[k].TaskID;
+        if (detailItem[k].ResponseStatus == "Published") {
+          status = "Approved";
+          this.setState({
+            hidepublish: false,
+            savedisable: "none",
+            hideButton: true,
+            statusKey: status,
+          });
+
+        }
+        else {
+          status = detailItem[k].ResponseStatus;
+        }
+        if (detailItem[k].ResponseStatus != "Under Approval") {
+          this.setState({ savedisable: "none", hideButton: true });
+        }
+        if (detailItem[k].ResponseStatus == "Under Approval") {
+          this.setState({ statusKey: "" });
+        }
+      }
+
+    }
+    if (reviewerArr.length > 0) {
+      this.setState({
+        reviewersTableDiv: ""
+      });
+    }
+    else {
+      this.setState({
+        reviewersTableDiv: "none",
+      });
+    }
+    var split = documentName.split(".", 2);
+    type = split[1];
+    if (type == "docx") {
+      this.setState({ isdocx: "", nodocx: "none" });
+    }
+    else {
+      this.setState({ isdocx: "none", nodocx: "" });
+    }
+    this.setState({
+      documentID: documentID,
+      documentName: documentName,
+      linkToDoc: linkToDocument,
+      revision: revision,
+      ownerName: ownerName,
+      ownerEmail: ownerEmail,
+      dueDate: dueDate,
+      requesterName: requesterName,
+      requesterEmail: requesterEmail,
+      requestedDate: requestedDate,
+      requesterComment: requesterComment,
+      reviewerData: reviewerArr,
+      comments: approverComment,
+      criticalDocument: criticalDocument,
+      approverName: approverName,
+      taskID: taskID,
+      //statusKey: status,
+      publishOptionKey: publishOption
+
+    });
+    await this._userMessageSettings();
+  }
+  //Bind datas for project
+  public async _project() {
+    let reviewDate: any;
+    let dccReviewerArr: any[] = [];
+    let acceptanceArray: any[] = [];
+    let sorted_Acceptance: any[] = [];
+    let projectName: any;
+    let projectNumber: any;
+
+    const headerItem: any = await this._Service.getprojectheaderbinddata(this.props.siteUrl, this.props.workflowHeaderList, this.workflowHeaderID)
+    let dcc = headerItem.DocumentController.ID;
+    let dccName = headerItem.DocumentController.Title;
+    let dccEmail = headerItem.DocumentController.EMail;
+    let documentIndexId = headerItem.DocumentIndexID;
+    let acceptanceCode = headerItem.AcceptanceCodeId;
+    let RevisionCodingId = headerItem.RevisionCodingId;
+    let ApproveInSameRevision = headerItem.ApproveInSameRevision;
+    const documentIndexItem: any = await this._Service.getprojectindexbinddata(this.props.siteUrl, this.props.documentIndexList, documentIndexId)
+    let externalDocument = documentIndexItem.ExternalDocument;
+    let transmittalDocument = documentIndexItem.TransmittalDocument;
+    let transmittalRevision = documentIndexItem.TransmittalRevision;
+
+    const projectInformation = await this._Service.getListItems(this.props.siteUrl, this.props.projectInformationListName);
+    console.log("projectInformation", projectInformation);
+    if (projectInformation.length > 0) {
+      for (var k in projectInformation) {
+        if (projectInformation[k].Key == "ProjectName") {
+          this.setState({
+            projectName: projectInformation[k].Title,
+          });
+        }
+        if (projectInformation[k].Key == "ProjectNumber") {
+          this.setState({
+            projectNumber: projectInformation[k].Title,
+          });
+        }
+      }
+    }
+    if (dcc != null) {
+      const detailItem: any[] = await this._Service.getprojectdetailbinddata(this.props.siteUrl, this.props.workflowDetailsList, this.workflowHeaderID)
+      for (var l in detailItem) {
+        if (detailItem[l].Workflow == 'DCC Review') {
+          var rewdate = new Date(detailItem[l].ResponseDate);
+          reviewDate = moment(rewdate).format('DD-MM-YYYY HH:mm');
+          dccReviewerArr.push({
+            ResponseDate: reviewDate,
+            Reviewer: detailItem[l].Responsible.Title,
+            DCCResponsibleComment: detailItem[l].ResponsibleComment
+          });
+        }
+      }
+    }
+    if (externalDocument == true) {
+      this.setState({ hideacceptance: false });
+      const transmittalcodeitems: any[] = await this._Service.getListItems(this.props.siteUrl, this.props.transmittalCodeSettingsList);
+
+      for (let i = 0; i < transmittalcodeitems.length; i++) {
+        if (transmittalcodeitems[i].AcceptanceCode == true) {
+          let transmittalcodedata = {
+            key: transmittalcodeitems[i].ID,
+            text: transmittalcodeitems[i].Description
+          };
+          acceptanceArray.push(transmittalcodedata);
+        }
+      }
+      console.log(acceptanceArray);
+      sorted_Acceptance = _.orderBy(acceptanceArray, 'text', ['asc']);
+
+    }
+    if (transmittalDocument == true) {
+      this.setState({ hidetransmittalrevision: false });
+    }
+    if (dccReviewerArr.length > 0) {
+      this.setState({
+        dccTableDiv: ""
+      });
+    }
+    else {
+      this.setState({
+        dccTableDiv: "none",
+      });
+    }
+    this.setState({
+      dccreviewerData: dccReviewerArr,
+      acceptanceCodearray: sorted_Acceptance,
+      externalDocument: externalDocument,
+      transmittalRevision: transmittalRevision,
+      acceptanceCode: acceptanceCode,
+      revisionItemID: RevisionCodingId,
+      sameRevision: ApproveInSameRevision,
+      dcc: dcc,
+      dccName: dccName,
+      dccEmail: dccEmail
+    });
+  }
   //Status Change
   public _status(option: { key: any; text: any }) {
     //console.log(option.key);
@@ -177,7 +640,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
         }
         await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, publishdata, this.workflowHeaderID);
 
-        // this._publish();
+        this._publish();
       }
       else {
         this.validator.showMessages();
@@ -194,11 +657,11 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
           ResponseDate: this.today
         }
         await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, detaildata, this.workflowDetailID)
-        // await this._returnDoc().then((afterReturn: any) => {
-        //   this.setState({ approveDocument: "" });
-        //   setTimeout(() => this.setState({ approveDocument: 'none', hideLoading: true }), 3000);
-        //   this.setState({ savedisable: "none" });
-        // });
+        await this._returnDoc().then((afterReturn: any) => {
+          this.setState({ approveDocument: "" });
+          setTimeout(() => this.setState({ approveDocument: 'none', hideLoading: true }), 3000);
+          this.setState({ savedisable: "none" });
+        });
       }
       else {
         this.validator.showMessages();
@@ -207,7 +670,560 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
     }
 
   }
+  //Document Published
+  protected async _publish() {
+    if (this.props.project) {
+      if (this.state.sameRevision == "Yes") {
+        this.setState({ newRevision: this.state.revision });
+      }
+      else if (this.state.revisionItemID == null) {
+        this._revisionCoding();
+      }
+      else {
+        await this._generateNewRevision();
+      }
+    }
+    else {
+      this._revisionCoding();
+    }
+    const laUrl = await this._Service.getpublish(this.props.hubUrl, this.props.requestList);
+    console.log("Posturl", laUrl[0].PostUrl);
+    this.postUrl = laUrl[0].PostUrl;
+    let siteUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl;
+    const postURL = this.postUrl;
 
+    const requestHeaders: Headers = new Headers();
+    requestHeaders.append("Content-type", "application/json");
+    const body: string = JSON.stringify({
+      'Status': 'Published',
+      'SourceDocumentID': this.sourceDocumentID,
+      'SiteURL': siteUrl,
+      'DocumentName': this.state.documentName,
+      'PublishedDate': this.today,
+      'SourceDocumentLibrary': this.props.sourceDocumentLibrary,
+      'PublishFormat': this.state.publishOption,
+      'WorkflowStatus': "Published",
+      'Revision': this.state.newRevision,
+      'RevisionUrl': this.props.siteUrl + "/SitePages/RevisionHistory.aspx?did=" + this.documentIndexID,
+      'AcceptanceCode': parseInt(this.state.acceptanceCode)
+    });
+    const postOptions: IHttpClientOptions = {
+      headers: requestHeaders,
+      body: body
+    };
+    let responseText: string = "";
+    let response = await this.props.context.httpClient.post(postURL, HttpClient.configurations.v1, postOptions);
+    let responseJSON = await response.json();
+    responseText = JSON.stringify(responseJSON);
+    console.log(responseJSON);
+    if (response.ok) {
+
+      this._publishUpdate();
+    }
+    else {
+    }
+  }
+  public _revisionCoding = async () => {
+    let intrev;
+    if (this.state.revision == "-") {
+      intrev = 0;
+    }
+    else {
+      intrev = this.state.revision;
+    }
+    if (this.props.project) {
+      let revision = parseInt(intrev);
+      let rev = revision + 1;
+      this.currentrevision = rev.toString();
+      this.setState({ newRevision: this.currentrevision });
+    }
+    else {
+      let revision = parseInt(intrev);
+      let rev = revision + 1;
+      this.currentrevision = rev.toString();
+      this.setState({ newRevision: this.currentrevision });
+    }
+  }
+  public _generateNewRevision = async () => {
+    let currentRevision = this.state.revision; // set the current revisionsettings ID in state variable.
+    this.setState({
+      previousRevisionItemID: this.state.revisionItemID // set this value with previous revision settings id from Project document index item.
+    });
+
+    // Reading current revision coding details from RevisionSettings.
+    const revisionItem: any = await this._Service.getRevisionListItems(this.props.hubUrl, this.props.RevisionSettings, this.state.revisionItemID);
+    console.log(revisionItem);
+    let startPrefix = '-';
+    let newRevision = '';
+    let pattern = revisionItem.Pattern;
+    let endWith = '0';
+    let minN = revisionItem.MinN;
+    let maxN = '0';
+    let isAutoIncrement = revisionItem.AutoIncrement == 'TRUE';
+    let firstChar = currentRevision.substring(0, 1);
+    let currentNumber = currentRevision.substring(1, currentRevision.length);
+    let startWith = revisionItem.StartWith;
+
+    if (revisionItem.EndWith != null)
+      endWith = revisionItem.EndWith;
+
+    if (revisionItem.MaxN != null)
+      maxN = revisionItem.MaxN;
+
+    if (revisionItem.StartPrefix != null)
+      startPrefix = revisionItem.StartPrefix.toString();
+
+    //splitting pattern values
+    let incrementValue = 1;
+    let isAlphaIncrement = pattern.split('+')[0] == 'A';
+    let isNumericIncrement = pattern.split('+')[0] == 'N';
+    if (pattern.split('+').length == 2) {
+      incrementValue = Number(pattern.split('+')[1]);
+    }
+    //Resetting current revision as blank if current revisionsetting id is different.
+    if (this.state.revisionItemID != this.state.previousRevisionItemID) {
+      currentRevision = '-';
+    }
+    try {
+      //Getting first revision value.
+      if (currentRevision == '-') {
+        if (!isAutoIncrement) // Not an auto increment pattern, splitting the pattern with command reading the first value.
+        {
+          newRevision = pattern.split(',')[0];
+        }
+        else {
+          if (startPrefix != '-' && startPrefix.split(',').length > 0)  //Auto increment   with startPrefix eg. A1,A2, A3 etc., then handling both single and multple startPrefix
+          {
+            startPrefix = startPrefix.split(',')[0];
+          }
+          if (startWith != null) // 
+          {
+            newRevision = startWith; //assigning startWith as newRevision for the first time.
+          }
+          else {
+            newRevision = startPrefix + '' + minN;
+          }
+          if (startWith == null && startPrefix == '-') // Assigning minN if startWith and StartPrefix are null.
+          {
+            newRevision = minN;
+          }
+        }
+      }
+      else if (!isAutoIncrement) // currentRevision is not blank, so splitting pattern string for non- auto - increment pattern.
+      {
+        let patternArray = pattern.split(',');
+        newRevision = patternArray[0]; // if array value exceeds , resetting revision.
+        /* let prevRevision = patternArray[0];
+         for(let i= 0;i < patternArray.length; i++)
+         {
+           if(i > 0 && String(currentRevision) == String(patternArray[i]))
+           {
+             prevRevision = String(patternArray[i-1]);
+             break;
+           }
+         }
+         console.log('prevRevision:' + prevRevision);*/
+        console.log('currentRevision:' + currentRevision);
+        for (let i = 0; i < patternArray.length; i++) {
+          {
+            //B,C,D,C,E,G
+            if (String(currentRevision) == patternArray[i] && (i + 1) < patternArray.length) {
+              newRevision = patternArray[i + 1];
+              break;
+            }
+          }
+        }
+      }
+      else if (isAutoIncrement)// current revision is not blank and auto increment pattern .
+      {
+        if (startWith != null && String(currentRevision) == String(startWith)) // Revision code with startWith  and startWith already set as Revision
+        {
+          if (startPrefix == '-') // second revision without startPrefix / '-' no StartPrefix
+          {
+            newRevision = minN;
+          }
+          else // 
+          {
+            newRevision = startPrefix + minN;
+          }
+        }
+        // For all other cases
+        else if (startPrefix != '-') // Handling revisions with startPrefix here first char will be alpha
+        {
+          if (startPrefix.split(',').length == 1) // Single startPrefix eg. A1,A2,A3 etc with startPrefix 'A' and patter N+1
+          {
+            if (this.isNotANumber(minN)) // Alpha increment.
+            {
+              newRevision = startPrefix + this.nextChar(firstChar, incrementValue);
+            }
+            else  // number increment.
+            {
+              newRevision = startPrefix + (Number(currentNumber) + Number(incrementValue)).toString();
+            }
+          }
+          else // startPrefix with multiple values
+          {
+            if (maxN != '0') {
+              if (this.isNotANumber(currentRevision)) //MaxN set and not a number.
+              {
+                if (Number(currentNumber) < Number(maxN)) // alpha type revision
+                {
+                  newRevision = firstChar + (Number(currentNumber) + Number(incrementValue)).toString();
+                }
+                else if (Number(currentNumber) == Number(maxN)) {
+                  // if current number part is same as maxN, get the next StartPrefix value from startPrefix.split(',')
+                  let startPrefixArray = startPrefix.split(',');
+                  for (let i = 0; i < startPrefixArray.length; i++) {
+                    if (firstChar == startPrefixArray[i] && (i + 1) < startPrefixArray.length) {
+                      firstChar = startPrefixArray[i + 1];
+                      break;
+                    }
+                  }
+                  if (firstChar == " ") // " " will denote a number
+                  {
+                    newRevision = minN;
+                  }
+                  else {
+                    newRevision = firstChar + minN;
+                  }
+                }
+              }
+              else  // current revion number itself is a number and with multiple StartPrefix
+              {
+                if (Number(currentRevision) < Number(maxN)) {
+                  newRevision = (Number(currentRevision) + Number(incrementValue)).toString(); // current revision s not an alpha 
+                }
+                else if (Number(currentRevision) == Number(maxN)) {
+                  {
+                    if (!this.isNotANumber(currentRevision)) // for setting a default value after the last item
+                    {
+                      firstChar = " ";
+                    }
+                    // if current number part is same as maxN, get the next StartPrefix value from startPrefix.split(',')
+                    let startPrefixArray = startPrefix.split(',');
+                    for (let i = 0; i < startPrefixArray.length; i++) {
+                      if (firstChar == startPrefixArray[i] && (i + 1) < startPrefixArray.length) {
+                        firstChar = startPrefixArray[i + 1];
+                        break;
+                      }
+                    }
+                    if (firstChar == " ") // Assigning number for blank array.
+                    {
+                      newRevision = minN;
+                    }
+                    else {
+                      newRevision = firstChar + minN;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        if (newRevision == '' && startPrefix == '-' && endWith == '0') // No StartPrefix and No EndWith
+        {
+          if (isAlphaIncrement) // Alpha increment.
+          {
+            newRevision = this.nextChar(firstChar, incrementValue);
+          }
+          else {
+            newRevision = (Number(currentRevision) + Number(incrementValue)).toString();
+          }
+        }
+        else if (startPrefix == '-' && endWith != '0') // No StartPrefix and with EndWith 
+        {
+          // cases A to E  then 0,1, 2,3 etc,
+          if (currentRevision == endWith) {
+            newRevision = minN;
+          }
+          else// if(currentRevision != '0')
+          {
+            if (this.isNotANumber(currentRevision)) // Alpha increment.
+            {
+              newRevision = this.nextChar(firstChar, incrementValue);
+            }
+            else // (currentRevision == startWith && endWith != null) // always alpha increment "X,,B"
+            {
+              newRevision = (Number(currentRevision) + Number(incrementValue)).toString();
+            }
+          }
+        }
+      }
+      if (newRevision.indexOf('undefined') > -1 || newRevision == '') // Assigning with zero if array value exceeds.
+      {
+        newRevision = '0';
+      }
+    }
+    catch {
+      newRevision = '-1'; // check with -1 for error value
+    }
+    this.setState({
+      newRevision: newRevision,
+      currentRevision: newRevision
+    });
+    console.log('new revision :' + newRevision);
+  }
+  // Craeting next alpha char.
+  private nextChar(currentChar: any, increment: any) {
+    if (currentChar == 'Z')
+      return 'A';
+    else
+      return String.fromCharCode(currentChar.charCodeAt(0) + increment);
+  }
+  // Check for number and alpha
+  private isNotANumber(checkChar: any) {
+    return isNaN(checkChar);
+  }
+  // Published Update
+  public async _publishUpdate() {
+    if (this.state.hideProject == true) {
+      let indexdata = {
+        PublishFormat: this.state.publishOption,
+        WorkflowStatus: "Published",
+        Revision: this.state.newRevision
+      }
+      await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata, this.documentIndexID);
+      let headerdata = {
+        ApprovedDate: this.today,
+        WorkflowStatus: "Published",
+        PublishFormat: this.state.publishOption,
+        Revision: this.state.newRevision,
+      }
+      await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, headerdata, this.workflowHeaderID);
+      let detaildata = {
+        ResponsibleComment: this.state.comments,
+        ResponseStatus: "Published",
+        ResponseDate: this.today
+      }
+      await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, detaildata, this.workflowDetailID);
+
+    }
+    else {
+      let indexdata1 = {
+        PublishFormat: this.state.publishOption,
+        WorkflowStatus: "Published",
+        Revision: this.state.newRevision,
+        AcceptanceCodeId: parseInt(this.state.acceptanceCode),
+      }
+      await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata1, this.documentIndexID);
+      let headerdata1 = {
+        ApprovedDate: this.today,
+        WorkflowStatus: "Published",
+        PublishFormat: this.state.publishOption,
+        Revision: this.state.newRevision,
+        AcceptanceCodeId: parseInt(this.state.acceptanceCode)
+      }
+      await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, headerdata1, this.workflowHeaderID);
+      let detaildata1 = {
+        ResponsibleComment: this.state.comments,
+        ResponseStatus: "Published",
+        ResponseDate: this.today,
+      }
+      await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, detaildata1, this.workflowDetailID);
+    }
+    if (this.state.ownerEmail == this.state.requesterEmail) {
+      this._sendMail(this.state.ownerEmail, "DocPublish", this.state.ownerName);
+    }
+    else {
+      this._sendMail(this.state.ownerEmail, "DocPublish", this.state.ownerName);
+      this._sendMail(this.state.requesterEmail, "DocPublish", this.state.requesterName);
+    }
+    if (this.props.project) {
+      if (this.state.ownerEmail == this.state.dccEmail) { }
+      else if (this.state.requesterEmail == this.state.dccEmail) { }
+      else {
+        this._sendMail(this.state.dccEmail, "DocPublish", this.state.dccName);
+      }
+    }
+    let logdata = {
+      Status: "Published",
+      Workflow: "Approval"
+    }
+    let a = await this._Service.updateItem(this.props.siteUrl, this.props.documentRevisionLogList, logdata, this.revisionLogId);
+    await this._Service.deletehubItemById(this.props.hubUrl, this.props.workflowTasksList, parseInt(this.state.taskID));
+    this.setState({ approveDocument: "", savedisable: "none", hideLoading: true });
+    setTimeout(() => this.setState({ approveDocument: 'none', }), 3000);
+    this.setState({ hideLoading: true, statusMessage: { isShowMessage: true, message: this.documentApprovedSuccess, messageType: 4 } });
+    setTimeout(() => {
+      window.location.replace(this.props.siteUrl);
+    }, 5000);
+
+  }
+  //Send Mail
+  public _sendMail = async (emailuser: any, type: any, name: any) => {
+
+    let formatday = moment(this.today).format('DD/MM/YYYY');
+    let day = formatday.toString();
+    let mailSend = "No";
+    let Subject;
+    let Body;
+    let link;
+    console.log(this.state.criticalDocument);
+
+    const notificationPreference: any[] = await this._Service.getnotification(this.props.hubUrl, this.props.notificationPreference, emailuser);
+    console.log(notificationPreference[0].Preference);
+    if (notificationPreference.length > 0) {
+      if (notificationPreference[0].Preference == "Send all emails") {
+        mailSend = "Yes";
+      }
+      else if (notificationPreference[0].Preference == "Send mail for critical document" && this.state.criticalDocument == true) {
+        mailSend = "Yes";
+
+      }
+      else {
+        mailSend = "No";
+      }
+    }
+    else if (this.state.criticalDocument == true) {
+      //console.log("Send mail for critical document");
+      mailSend = "Yes";
+    }
+    if (mailSend == "Yes") {
+      const emailNotification: any[] = await this._Service.gethubListItems(this.props.hubUrl, this.props.emailNotification);
+      console.log(emailNotification);
+      for (var k in emailNotification) {
+        if (emailNotification[k].Title == type) {
+          Subject = emailNotification[k].Subject;
+          Body = emailNotification[k].Body;
+        }
+
+      }
+
+      link = `<a href=${this.state.linkToDoc}>` + this.state.documentName + `</a>`;
+      let replacedSubject = replaceString(Subject, '[DocumentName]', this.state.documentName);
+      let replaceRequester = replaceString(Body, '[Sir/Madam]', name);
+      let replaceDate = replaceString(replaceRequester, '[PublishedDate]', day);
+      let replaceApprover = replaceString(replaceDate, '[Approver]', this.state.approverName);
+      let replaceBody = replaceString(replaceApprover, '[DocumentName]', this.state.documentName);
+      let replacelink = replaceString(replaceBody, '[DocumentLink]', link);
+      let FinalBody = replacelink;
+      //Create Body for Email  
+      let emailPostBody: any = {
+        "message": {
+          "subject": replacedSubject,
+          "body": {
+            "contentType": "HTML",
+            "content": FinalBody
+
+          },
+          "toRecipients": [
+            {
+              "emailAddress": {
+                "address": emailuser
+              }
+            }
+          ],
+        }
+      };
+
+      //Send Email uisng MS Graph  
+      this.props.context.msGraphClientFactory
+        .getClient("3")
+        .then((client: MSGraphClientV3): void => {
+          client
+            .api('/me/sendMail')
+            .post(emailPostBody);
+        });
+    }
+  }
+  //Document Return
+  public async _returnDoc() {
+    let message;
+    let logstatus;
+    if (this.props.project) {
+      let indexdata2 = {
+        WorkflowStatus: this.state.status,
+        AcceptanceCodeId: parseInt(this.state.acceptanceCode)
+      }
+      await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata2, this.documentIndexID);
+      let headerdata2 = {
+        ApprovedDate: this.today,
+        WorkflowStatus: this.state.status,
+        AcceptanceCodeId: parseInt(this.state.acceptanceCode)
+      }
+      await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, headerdata2, this.workflowHeaderID);
+      let sourcedata = {
+        WorkflowStatus: this.state.status,
+        AcceptanceCodeId: parseInt(this.state.acceptanceCode)
+      }
+      await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocument, sourcedata, this.sourceDocumentID);
+    }
+    else {
+      let indexdata3 = {
+        WorkflowStatus: this.state.status
+      }
+      await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata3, this.documentIndexID);
+      let headerdata3 = {
+        ApprovedDate: this.today,
+        WorkflowStatus: this.state.status
+      }
+      await this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderList, headerdata3, this.workflowHeaderID);
+      let sourcedata1 = {
+        WorkflowStatus: this.state.status
+      }
+      await this._Service.updateLibraryItem(this.props.siteUrl, this.props.sourceDocument, sourcedata1, this.sourceDocumentID);
+    }
+    await this.triggerDocumentReview(this.sourceDocumentID, this.state.status)
+    if (this.state.status == "Returned with comments") {
+      message = this.documentReturnSuccess;
+      logstatus = "Returned with comments";
+      if (this.state.ownerEmail == this.state.requesterEmail) {
+        this._sendMail(this.state.ownerEmail, "DocReturn", this.state.ownerName);
+      }
+      else {
+        this._sendMail(this.state.ownerEmail, "DocReturn", this.state.ownerName);
+        this._sendMail(this.state.requesterEmail, "DocReturn", this.state.requesterName);
+      }
+
+
+    }
+    else {
+      message = this.documentRejectSuccess;
+      logstatus = "Rejected";
+
+      if (this.state.ownerEmail == this.state.requesterEmail) {
+        this._sendMail(this.state.ownerEmail, "DocRejected", this.state.ownerName);
+      }
+      else {
+        this._sendMail(this.state.ownerEmail, "DocRejected", this.state.ownerName);
+        this._sendMail(this.state.requesterEmail, "DocRejected", this.state.requesterName);
+      }
+    }
+    let logdata = {
+      Status: logstatus,
+      Workflow: "Approval"
+    }
+    let a = await this._Service.updateItem(this.props.siteUrl, this.props.documentRevisionLogList, logdata, this.revisionLogId);
+    await this._Service.deletehubItemById(this.props.hubUrl, this.props.workflowTasksList, parseInt(this.state.taskID));
+
+    this.setState({
+      hideLoading: true,
+      statusMessage: { isShowMessage: true, message: message, messageType: 4 }
+    });
+    setTimeout(() => {
+      window.location.replace(this.props.siteUrl);
+    }, 5000);
+  }
+  // Document Review trigger
+  protected async triggerDocumentReview(sourceDocumentID: any, status: any) {
+    let siteUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl;
+    const postURL = this.postUrl;
+    const requestHeaders: Headers = new Headers();
+    requestHeaders.append("Content-type", "application/json");
+    const body: string = JSON.stringify({
+      'SiteURL': siteUrl,
+      'ItemId': sourceDocumentID,
+      'WorkflowStatus': status
+    });
+    const postOptions: IHttpClientOptions = {
+      headers: requestHeaders,
+      body: body
+    };
+    let responseText: string = "";
+    let response = await this.props.context.httpClient.post(postURL, HttpClient.configurations.v1, postOptions);
+
+
+  }
   //Cancel Document
   private _onCancel = () => {
     this.setState({

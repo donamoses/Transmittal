@@ -27,6 +27,7 @@ export interface ITransmittalApproveDocumentProps {
   businessUnit: string;
   requestList: string;
   webpartHeader: string;
+  RevisionSettings: string;
 }
 export interface IMessage {
   isShowMessage: boolean;

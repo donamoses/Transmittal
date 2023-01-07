@@ -190,12 +190,6 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
   }
   // On load
   public async componentDidMount() {
-    //Huburl
-    // this.props.siteUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl;
-    // const hubdata = this._Service.getHubsiteData()
-    // console.log(hubdata)
-    // this.reqWeb = Web(window.location.protocol + "//" + window.location.hostname + this.props.hubUrl);
-    // // this.indexUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl + "/Lists/" + this.props.documentIndexList;
     //Get Current User
     this._Service.getCurrentUser()
       .then(async (user: any) => {

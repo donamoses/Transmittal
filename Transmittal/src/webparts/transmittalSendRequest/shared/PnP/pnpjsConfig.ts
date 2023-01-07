@@ -11,10 +11,10 @@ import "@pnp/sp/files";
 import "@pnp/sp/folders";
 import "@pnp/sp/profiles";
 import "@pnp/sp/hubsites/web";
-var _sp: SPFI = null;
+let _sp: SPFI = null;
 
 export const getSP = (context?: WebPartContext): SPFI => {
-  if (context != null) {
+  if (context !== null) {
     //You must add the @pnp/logging package to include the PnPLogging behavior it is no longer a peer dependency
     // The LogLevel set's at what level a message will be written to the console
     _sp = spfi().using(SPFx(context)).using(PnPLogging(LogLevel.Warning));
