@@ -10,6 +10,10 @@ declare interface ITransmittalReviewDocumentWebPartStrings {
   AppTeamsTabEnvironment: string;
   AppOfficeEnvironment: string;
   AppOutlookEnvironment: string;
+  PropertyPaneDescription: string;
+  AccessDeniedMessageBar: string;
+  SaveAsDraftMsgBar: string;
+  DocumentReviewedMsgBar: string;
 }
 
 declare module 'TransmittalReviewDocumentWebPartStrings' {

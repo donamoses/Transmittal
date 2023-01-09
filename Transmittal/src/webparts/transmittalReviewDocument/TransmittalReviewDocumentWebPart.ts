@@ -3,7 +3,8 @@ import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
-  PropertyPaneTextField
+  PropertyPaneTextField,
+  PropertyPaneToggle
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
@@ -12,11 +13,9 @@ import * as strings from 'TransmittalReviewDocumentWebPartStrings';
 import TransmittalReviewDocument from './components/TransmittalReviewDocument';
 import { ITransmittalReviewDocumentProps } from './components/ITransmittalReviewDocumentProps';
 
-export interface ITransmittalReviewDocumentWebPartProps {
-  description: string;
-}
 
-export default class TransmittalReviewDocumentWebPart extends BaseClientSideWebPart<ITransmittalReviewDocumentWebPartProps> {
+
+export default class TransmittalReviewDocumentWebPart extends BaseClientSideWebPart<ITransmittalReviewDocumentProps> {
 
   private _isDarkTheme: boolean = false;
   private _environmentMessage: string = '';
@@ -26,10 +25,31 @@ export default class TransmittalReviewDocumentWebPart extends BaseClientSideWebP
       TransmittalReviewDocument,
       {
         description: this.properties.description,
-        isDarkTheme: this._isDarkTheme,
-        environmentMessage: this._environmentMessage,
-        hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
+        webPartName: this.properties.webPartName,
+        project: this.properties.project,
+        redirectUrl: this.properties.redirectUrl,
+        siteUrl: this.context.pageContext.web.serverRelativeUrl,
+        workflowHeaderListName: this.properties.workflowHeaderListName,
+        context: this.context,
+        notificationPrefListName: this.properties.notificationPrefListName,
+        hubSiteUrl: this.properties.hubSiteUrl,
+        hubsite: this.properties.hubsite,
+        emailNotificationSettings: this.properties.emailNotificationSettings,
+        userMessageSettings: this.properties.userMessageSettings,
+        documentIndex: this.properties.documentIndex,
+        workFlowDetail: this.properties.workFlowDetail,
+        documentApprovalSitePage: this.properties.documentApprovalSitePage,
+        documentRevisionLog: this.properties.documentRevisionLog,
+        documentReviewSitePage: this.properties.documentReviewSitePage,
+        workflowTaskListName: this.properties.workflowTaskListName,
+        taskDelegationSettingsListName: this.properties.taskDelegationSettingsListName,
+        accessGroups: this.properties.accessGroups,
+        departmentList: this.properties.departmentList,
+        accessGroupDetailsList: this.properties.accessGroupDetailsList,
+        projectInformationListName: this.properties.projectInformationListName,
+        bussinessUnitList: this.properties.bussinessUnitList,
+        RequestListName: this.properties.RequestListName,
+        sourceDocument: this.properties.sourceDocument,
       }
     );
 
@@ -107,9 +127,66 @@ export default class TransmittalReviewDocumentWebPart extends BaseClientSideWebP
             {
               groupName: strings.BasicGroupName,
               groupFields: [
-                PropertyPaneTextField('description', {
-                  label: strings.DescriptionFieldLabel
-                })
+                PropertyPaneToggle('project', {
+                  label: 'Project',
+                  onText: 'On',
+                  offText: 'Off'
+                }),
+                PropertyPaneTextField('webPartName', {
+                  label: "WebPart Name"
+                }),
+                PropertyPaneTextField('workflowHeaderListName', {
+                  label: "Workflow Header List Name"
+                }),
+                PropertyPaneTextField('notificationPrefListName', {
+                  label: "Notification Preference List Name"
+                }),
+                PropertyPaneTextField('workflowTaskListName', {
+                  label: "workflow Task List Name"
+                }),
+                PropertyPaneTextField('taskDelegationSettingsListName', {
+                  label: "Task Delegation Settings List Name"
+                }),
+                PropertyPaneTextField('emailNotificationSettings', {
+                  label: "Email Notification Settings List Name"
+                }),
+                PropertyPaneTextField('projectInformationListName', {
+                  label: "Project Information List Name"
+                }),
+                PropertyPaneTextField('userMessageSettings', {
+                  label: "User Message Settings List Name"
+                }),
+                PropertyPaneTextField('documentIndex', {
+                  label: "Document Index List Name"
+                }),
+                PropertyPaneTextField('workFlowDetail', {
+                  label: "Work Flow Detail List Name"
+                }),
+                PropertyPaneTextField('documentRevisionLog', {
+                  label: "Document RevisionLogList Name"
+                }),
+                PropertyPaneTextField('hubsite', {
+                  label: "Hub Site Name"
+                }),
+                PropertyPaneTextField('masterListName', {
+                  label: "Master List Name"
+                }),
+                PropertyPaneTextField('documentApprovalSitePage', {
+                  label: "Document Approval SitePage"
+                }), PropertyPaneTextField('documentReviewSitePage', {
+                  label: "Document Review SitePage"
+                }),
+                , PropertyPaneTextField('accessGroups', {
+                  label: "Access Groups"
+                }),
+                PropertyPaneTextField('departmentList', {
+                  label: "Department List"
+                }), PropertyPaneTextField('accessGroupDetailsList', {
+                  label: "Access Group Details List"
+                }), PropertyPaneTextField('bussinessUnitList', {
+                  label: "Bussiness Unit List"
+                }),
+
               ]
             }
           ]

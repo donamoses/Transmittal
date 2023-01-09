@@ -7,6 +7,7 @@ import "@pnp/sp/items";
 import "@pnp/sp/site-users/web";
 import "@pnp/sp/site-users/web";
 import "@pnp/sp/site-groups";
+import { add } from 'lodash';
 
 export class BaseService {
     private _sp: SPFI;
@@ -122,5 +123,42 @@ export class BaseService {
     }
     public gettaskdelegation(url: string, listname: string, Id: number): Promise<any> {
         return this.sphub.web.getList(url + "/Lists/" + listname).items.select("DelegatedFor/ID,DelegatedFor/Title,DelegatedFor/EMail,DelegatedTo/ID,DelegatedTo/Title,DelegatedTo/EMail,FromDate,ToDate").expand("DelegatedFor,DelegatedTo").filter("DelegatedFor/ID eq '" + Id + "' and(Status eq 'Active')")();
+    }
+    public deletehubItemById(url: string, listname: string, id: number): Promise<any> {
+        return this.sphub.web.getList(url + "/Lists/" + listname).items.getById(id).delete();
+    }
+    public getdetailresponsible(url: string, listname: string, Id: number): Promise<any> {
+        return this.sphub.web.getList(url + "/Lists/" + listname).items
+            .select("ResponseStatus")
+            .filter("HeaderID eq " + Id + " and (Workflow eq 'Review')")()
+    }
+    public updateLibraryItemwithoutversion(url: string, libraryname: string, id: number, data: any,): Promise<any> {
+        console.log(data);
+        return this._sp.web.getList(url + "/" + libraryname).items.getById(id).validateUpdateListItem(data);
+    }
+    public getdccreviewlog(url: string, listname: string, headerId: number, documentIndexId: number,): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.filter("WorkflowID eq '" + headerId + "' and (DocumentIndexId eq '" + documentIndexId + "') and (Workflow eq 'DCC Review') and (Status eq 'Under Review')")()
+
+    }
+    public getreviewlog(url: string, listname: string, headerId: number, documentIndexId: number,): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.filter("WorkflowID eq '" + headerId + "' and (DocumentIndexId eq '" + documentIndexId + "') and (Workflow eq 'Review') and (Status eq 'Under Review')")()
+
+    }
+    public getdetail(url: string, listname: string, headerId: number): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.select("Responsible/ID,Responsible/Title,Responsible/EMail,ResponsibleComment,ResponseStatus,ResponseDate,Workflow")
+            .expand("Responsible").filter("HeaderID eq '" + headerId + "' and (Workflow eq 'Review' or Workflow eq 'DCC Review')")()
+    }
+    public getdetaildata(url: string, listname: string, headerId: number): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.select("Responsible/ID,Responsible/Title,Responsible/EMail,ResponsibleComment,ResponseStatus,ResponseDate,Workflow")
+            .expand("Responsible").filter("HeaderID eq '" + headerId + "' and (Workflow eq 'Review')")()
+    }
+    public getdetails(url: string, listname: string, headerId: number): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.select("Responsible/ID,Responsible/Title,Responsible/EMail,ResponsibleComment,ResponseStatus,ResponseDate,Workflow")
+            .expand("Responsible").filter("HeaderID eq '" + headerId + "' and (Workflow eq 'Review' or Workflow eq 'DCC Review') and (ResponseStatus ne 'Under Review') ")()
     }
 } 

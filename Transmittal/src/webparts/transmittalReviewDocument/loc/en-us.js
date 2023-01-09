@@ -1,4 +1,4 @@
-define([], function() {
+define([], function () {
   return {
     "PropertyPaneDescription": "Description",
     "BasicGroupName": "Group Name",
@@ -10,6 +10,10 @@ define([], function() {
     "AppSharePointEnvironment": "The app is running on SharePoint page",
     "AppTeamsTabEnvironment": "The app is running in Microsoft Teams",
     "AppOfficeEnvironment": "The app is running in office.com",
-    "AppOutlookEnvironment": "The app is running in Outlook"
+    "AppOutlookEnvironment": "The app is running in Outlook",
+    "AccessDeniedMessageBar": "Access Denied",
+    "SaveAsDraftMsgBar": "Saved in draft",
+    "DocumentReviewedMsgBar": "Document Reviewed Successfully"
+
   }
 });

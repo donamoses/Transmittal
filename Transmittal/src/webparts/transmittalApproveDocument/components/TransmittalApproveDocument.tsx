@@ -105,28 +105,28 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
       commentRequired: false
     };
     this._Service = new BaseService(this.props.context, window.location.protocol + "//" + window.location.hostname + this.props.hubUrl);
-    // this._queryParamGetting = this._queryParamGetting.bind(this);
-    // this._userMessageSettings = this._userMessageSettings.bind(this);
-    // this._accessGroups = this._accessGroups.bind(this);
-    // this._openRevisionHistory = this._openRevisionHistory.bind(this);
-    // this._bindApprovalForm = this._bindApprovalForm.bind(this);
-    // this._project = this._project.bind(this);
-    // this._drpdwnPublishFormat = this._drpdwnPublishFormat.bind(this);
-    // this._status = this._status.bind(this);
-    // this._commentsChange = this._commentsChange.bind(this);
-    // this._saveAsDraft = this._saveAsDraft.bind(this);
-    // this._docSave = this._docSave.bind(this);
-    // this._publish = this._publish.bind(this);
-    // this._returnDoc = this._returnDoc.bind(this);
-    // this._sendMail = this._sendMail.bind(this);
-    // this._onCancel = this._onCancel.bind(this);
-    // this._acceptanceChanged = this._acceptanceChanged.bind(this);
-    // this._revisionCoding = this._revisionCoding.bind(this);
-    // this._publishUpdate = this._publishUpdate.bind(this);
-    // this._generateNewRevision = this._generateNewRevision.bind(this);
-    // this._checkCurrentUser = this._checkCurrentUser.bind(this);
-    // this._LAUrlGetting = this._LAUrlGetting.bind(this);
-    // this._checkPermission = this._checkPermission.bind(this);
+    this._queryParamGetting = this._queryParamGetting.bind(this);
+    this._userMessageSettings = this._userMessageSettings.bind(this);
+    this._accessGroups = this._accessGroups.bind(this);
+    this._openRevisionHistory = this._openRevisionHistory.bind(this);
+    this._bindApprovalForm = this._bindApprovalForm.bind(this);
+    this._project = this._project.bind(this);
+    this._drpdwnPublishFormat = this._drpdwnPublishFormat.bind(this);
+    this._status = this._status.bind(this);
+    this._commentsChange = this._commentsChange.bind(this);
+    this._saveAsDraft = this._saveAsDraft.bind(this);
+    this._docSave = this._docSave.bind(this);
+    this._publish = this._publish.bind(this);
+    this._returnDoc = this._returnDoc.bind(this);
+    this._sendMail = this._sendMail.bind(this);
+    this._onCancel = this._onCancel.bind(this);
+    this._acceptanceChanged = this._acceptanceChanged.bind(this);
+    this._revisionCoding = this._revisionCoding.bind(this);
+    this._publishUpdate = this._publishUpdate.bind(this);
+    this._generateNewRevision = this._generateNewRevision.bind(this);
+    this._checkCurrentUser = this._checkCurrentUser.bind(this);
+    this._LAUrlGetting = this._LAUrlGetting.bind(this);
+
   }
   // Validator
   public componentWillMount = () => {
