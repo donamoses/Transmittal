@@ -25,7 +25,8 @@ export class BaseService {
         return this.sphub.web.getList(url + "/Lists/" + listname).items();
     }
     public gethubUserMessageListItems(url: string, listname: string): Promise<any> {
-        return this.sphub.web.getList(url + "/Lists/" + listname).items.select("Title,Message").filter("PageName eq 'SendRequest'")()
+        return this.sphub.web.getList(url + "/Lists/" + listname).items
+            .select("Title,Message").filter("PageName eq 'Review'")()
     }
     public getLibraryItems(url: string, listname: string): Promise<any> {
         return this._sp.web.getList(url + "/" + listname).items();
@@ -63,7 +64,8 @@ export class BaseService {
         return this._sp.web.getList(url + "/Lists/" + listname).items.select("Title,ID")()
     }
     public getRevisionListItems(url: string, listname: string, id: number): Promise<any> {
-        return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id).select("ID,StartPrefix,Pattern,StartWith,EndWith,MinN,MaxN,AutoIncrement")()
+        return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id)
+            .select("ID,StartPrefix,Pattern,StartWith,EndWith,MinN,MaxN,AutoIncrement")()
     }
     public getByEmail(email: string): Promise<any> {
         return this._sp.web.siteUsers.getByEmail(email)()
@@ -84,10 +86,12 @@ export class BaseService {
         return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id)();
     }
     public getApproverData(url: string, listname: string): Promise<any> {
-        return this._sp.web.getList(url + "/Lists/" + listname).items.select("ID,Title,Approver/Title,Approver/ID,Approver/EMail").expand("Approver")()
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.select("ID,Title,Approver/Title,Approver/ID,Approver/EMail").expand("Approver")()
     }
     public getIndexData(url: string, listname: string, ID: any): Promise<any> {
-        return this._sp.web.getList(url + "/Lists/" + listname).items.getById(ID).select("WorkflowStatus,SourceDocument,DocumentStatus")();
+        return this._sp.web.getList(url + "/Lists/" + listname).items.getById(ID)
+            .select("DepartmentID,BusinessUnitID")();
     }
     public getIndexDataId(url: string, listname: string, ID: any): Promise<any> {
         return this._sp.web.getList(url + "/Lists/" + listname).items.getById(ID)
@@ -101,28 +105,33 @@ export class BaseService {
         return this._sp.web.getList(url + "/Lists/" + listname).items.select("ID,Title")()
     }
     public getSourceLibraryItems(url: string, listname: string, ID: any): Promise<any> {
-        return this._sp.web.getList(url + "/" + listname).items.filter('DocumentIndexId eq ' + ID)()
+        return this._sp.web.getList(url + "/" + listname).items
+            .filter('DocumentIndexId eq ' + ID)()
     }
     public getpreviousheader(url: string, listname: string, IndexID: number): Promise<any> {
-        return this._sp.web.getList(url + "/Lists/" + listname).items.select("ID").filter("DocumentIndex eq '" + IndexID + "' and(WorkflowStatus eq 'Returned with comments')")();
+        return this._sp.web.getList(url + "/Lists/" + listname).items
+            .select("ID").filter("DocumentIndex eq '" + IndexID + "' and(WorkflowStatus eq 'Returned with comments')")();
     }
     public gettriggerUnderReviewPermission(url: string, listname: string): Promise<any> {
-        return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("Title eq 'EMEC_DocumentPermission_UnderReview'")()
+        return this.sphub.web.getList(url + "/Lists/" + listname)
+            .items.filter("Title eq 'EMEC_DocumentPermission_UnderReview'")();
     }
     public gettriggerUnderApprovalPermission(url: string, listname: string): Promise<any> {
-        return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("Title eq 'EMEC_DocumentPermission_UnderApproval'")()
+        return this.sphub.web.getList(url + "/Lists/" + listname)
+            .items.filter("Title eq 'EMEC_DocumentPermission_UnderApproval'")();
     }
-    public getdirectpublish(url: string, listname: string): Promise<any> {
-        return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("Title eq 'EMEC_PermissionWebpart'")()
-    }
+
     public getnotification(url: string, listname: string, emailuser: string): Promise<any> {
-        return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("EmailUser/EMail eq '" + emailuser + "'").select("Preference")()
+        return this.sphub.web.getList(url + "/Lists/" + listname)
+            .items.filter("EmailUser/EMail eq '" + emailuser + "'").select("Preference")()
     }
     public getemail(url: string, listname: string, type: string): Promise<any> {
-        return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("Title eq '" + type + "'")();
+        return this.sphub.web.getList(url + "/Lists/" + listname)
+            .items.filter("Title eq '" + type + "'")();
     }
     public gettaskdelegation(url: string, listname: string, Id: number): Promise<any> {
-        return this.sphub.web.getList(url + "/Lists/" + listname).items.select("DelegatedFor/ID,DelegatedFor/Title,DelegatedFor/EMail,DelegatedTo/ID,DelegatedTo/Title,DelegatedTo/EMail,FromDate,ToDate").expand("DelegatedFor,DelegatedTo").filter("DelegatedFor/ID eq '" + Id + "' and(Status eq 'Active')")();
+        return this.sphub.web.getList(url + "/Lists/" + listname)
+            .items.select("DelegatedFor/ID,DelegatedFor/Title,DelegatedFor/EMail,DelegatedTo/ID,DelegatedTo/Title,DelegatedTo/EMail,FromDate,ToDate").expand("DelegatedFor,DelegatedTo").filter("DelegatedFor/ID eq '" + Id + "' and(Status eq 'Active')")();
     }
     public deletehubItemById(url: string, listname: string, id: number): Promise<any> {
         return this.sphub.web.getList(url + "/Lists/" + listname).items.getById(id).delete();
@@ -160,5 +169,49 @@ export class BaseService {
         return this._sp.web.getList(url + "/Lists/" + listname)
             .items.select("Responsible/ID,Responsible/Title,Responsible/EMail,ResponsibleComment,ResponseStatus,ResponseDate,Workflow")
             .expand("Responsible").filter("HeaderID eq '" + headerId + "' and (Workflow eq 'Review' or Workflow eq 'DCC Review') and (ResponseStatus ne 'Under Review') ")()
+    }
+    public getdetaildatas(url: string, listname: string, detailID: number): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.select("Responsible/ID,Responsible/Title,Responsible/EMail,ResponsibleComment,ResponseStatus,TaskID")
+            .expand("Responsible").filter("ID eq '" + detailID + "'")()
+    }
+    public getheaderdetails(url: string, listname: string, headerId: number): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.select("Reviewers/ID,Reviewers/Title,Reviewers/EMail").expand("Reviewers").getById(headerId)();
+    }
+    public getheaderdata(url: string, listname: string, headerId: number): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.select("Reviewers/ID,Reviewers/Title,Reviewers/EMail").expand("Reviewers").getById(headerId)();
+    }
+    public getprojectaccessgroup(url: string, listname: string): Promise<any> {
+        return this.sphub.web.getList(url + "/Lists/" + listname).items
+            .select("AccessGroups,AccessFields").filter("Title eq 'Project_SendReviewWF'")();
+    }
+    public getqdmsaccessgroup(url: string, listname: string): Promise<any> {
+        return this.sphub.web.getList(url + "/Lists/" + listname).items
+            .select("AccessGroups,AccessFields").filter("Title eq 'QDMS_SendReviewWF'")();
+    }
+    public getheaderdatas(url: string, listname: string, headerId: any, headerItems: any): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.getById(headerId).select(headerItems).expand("Owner,Approver,Requester")();
+    }
+    public getprojectheaderdatas(url: string, listname: string, headerId: any, headerItems: any): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.getById(headerId).select(headerItems)
+            .expand("Owner,Approver,Requester,DocumentController")();
+    }
+    public getreviewComment(url: string, listname: string, previousReviewHeader: any): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.select("Responsible/ID,Responsible/Title,ResponsibleComment,ResponseDate")
+            .expand("Responsible").filter("HeaderID eq '" + previousReviewHeader + "' and (Workflow eq 'Review')  ")();
+    }
+    public getdccreviewComment(url: string, listname: string, previousReviewHeader: any): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.select("Responsible/ID,Responsible/Title,ResponsibleComment,ResponseDate,ResponsibleComment,ResponseDate").expand("Responsible")
+            .filter("HeaderID eq '" + previousReviewHeader + "' and (Workflow eq 'DCC Review')  ")();
+    }
+    public indexbind(url: string, listname: string, documentIndexId: any): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.getById(documentIndexId).select("CriticalDocument,DocumentName,SourceDocument")()
     }
 } 
