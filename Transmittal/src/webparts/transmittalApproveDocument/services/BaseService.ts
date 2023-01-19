@@ -62,7 +62,7 @@ export class BaseService {
         return this._sp.web.getList(url + "/Lists/" + listname).items.select("Title,ID")()
     }
     public getRevisionListItems(url: string, listname: string, id: any): Promise<any> {
-        return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id).select("ID,StartPrefix,Pattern,StartWith,EndWith,MinN,MaxN,AutoIncrement")()
+        return this.sphub.web.getList(url + "/Lists/" + listname).items.getById(id).select("ID,StartPrefix,Pattern,StartWith,EndWith,MinN,MaxN,AutoIncrement")()
     }
     public getByEmail(email: string): Promise<any> {
         return this._sp.web.siteUsers.getByEmail(email)()
@@ -107,7 +107,7 @@ export class BaseService {
         return this.sphub.web.getList(url + "/Lists/" + listname).items.select("DelegatedFor/ID,DelegatedFor/Title,DelegatedFor/EMail,DelegatedTo/ID,DelegatedTo/Title,DelegatedTo/EMail,FromDate,ToDate").expand("DelegatedFor,DelegatedTo").filter("DelegatedFor/ID eq '" + Id + "' and(Status eq 'Active')")();
     }
     public getlogitem(url: string, listname: string, workflowHeaderID: string): Promise<any> {
-        return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("WorkflowID eq '" + workflowHeaderID + "' and (Workflow eq 'Approval')")()
+        return this._sp.web.getList(url + "/Lists/" + listname).items.filter("WorkflowID eq '" + workflowHeaderID + "' and (Workflow eq 'Approval')")()
     }
     public getprojectaccessgroup(url: string, listname: string): Promise<any> {
         return this.sphub.web.getList(url + "/Lists/" + listname).items.select("AccessGroups,AccessFields").filter("Title eq 'Project_SendApprovalWF'")();

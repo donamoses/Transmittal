@@ -2483,7 +2483,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 <DatePicker label="Due Date:" id="DueDate"
                   onSelectDate={this._onExpDatePickerChange}
                   placeholder="Select a date..."
-                  isRequired={true}
+                  isRequired={false}
                   value={this.state.dueDate}
                   minDate={new Date()}
                   formatDate={this._onFormatDate}

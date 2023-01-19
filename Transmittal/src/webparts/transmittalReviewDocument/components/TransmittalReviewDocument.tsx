@@ -710,7 +710,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                 DelegatedFromId: this.state.approverId,
                                 ResponseStatus: "Under Approval",
                                 SourceDocument: {
-                                  "__metadata": { type: "SP.FieldUrlValue" },
                                   Description: this.state.documentName,
                                   Url: this.props.siteUrl + "/SourceDocuments/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                                 },
@@ -722,7 +721,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                   this.newDetailItemID = r.data.ID;
                                   const detaildata3 = {
                                     Link: {
-                                      "__metadata": { type: "SP.FieldUrlValue" },
                                       Description: this.state.documentName + "-- Approve",
                                       Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                                     }
@@ -748,7 +746,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                     Source: (this.props.project ? "Project" : "QDMS"),
                                     DelegatedFromId: taskDelegation[0].DelegatedFor.ID,
                                     Link: {
-                                      "__metadata": { type: "SP.FieldUrlValue" },
                                       Description: this.state.documentName + "-- Approve",
                                       Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                                     },
@@ -804,7 +801,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                             DueDate: this.state.DueDate,
                             ResponseStatus: "Under Approval",
                             SourceDocument: {
-                              "__metadata": { type: "SP.FieldUrlValue" },
                               Description: this.state.documentName,
                               Url: this.props.siteUrl + "/SourceDocuments/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                             }
@@ -815,7 +811,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                               this.newDetailItemID = r.data.ID;
                               const detaildata4 = {
                                 Link: {
-                                  "__metadata": { type: "SP.FieldUrlValue" },
                                   Description: this.state.documentName + "-- Approve",
                                   Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                                 }
@@ -833,7 +828,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                 Priority: (this.state.criticalDocument == true ? "Critical" : ""),
                                 Source: (this.props.project ? "Project" : "QDMS"),
                                 Link: {
-                                  "__metadata": { type: "SP.FieldUrlValue" },
                                   Description: this.state.documentName + "-- Approve",
                                   Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                                 }
@@ -887,7 +881,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                           OwnerId: Number(this.state.ownerID),
                           ResponseStatus: "Under Approval",
                           SourceDocument: {
-                            "__metadata": { type: "SP.FieldUrlValue" },
                             Description: this.state.documentName,
                             Url: this.props.siteUrl + "/SourceDocuments/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                           }
@@ -898,7 +891,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                             this.newDetailItemID = r.data.ID;
                             const detaildata6 = {
                               Link: {
-                                "__metadata": { type: "SP.FieldUrlValue" },
                                 Description: this.state.documentName + "-- Approve",
                                 Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                               }
@@ -916,7 +908,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                               Priority: (this.state.criticalDocument == true ? "Critical" : ""),
                               Source: (this.props.project ? "Project" : "QDMS"),
                               Link: {
-                                "__metadata": { type: "SP.FieldUrlValue" },
                                 Description: this.state.documentName + "-- Approve",
                                 Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                               }
@@ -1153,7 +1144,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                 DelegatedFromId: this.state.approverId,
                                 ResponseStatus: "Under Approval",
                                 SourceDocument: {
-                                  "__metadata": { type: "SP.FieldUrlValue" },
                                   Description: this.state.documentName,
                                   Url: this.props.siteUrl + "/SourceDocuments/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                                 },
@@ -1165,7 +1155,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                   this.newDetailItemID = r.data.ID;
                                   const detaildata9 = {
                                     Link: {
-                                      "__metadata": { type: "SP.FieldUrlValue" },
                                       Description: this.state.documentName + "-- Approve",
                                       Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                                     }
@@ -1192,7 +1181,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                     Source: (this.props.project ? "Project" : "QDMS"),
                                     DelegatedFromId: taskDelegation[0].DelegatedFor.ID,
                                     Link: {
-                                      "__metadata": { type: "SP.FieldUrlValue" },
                                       Description: this.state.documentName + "-- Approve",
                                       Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                                     }
@@ -1248,7 +1236,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                             DueDate: this.state.DueDate,
                             ResponseStatus: "Under Approval",
                             SourceDocument: {
-                              "__metadata": { type: "SP.FieldUrlValue" },
                               Description: this.state.documentName,
                               Url: this.props.siteUrl + "/SourceDocuments/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                             }
@@ -1259,7 +1246,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                               this.newDetailItemID = r.data.ID;
                               const detaildata11 = {
                                 Link: {
-                                  "__metadata": { type: "SP.FieldUrlValue" },
                                   Description: this.state.documentName + "-- Approve",
                                   Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                                 }
@@ -1277,7 +1263,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                 Priority: (this.state.criticalDocument == true ? "Critical" : ""),
                                 Source: (this.props.project ? "Project" : "QDMS"),
                                 Link: {
-                                  "__metadata": { type: "SP.FieldUrlValue" },
                                   Description: this.state.documentName + "-- Approve",
                                   Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                                 },
@@ -1332,7 +1317,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                           OwnerId: Number(this.state.ownerID),
                           ResponseStatus: "Under Approval",
                           SourceDocument: {
-                            "__metadata": { type: "SP.FieldUrlValue" },
                             Description: this.state.documentName,
                             Url: this.props.siteUrl + "/SourceDocuments/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                           },
@@ -1343,7 +1327,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                             this.newDetailItemID = r.data.ID;
                             const detaildata13 = {
                               Link: {
-                                "__metadata": { type: "SP.FieldUrlValue" },
                                 Description: this.state.documentName + "-- Approve",
                                 Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                               }
@@ -1360,7 +1343,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                               Priority: (this.state.criticalDocument == true ? "Critical" : ""),
                               Source: (this.props.project ? "Project" : "QDMS"),
                               Link: {
-                                "__metadata": { type: "SP.FieldUrlValue" },
                                 Description: this.state.documentName + "-- Approve",
                                 Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                               }
@@ -1968,7 +1950,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                   OwnerId: this.state.ownerID,
                                   ResponseStatus: "Under Review",
                                   SourceDocument: {
-                                    "__metadata": { type: "SP.FieldUrlValue" },
                                     Description: this.state.documentName,
                                     Url: this.props.siteUrl + "/SourceDocuments/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                                   },
@@ -1979,7 +1960,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                     this.newDetailItemID = r.data.ID;
                                     const detaildata18 = {
                                       Link: {
-                                        "__metadata": { type: "SP.FieldUrlValue" },
                                         Description: this.state.documentName + "-- Review",
                                         Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                                       }
@@ -1987,7 +1967,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                     //Update link
                                     await this._Service.updateItem(this.props.siteUrl, this.props.workFlowDetail, detaildata18, r.data.ID);
                                     const reviewerdata = {
-                                      ReviewersId: { results: this.state.reviewers }
+                                      ReviewersId: this.state.reviewers
                                     }
                                     this._Service.updateItem(this.props.siteUrl, this.props.workflowHeaderListName, reviewerdata, this.headerId);
                                     this._Service.updateItem(this.props.siteUrl, this.props.documentIndex, reviewerdata, this.documentIndexId);
@@ -2005,7 +1985,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                       DelegatedFromId: taskDelegation[0].DelegatedFor.ID,
                                       Workflow: "Review",
                                       Link: {
-                                        "__metadata": { type: "SP.FieldUrlValue" },
                                         Description: this.state.documentName + "-- Review",
                                         Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                                       },
@@ -2055,7 +2034,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                           DueDate: this.state.DueDate,
                           ResponseStatus: "Under Review",
                           SourceDocument: {
-                            "__metadata": { type: "SP.FieldUrlValue" },
                             Description: this.state.documentName,
                             Url: this.props.siteUrl + "/SourceDocuments/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                           },
@@ -2067,7 +2045,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                             this.newDetailItemID = r.data.ID;
                             const detaildata20 = {
                               Link: {
-                                "__metadata": { type: "SP.FieldUrlValue" },
                                 Description: this.state.documentName + "-- Review",
                                 Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                               },
@@ -2084,7 +2061,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                               Source: (this.props.project ? "Project" : "QDMS"),
                               Workflow: "Review",
                               Link: {
-                                "__metadata": { type: "SP.FieldUrlValue" },
                                 Description: this.state.documentName + "-- Review",
                                 Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                               }
@@ -2135,7 +2111,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                         DueDate: this.state.DueDate,
                         ResponseStatus: "Under Review",
                         SourceDocument: {
-                          "__metadata": { type: "SP.FieldUrlValue" },
                           Description: this.state.documentName,
                           Url: this.props.siteUrl + "/SourceDocuments/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                         }
@@ -2146,7 +2121,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                           this.newDetailItemID = r.data.ID;
                           const detaildata22 = {
                             Link: {
-                              "__metadata": { type: "SP.FieldUrlValue" },
                               Description: this.state.documentName + "-- Review",
                               Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                             }
@@ -2163,7 +2137,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                             Source: (this.props.project ? "Project" : "QDMS"),
                             Workflow: "Review",
                             Link: {
-                              "__metadata": { type: "SP.FieldUrlValue" },
                               Description: this.state.documentName + "-- Review",
                               Url: this.props.siteUrl + "/SitePages/" + this.props.documentReviewSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                             }
@@ -2288,7 +2261,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                             DelegatedFromId: (this.state.delegatedToId != "" ? this.state.delegateForIdInSubSite : parseInt("")),
                             ResponseStatus: "Under Approval",
                             SourceDocument: {
-                              "__metadata": { type: "SP.FieldUrlValue" },
                               Description: this.state.documentName,
                               Url: this.props.siteUrl + "/SourceDocuments/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                             },
@@ -2299,7 +2271,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                               this.newDetailItemID = r.data.ID;
                               const detaildata24 = {
                                 Link: {
-                                  "__metadata": { type: "SP.FieldUrlValue" },
                                   Description: this.state.documentName + "-- Approve",
                                   Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                                 }
@@ -2326,7 +2297,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                 Source: (this.props.project ? "Project" : "QDMS"),
                                 DelegatedFromId: (this.state.delegatedToId != "" ? this.state.delegatedFromId : 0),
                                 Link: {
-                                  "__metadata": { type: "SP.FieldUrlValue" },
                                   Description: this.state.documentName + "-- Approve",
                                   Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                                 }
@@ -2379,7 +2349,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                     DueDate: this.state.DueDate,
                     ResponseStatus: "Under Approval",
                     SourceDocument: {
-                      "__metadata": { type: "SP.FieldUrlValue" },
                       Description: this.state.documentName,
                       Url: this.props.siteUrl + "/SourceDocuments/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                     }
@@ -2390,7 +2359,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                       this.newDetailItemID = r.data.ID;
                       const detaildata27 = {
                         Link: {
-                          "__metadata": { type: "SP.FieldUrlValue" },
                           Description: this.state.documentName + "-- Approve",
                           Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                         }
@@ -2407,7 +2375,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                         Priority: (this.state.criticalDocument == true ? "Critical" : ""),
                         Source: (this.props.project ? "Project" : "QDMS"),
                         Link: {
-                          "__metadata": { type: "SP.FieldUrlValue" },
                           Description: this.state.documentName + "-- Approve",
                           Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                         }
@@ -2459,7 +2426,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                   DueDate: this.state.DueDate,
                   ResponseStatus: "Under Approval",
                   SourceDocument: {
-                    "__metadata": { type: "SP.FieldUrlValue" },
                     Description: this.state.documentName,
                     Url: this.props.siteUrl + "/SourceDocuments/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.documentIndexId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
                   }
@@ -2470,7 +2436,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                     this.newDetailItemID = r.data.ID;
                     const detaildata30 = {
                       Link: {
-                        "__metadata": { type: "SP.FieldUrlValue" },
                         Description: this.state.documentName + "-- Approve",
                         Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                       }
@@ -2487,7 +2452,6 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                       Priority: (this.state.criticalDocument == true ? "Critical" : ""),
                       Source: (this.props.project ? "Project" : "QDMS"),
                       Link: {
-                        "__metadata": { type: "SP.FieldUrlValue" },
                         Description: this.state.documentName + "-- Approve",
                         Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
                       }

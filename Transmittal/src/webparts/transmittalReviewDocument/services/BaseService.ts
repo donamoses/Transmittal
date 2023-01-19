@@ -137,7 +137,7 @@ export class BaseService {
         return this.sphub.web.getList(url + "/Lists/" + listname).items.getById(id).delete();
     }
     public getdetailresponsible(url: string, listname: string, Id: number): Promise<any> {
-        return this.sphub.web.getList(url + "/Lists/" + listname).items
+        return this._sp.web.getList(url + "/Lists/" + listname).items
             .select("ResponseStatus")
             .filter("HeaderID eq " + Id + " and (Workflow eq 'Review')")()
     }
