@@ -86,7 +86,6 @@
     display: flex;
   }
 
-
   .header {
     border-bottom: 1px solid rgb(161, 159, 157);
     display: flex;
@@ -102,6 +101,12 @@
   .divRow {
     display: flex;
     margin-top: 10px;
+  }
+
+  .mandatory {
+    font-style: italic;
+    font-size: 12px;
+    margin-right: 27rem;
   }
 }
 

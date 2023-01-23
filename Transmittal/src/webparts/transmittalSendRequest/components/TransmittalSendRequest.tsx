@@ -2445,9 +2445,10 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 </div>
               </div> */}
             </div>
-            <div hidden={this.state.hideProject}>
-              <div className={styles.divMetadata}>
-                <div className={styles.divMetadataCol1}>
+
+            <div className={styles.flex}>
+              <div className={styles.width}>
+                <div hidden={this.state.hideProject}>
                   <PeoplePicker
                     context={this.props.context as any}
                     titleText="Document Controller"
@@ -2465,28 +2466,26 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                   />
                   <div style={{ color: "#dc3545" }}>
                     {this.validator.message("DocumentController", this.state.dccReviewer, "required")}{" "}</div>
-
-                </div>
-                <div className={styles.divMetadataCol2}>
-                  <div style={{ marginLeft: "3px", width: "100%" }}>
-                    <Label>Reviewer</Label><PeoplePicker
-                      context={this.props.context as any}
-                      personSelectionLimit={1}
-                      groupName={""} // Leave this blank in case you want to filter from all users    
-                      showtooltip={true}
-                      disabled={false}
-                      ensureUser={true}
-                      onChange={(items) => this._reviewerChange(items)}
-                      defaultSelectedUsers={this.state.reviewersName}
-                      showHiddenInUI={false}
-                      principalTypes={[PrincipalType.User]}
-                      resolveDelay={1000}
-                    /></div>
-                </div>
-                <div className={styles.divMetadataCol3}>
-
                 </div>
               </div>
+              <div className={styles.width}>
+                <div style={{ marginLeft: "3px", width: "100%" }}>
+                  <Label>Reviewer</Label><PeoplePicker
+                    context={this.props.context as any}
+                    personSelectionLimit={1}
+                    groupName={""} // Leave this blank in case you want to filter from all users    
+                    showtooltip={true}
+                    disabled={false}
+                    ensureUser={true}
+                    onChange={(items) => this._reviewerChange(items)}
+                    defaultSelectedUsers={this.state.reviewersName}
+                    showHiddenInUI={false}
+                    principalTypes={[PrincipalType.User]}
+                    resolveDelay={1000}
+                  /></div>
+              </div>
+
+
             </div>
             {/* <div><PeoplePicker
               context={this.props.context as any}
@@ -2507,7 +2506,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               <div className={styles.width}>
                 <PeoplePicker
                   context={this.props.context as any}
-                  titleText="Approver *"
+                  titleText="Approver"
                   personSelectionLimit={1}
                   groupName={""} // Leave this blank in case you want to filter from all users    
                   showtooltip={true}
@@ -2539,8 +2538,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             </div>
 
             <div className={styles.mt}>
-              < TextField label="Comments" id="comments" value={this.state.comments} onChange={this._commentschange} multiline required autoAdjustHeight /></div>
-            <div style={{ color: "#dc3545" }}>{this.validator.message("comments", this.state.comments, "required")}{" "}</div>
+              < TextField label="Comments" id="comments" value={this.state.comments} onChange={this._commentschange} multiline autoAdjustHeight /></div>
             <div> {this.state.statusMessage.isShowMessage ?
               <MessageBar
                 messageBarType={this.state.statusMessage.messageType}
@@ -2551,16 +2549,16 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             <div className={styles.mt}>
               <div hidden={this.state.hideLoading}><Spinner label={'Document is Sending...'} /></div>
             </div>
-            <DialogFooter>
 
-              <div className={styles.rgtalign}>
-                <div style={{ fontStyle: "italic", fontSize: "12px" }}><span style={{ color: "red", fontSize: "23px" }}>*</span>fields are mandatory </div>
-              </div>
-              <div className={styles.rgtalign} >
-                <PrimaryButton id="b2" className={styles.btn} onClick={this._submitSendRequest} style={{ display: this.state.saveDisable }}>Submit</PrimaryButton >
-                <PrimaryButton id="b1" className={styles.btn} onClick={this._onCancel}>Cancel</PrimaryButton >
-              </div>
-            </DialogFooter>
+
+            <div className={styles.divRow}>
+              <div style={{ fontStyle: "italic", fontSize: "12px", position: "absolute" }}><span style={{ color: "red", fontSize: "23px" }}>*</span>fields are mandatory </div>
+            </div>
+            <div className={styles.rgtalign} >
+              <PrimaryButton id="b2" className={styles.btn} onClick={this._submitSendRequest}>Submit</PrimaryButton >
+              <PrimaryButton id="b1" className={styles.btn} onClick={this._onCancel}>Cancel</PrimaryButton >
+            </div>
+
 
             {/* {/ Cancel Dialog Box /} */}
             <div style={{ display: this.state.cancelConfirmMsg }}>

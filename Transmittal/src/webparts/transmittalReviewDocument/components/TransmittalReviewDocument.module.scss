@@ -25,6 +25,62 @@
     padding-bottom: 1em;
   }
 
+  .divMetadata {
+    width: 100%;
+    display: flex;
+    margin-top: 10px;
+  }
+
+  .divMetadataCol1 {
+    width: 100%;
+    display: flex;
+  }
+
+  .divMetadataCol2 {
+    width: 100%;
+    margin-left: 15px;
+    display: flex;
+  }
+
+  .divMetadataCol3 {
+    width: 100%;
+    margin-left: 15px;
+    display: flex;
+  }
+
+  .divMetadataCol4 {
+    width: 100%;
+    margin-left: 15px;
+    display: flex;
+  }
+
+  .header {
+    border-bottom: 1px solid rgb(161, 159, 157);
+    display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .bold {
+    font-weight: bold;
+  }
+
+  .divLabel {
+    margin-top: 5px;
+    margin-left: 5px;
+  }
+
+  .divRow {
+    display: flex;
+    margin-top: 10px;
+  }
+
+  .mandatory {
+    font-style: italic;
+    font-size: 12px;
+    margin-right: 27rem;
+  }
+
   .AccordionItemButton {
     width: 100%;
     background-color: "[theme: themeLighter, default: #005a9e]";
