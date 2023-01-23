@@ -798,7 +798,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
 
             }
             // my task updation
-            const task = await this._Service.createNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata5);
+            const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata5);
             if (task) {
               const taskdetail = {
                 TaskID: task.data.ID,
@@ -1783,7 +1783,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                     },
 
                   }
-                  const task = await this._Service.createNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata16);
+                  const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata16);
                   if (task) {
                     const taskdata17 = {
                       TaskID: task.data.ID,
@@ -2127,7 +2127,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                       Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalPage + ".aspx?hid=" + this.newheaderid + "&dtlid=" + detail.data.ID + ""
                     },
                   }
-                  const task = await this._Service.createNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata6)
+                  const task = await this._Service.createhubNewItem(this.props.hubUrl, this.props.workflowTasksList, taskdata6)
                   if (task) {
                     this.TaskID = task.data.ID;
                     const taskdetail1 = {
@@ -2390,64 +2390,108 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
           <div className={styles.border}>
             <div className={styles.alignCenter}> {this.props.webpartHeader}</div>
             <br />
-
-            <div className={styles.flex}>
-              <div className={styles.width}><Label >Document ID : {this.state.documentID}</Label></div>
-              <div ><Link onClick={this._openRevisionHistory} target="_blank" underline>Revision History</Link></div>
+            <div className={styles.header}>
+              <div className={styles.divMetadataCol1}>
+                <h3 >Document Details</h3>
+              </div>
+              <div className={styles.divMetadataCol3} style={{ marginLeft: "50rem" }}>
+                <Link onClick={this._openRevisionHistory} target="_blank" underline>Revision History</Link>
+              </div>
             </div>
+            <div className={styles.divMetadata}>
+              <div className={styles.divMetadataCol1}>
+                <Label >Document ID : </Label><div className={styles.divLabel}>{this.state.documentID}</div>
+              </div>
+              <div className={styles.divMetadataCol2} >
+                <Label >Document:</Label><div className={styles.divLabel}>  <a href={this.state.linkToDoc} target="_blank">{this.state.documentName}</a></div>
+              </div>
+              <div className={styles.divMetadataCol4}>
+                <Label >Revision :</Label><div className={styles.divLabel}> {this.state.revision}</div>
+              </div>
+            </div>
+
+
             <div hidden={this.state.hideProject}>
+              <div className={styles.header}>
+                <h3 className="ExampleCard-title title-222">Project Details</h3>
+              </div>
               <div className={styles.flex}>
                 <div className={styles.width}><Label >Project Name : {this.state.projectName} </Label></div>
                 <div><Label >Project Number : {this.state.projectNumber}</Label></div>
               </div>
             </div>
-            <div className={styles.flex}>
-              <div className={styles.width}><Label >Document : <a href={this.state.linkToDoc} target="_blank">{this.state.documentName}</a></Label></div>
-              <div ><Label >Revision : {this.state.revision}</Label></div>
+
+            <div className={styles.header}>
+              <h3 className="ExampleCard-title title-222">Workflow Details</h3>
             </div>
-            <div className={styles.flex}>
-              <div className={styles.width}><Label >Owner : {this.state.ownerName} </Label></div>
-              <div><Label >Requester : {this.state.currentUser}</Label></div>
+            <div className={styles.divMetadata}>
+              <div className={styles.divMetadataCol1}>
+                <Label >Owner : </Label><div className={styles.divLabel}> {this.state.ownerName}</div>
+              </div>
+              <div className={styles.divMetadataCol2}>
+                <Label >Requester :</Label> <div className={styles.divLabel}>{this.state.currentUser}</div>
+              </div>
+              {/* <div hidden={this.state.hideProject}>
+                <div className={styles.divMetadataCol3}>
+                  <TooltipHost
+                    content="Check if the document need to approve in same revision"
+                    //id={tooltipId}
+                    calloutProps={calloutProps}
+                    styles={hostStyles}>
+                    <Checkbox label="Approve in same revision ? " boxSide="end"
+                      onChange={this._onSameRevisionChecked}
+                      checked={this.state.sameRevision} />
+                  </TooltipHost>
+                </div>
+              </div> */}
             </div>
             <div hidden={this.state.hideProject}>
-              <div>
-                <TooltipHost
-                  content="Check if the document need to approve in same revision"
-                  //id={tooltipId}
-                  calloutProps={calloutProps}
-                  styles={hostStyles}>
-                  <Checkbox label="Approve in same revision ? " boxSide="end"
-                    onChange={this._onSameRevisionChecked}
-                    checked={this.state.sameRevision} />
-                </TooltipHost>
+              <div className={styles.divMetadata}>
+                <div className={styles.divMetadataCol1}>
+                  <PeoplePicker
+                    context={this.props.context as any}
+                    titleText="Document Controller"
+                    personSelectionLimit={1}
+                    groupName={""} // Leave this blank in case you want to filter from all users    
+                    showtooltip={true}
+                    disabled={false}
+                    ensureUser={true}
+                    onChange={(items) => this._dccReviewerChange(items)}
+                    defaultSelectedUsers={[this.state.dccReviewerName]}
+                    showHiddenInUI={false}
+                    // isRequired={true}
+                    principalTypes={[PrincipalType.User]}
+                    resolveDelay={1000}
+                  />
+                  <div style={{ color: "#dc3545" }}>
+                    {this.validator.message("DocumentController", this.state.dccReviewer, "required")}{" "}</div>
+
+                </div>
+                <div className={styles.divMetadataCol2}>
+                  <div style={{ marginLeft: "3px", width: "100%" }}>
+                    <Label>Reviewer</Label><PeoplePicker
+                      context={this.props.context as any}
+                      personSelectionLimit={1}
+                      groupName={""} // Leave this blank in case you want to filter from all users    
+                      showtooltip={true}
+                      disabled={false}
+                      ensureUser={true}
+                      onChange={(items) => this._reviewerChange(items)}
+                      defaultSelectedUsers={this.state.reviewersName}
+                      showHiddenInUI={false}
+                      principalTypes={[PrincipalType.User]}
+                      resolveDelay={1000}
+                    /></div>
+                </div>
+                <div className={styles.divMetadataCol3}>
+
+                </div>
               </div>
-
-              <div>
-                <PeoplePicker
-                  context={this.props.context as any}
-                  titleText="Document Controller"
-                  personSelectionLimit={1}
-                  groupName={""} // Leave this blank in case you want to filter from all users    
-                  showtooltip={true}
-                  disabled={false}
-                  ensureUser={true}
-                  onChange={(items) => this._dccReviewerChange(items)}
-                  defaultSelectedUsers={[this.state.dccReviewerName]}
-                  showHiddenInUI={false}
-                  // isRequired={true}
-                  principalTypes={[PrincipalType.User]}
-                  resolveDelay={1000}
-                />
-                <div style={{ color: "#dc3545" }}>
-                  {this.validator.message("DocumentController", this.state.dccReviewer, "required")}{" "}</div>
-              </div>
-
-
             </div>
-            <div><PeoplePicker
+            {/* <div><PeoplePicker
               context={this.props.context as any}
               titleText="Reviewer(s)"
-              personSelectionLimit={20}
+              personSelectionLimit={5}
               groupName={""} // Leave this blank in case you want to filter from all users    
               showtooltip={true}
               disabled={false}
@@ -2457,7 +2501,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               showHiddenInUI={false}
               principalTypes={[PrincipalType.User]}
               resolveDelay={1000}
-            /></div>
+            /></div> */}
 
             <div className={styles.flex}>
               <div className={styles.width}>

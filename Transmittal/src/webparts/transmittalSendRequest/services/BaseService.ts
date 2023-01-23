@@ -83,7 +83,7 @@ export class BaseService {
         return this._sp.web.getList(url + "/Lists/" + listname).items.getById(id)();
     }
     public getApproverData(url: string, listname: string): Promise<any> {
-        return this._sp.web.getList(url + "/Lists/" + listname).items.select("ID,Title,Approver/Title,Approver/ID,Approver/EMail").expand("Approver")()
+        return this.sphub.web.getList(url + "/Lists/" + listname).items.select("ID,Title,Approver/Title,Approver/ID,Approver/EMail").expand("Approver")()
     }
     public getIndexData(url: string, listname: string, ID: any): Promise<any> {
         return this._sp.web.getList(url + "/Lists/" + listname).items.getById(ID).select("WorkflowStatus,SourceDocument,DocumentStatus")();

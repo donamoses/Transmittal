@@ -1213,74 +1213,75 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                 return this._Service.uploadDocument(this.props.sourceDocumentLibrary, docinsertname, templateData)
               }).then((fileUploaded: any) => {
                 console.log("File Uploaded");
-                fileUploaded.file.getItem().then(async (item: any) => {
-                  console.log(item);
-                  sourceDocumentId = item["ID"];
+                fileUploaded.file.getItem()
+                  .then(async (item: any) => {
+                    console.log(item);
+                    sourceDocumentId = item["ID"];
 
-                  this.setState({ sourceDocumentId: sourceDocumentId });
-                  await this._addSourceDocument();
-                }).then(async (updateDocumentIndex: any) => {
-                  let revision;
-                  if (this.props.project) {
-                    revision = "-";
-                  }
-                  else {
-                    revision = "0";
-                  }
-                  let logdata = {
-                    Title: this.state.documentid,
-                    Status: "Document Created",
-                    LogDate: this.state.today,
-                    Revision: revision,
-                    DocumentIndexId: parseInt(this.state.newDocumentId),
-                  }
-                  let log = await this._Service.createNewItem(this.props.siteUrl, this.props.documentRevisionLogList, logdata)
-                  if (this.state.directPublishCheck === false) {
-                    let indexdata = {
-                      SourceDocumentID: parseInt(this.state.sourceDocumentId),
-                      DocumentName: this.documentNameExtension,
-                      SourceDocument: {
-                        Description: this.documentNameExtension,
-                        Url: this.props.siteUrl + "/" + this.props.sourceDocumentLibrary + "/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.state.newDocumentId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
-                      },
-                      RevokeExpiry: {
-                        Description: "Revoke",
-                        Url: this.revokeUrl
-                      },
+                    this.setState({ sourceDocumentId: sourceDocumentId });
+                    await this._addSourceDocument();
+                  }).then(async (updateDocumentIndex: any) => {
+                    let revision;
+                    if (this.props.project) {
+                      revision = "-";
                     }
-                    await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata, parseInt(this.state.newDocumentId));
-
-                  }
-                  else {
-                    let indexdata = {
-                      SourceDocumentID: parseInt(this.state.sourceDocumentId),
-                      DocumentName: this.documentNameExtension,
-                      ApprovedDate: this.state.approvalDate,
-
-                      SourceDocument: {
-                        Description: this.documentNameExtension,
-                        Url: this.props.siteUrl + "/" + this.props.sourceDocumentLibrary + "/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.state.newDocumentId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
-                      },
-                      RevokeExpiry: {
-                        Description: "Revoke",
-                        Url: this.revokeUrl
-                      },
+                    else {
+                      revision = "0";
                     }
-                    await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata, parseInt(this.state.newDocumentId));
+                    let logdata = {
+                      Title: this.state.documentid,
+                      Status: "Document Created",
+                      LogDate: this.state.today,
+                      Revision: revision,
+                      DocumentIndexId: parseInt(this.state.newDocumentId),
+                    }
+                    let log = await this._Service.createNewItem(this.props.siteUrl, this.props.documentRevisionLogList, logdata)
+                    if (this.state.directPublishCheck === false) {
+                      let indexdata = {
+                        SourceDocumentID: parseInt(this.state.sourceDocumentId),
+                        DocumentName: this.documentNameExtension,
+                        SourceDocument: {
+                          Description: this.documentNameExtension,
+                          Url: this.props.siteUrl + "/" + this.props.sourceDocumentLibrary + "/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.state.newDocumentId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
+                        },
+                        RevokeExpiry: {
+                          Description: "Revoke",
+                          Url: this.revokeUrl
+                        },
+                      }
+                      await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata, parseInt(this.state.newDocumentId));
 
-                  }
-                  await this._triggerPermission(sourceDocumentId);
-                  if (this.state.directPublishCheck === true) {
-                    this.setState({ hideLoading: false, hideCreateLoading: "none" });
-                    await this._publish();
-                  }
-                  else {
-                    this.setState({ hideCreateLoading: "none", norefresh: "none", statusMessage: { isShowMessage: true, message: this.createDocument, messageType: 4 } });
-                    setTimeout(() => {
-                      window.location.replace(this.props.siteUrl);
-                    }, 5000);
-                  }
-                });
+                    }
+                    else {
+                      let indexdata = {
+                        SourceDocumentID: parseInt(this.state.sourceDocumentId),
+                        DocumentName: this.documentNameExtension,
+                        ApprovedDate: this.state.approvalDate,
+
+                        SourceDocument: {
+                          Description: this.documentNameExtension,
+                          Url: this.props.siteUrl + "/" + this.props.sourceDocumentLibrary + "/Forms/AllItems.aspx?FilterField1=DocumentIndex&FilterValue1=" + parseInt(this.state.newDocumentId) + "&FilterType1=Lookup&viewid=c46304af-9c51-4289-bea2-ddb05655f7c2"
+                        },
+                        RevokeExpiry: {
+                          Description: "Revoke",
+                          Url: this.revokeUrl
+                        },
+                      }
+                      await this._Service.updateItem(this.props.siteUrl, this.props.documentIndexList, indexdata, parseInt(this.state.newDocumentId));
+
+                    }
+                    await this._triggerPermission(sourceDocumentId);
+                    if (this.state.directPublishCheck === true) {
+                      this.setState({ hideLoading: false, hideCreateLoading: "none" });
+                      await this._publish();
+                    }
+                    else {
+                      this.setState({ hideCreateLoading: "none", norefresh: "none", statusMessage: { isShowMessage: true, message: this.createDocument, messageType: 4 } });
+                      setTimeout(() => {
+                        window.location.replace(this.props.siteUrl);
+                      }, 5000);
+                    }
+                  });
               });
           });
         }
@@ -2271,7 +2272,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                   disabled={false}
                   ensureUser={true}
                   onChange={(items) => this._selectedOwner(items)}
-                  defaultSelectedUsers={[this.state.ownerName]}
+                  defaultSelectedUsers={[this.props.context.pageContext.user.email]}
                   showHiddenInUI={false}
                   principalTypes={[PrincipalType.User]}
                   resolveDelay={1000} />
@@ -2433,7 +2434,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                   {this.validator.message("expiryDate", this.state.expiryDate, "required")}{""}</div>
                 <div style={{ marginLeft: "1em", width: "13em" }}>
                   <TextField id="ExpiryLeadPeriod" name="ExpiryLeadPeriod"
-                    label="Expiry Reminder" onChange={this._expLeadPeriodChange}
+                    label="Expiry Reminder(Days)" onChange={this._expLeadPeriodChange}
                     value={this.state.expiryLeadPeriod}>
                   </TextField></div>
                 <div style={{ color: "#dc3545" }}>

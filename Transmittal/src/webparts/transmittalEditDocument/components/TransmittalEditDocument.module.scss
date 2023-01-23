@@ -1,6 +1,15 @@
-@import '~office-ui-fabric-react/dist/sass/References.scss';
+@import '~@fluentui/react/dist/sass/References.scss';
 
-.transmittalSendRequest {
+.transmittalEditDocument {
+  overflow: hidden;
+  padding: 1em;
+  color: "[theme:bodyText, default: #323130]";
+  color: var(--bodyText);
+
+  &.teams {
+    font-family: $ms-font-family-fallbacks;
+  }
+
   div.alignCenter {
     font-size: 18px;
     font-weight: bold;
@@ -17,34 +26,43 @@
     padding-bottom: 1em;
   }
 
-  div.flex {
+  .divrow {
+    width: 100%;
     display: flex;
   }
 
-  div.width {
+  .wdthlft {
+    width: 50%;
+    margin-left: 10px;
+  }
+
+  .wdthrgt {
     width: 50%;
   }
 
-  .cmnt {
-    overflow-x: auto;
+  .wdthfrst {
+    margin-top: 10px;
+    width: 33%
+  }
+
+  .wdthmid {
+    width: 33%;
+    margin-top: 10px;
+  }
+
+  .wdthlst {
+    width: 33%;
+    margin-top: 10px;
   }
 
   .mt {
     margin-top: 10px;
   }
 
-  div.drpdwn {
-    width: 100%;
+  .flex {
+    display: flex;
   }
 
-  input {
-    height: 30px;
-    width: 100%;
-  }
-
-  // .title-155{
-  //   height: 34px;
-  // }
   .btn {
     margin-right: 10px;
     border-radius: 5px;
@@ -57,51 +75,10 @@
     text-align: right;
   }
 
-  .divMetadata {
-    width: 100%;
-    display: flex;
-    margin-top: 10px;
-  }
-
-  .divMetadataCol1 {
-    width: 100%;
-    display: flex;
-  }
-
-  .divMetadataCol2 {
-    width: 100%;
-    margin-left: 15px;
-    display: flex;
-  }
-
-  .divMetadataCol3 {
-    width: 100%;
-    margin-left: 15px;
-    display: flex;
-  }
-
-  .divMetadataCol4 {
-    width: 100%;
-    margin-left: 15px;
-    display: flex;
-  }
-
-
-  .header {
-    border-bottom: 1px solid rgb(161, 159, 157);
-    display: flex;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .divLabel {
-    margin-top: 5px;
-    margin-left: 5px;
-  }
-
-  .divRow {
-    display: flex;
-    margin-top: 10px;
+  .container {
+    max-width: 700px;
+    margin: 0px auto;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
   }
 }
 
