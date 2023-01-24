@@ -60,7 +60,7 @@ export class BaseService {
         return this._sp.web.getFileByServerRelativePath(Url).getBuffer()
     }
     public getqdmsdocument(Url: string): Promise<any> {
-        return this.spQdms.web.getFileByServerRelativePath(Url).getBuffer()
+        return this.spQdms.web.getFileByUrl(Url).getText()
     }
     public updateLibraryItem(url: string, libraryname: string, data: any, id: number): Promise<any> {
         console.log(data);

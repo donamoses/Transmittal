@@ -833,8 +833,9 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
         if (this.props.project) {
           //Validation without direct publish
           if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver')
-            && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod')
-            && this.validator.fieldValid('Revision') && this.validator.fieldValid('DocumentController')) {
+            // && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod')
+            // && this.validator.fieldValid('Revision') 
+            && this.validator.fieldValid('DocumentController')) {
             this.setState({
               saveDisable: true, hideCreateLoading: " ",
               norefresh: " "
@@ -844,7 +845,10 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
           }
           //Validation with direct publish
           else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && (this.state.directPublishCheck === true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner')
-            && this.validator.fieldValid('Approver') && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod') && this.validator.fieldValid('Revision') && this.validator.fieldValid('DocumentController')) {
+            && this.validator.fieldValid('Approver')
+            // && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod') 
+            // && this.validator.fieldValid('Revision') 
+            && this.validator.fieldValid('DocumentController')) {
             this.setState({
               saveDisable: true, hideloader: false, hideCreateLoading: " ",
               norefresh: " "
@@ -859,7 +863,9 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
         }
         else {
           //Validation without direct publish
-          if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver') && this.validator.fieldValid('legalentity') && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod')) {
+          if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver') && this.validator.fieldValid('legalentity')
+            // && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod')
+          ) {
             this.setState({
               saveDisable: true, hideCreateLoading: " ",
               norefresh: " "
@@ -868,7 +874,9 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             this.validator.hideMessages();
           }
           //Validation with direct publish
-          else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && (this.state.directPublishCheck === true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver') && this.validator.fieldValid('legalentity') && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod')) {
+          else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && (this.state.directPublishCheck === true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver') && this.validator.fieldValid('legalentity')
+            //  && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod')
+          ) {
             this.setState({
               saveDisable: true, hideloader: false, hideCreateLoading: " ",
               norefresh: " "
@@ -886,7 +894,9 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
         if (this.props.project) {
           //Validation without direct publish
           if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && this.validator.fieldValid('Owner')
-            && this.validator.fieldValid('Approver') && this.validator.fieldValid('Revision') && this.validator.fieldValid('DocumentController')) {
+            && this.validator.fieldValid('Approver')
+            // && this.validator.fieldValid('Revision') 
+            && this.validator.fieldValid('DocumentController')) {
             this.setState({
               saveDisable: true, hideCreateLoading: " ",
               norefresh: " "
@@ -897,7 +907,9 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
           //Validation with direct publish
           else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep')
             && (this.state.directPublishCheck === true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner')
-            && this.validator.fieldValid('Approver') && this.validator.fieldValid('Revision') && this.validator.fieldValid('DocumentController')) {
+            && this.validator.fieldValid('Approver')
+            // && this.validator.fieldValid('Revision') 
+            && this.validator.fieldValid('DocumentController')) {
             this.setState({
               saveDisable: true, hideloader: false, hideCreateLoading: " ",
               norefresh: " "
@@ -921,7 +933,10 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             this.validator.hideMessages();
           }
           //Validation with direct publish
-          else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && (this.state.directPublishCheck === true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver') && this.validator.fieldValid('legalentity')) {
+          else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category')
+            && this.validator.fieldValid('BU/Dep') && (this.state.directPublishCheck === true)
+            && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner')
+            && this.validator.fieldValid('Approver') && this.validator.fieldValid('legalentity')) {
             this.setState({
               saveDisable: true, hideloader: false, hideCreateLoading: " ",
               norefresh: " "
@@ -1092,7 +1107,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       // Create document index item
       await this._createDocumentIndex();
       // Get file from form
-      if ((document.querySelector(upload) as HTMLInputElement).files[0] !== null) {
+      if ((document.querySelector(upload) as HTMLInputElement).files[0] != null) {
         let myfile = (document.querySelector(upload) as HTMLInputElement).files[0];
         console.log(myfile);
         var splitted = myfile.name.split(".");
@@ -1207,10 +1222,10 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             this.documentNameExtension = newDocumentName;
             docinsertname = this.state.documentid + '.' + extension;
 
-            let qdmsURl = this.props.QDMSUrl + "/" + this.props.publisheddocumentLibrary + "/" + publishName;
+            let qdmsURl = this.props.QDMSUrl + "/" + this.props.publisheddocumentLibrary + "/" + this.state.category + "/" + publishName;
             await this._Service.getqdmsdocument(qdmsURl)
               .then((templateData: any) => {
-                return this._Service.uploadDocument(this.props.sourceDocumentLibrary, docinsertname, templateData)
+                return this._Service.uploadDocument(this.props.sourceDocumentLibrary, docinsertname, templateData);
               }).then((fileUploaded: any) => {
                 console.log("File Uploaded");
                 fileUploaded.file.getItem()
@@ -2307,7 +2322,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                   personSelectionLimit={20}
                   groupName={""} // Leave this blank in case you want to filter from all users
                   showtooltip={true}
-                  required={true}
+                  required={false}
                   disabled={false}
                   ensureUser={true}
                   showHiddenInUI={false}
@@ -2411,8 +2426,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                   placeholder="Select an option"
                   options={this.state.revisionSettingsArray}
                   onChanged={this._revisionCodingChange} />
-                <div style={{ color: "#dc3545" }}>
-                  {this.validator.message("Revision", this.state.revisionCodingId, "required")}{" "}</div>
+
               </div>
               <div className={styles.wdthmid}>
                 <TextField label="Sub-Contractor Document Number" onChange={this._subContractorNumberChange} value={this.state.subContractorNumber}></TextField>
@@ -2430,19 +2444,18 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                   ariaLabel="Select a date"
                   minDate={new Date()}
                   formatDate={this._onFormatDate} /></div>
-                <div style={{ color: "#dc3545" }}>
-                  {this.validator.message("expiryDate", this.state.expiryDate, "required")}{""}</div>
+                {/* <div style={{ color: "#dc3545" }}>
+                  {this.validator.message("expiryDate", this.state.expiryDate, "required")}{""}</div> */}
                 <div style={{ marginLeft: "1em", width: "13em" }}>
                   <TextField id="ExpiryLeadPeriod" name="ExpiryLeadPeriod"
                     label="Expiry Reminder(Days)" onChange={this._expLeadPeriodChange}
                     value={this.state.expiryLeadPeriod}>
                   </TextField></div>
-                <div style={{ color: "#dc3545" }}>
-                  {this.validator.message("ExpiryLeadPeriod", this.state.expiryLeadPeriod, "required")}{""}</div>
-                <div style={{ color: "#dc3545", display: this.state.leadmsg }}>
-                  Enter only numbers less than 100
-                </div>
+                {/* <div style={{ color: "#dc3545" }}>
+                  {this.validator.message("ExpiryLeadPeriod", this.state.expiryLeadPeriod, "required")}{""}</div> */}
+
               </div>
+
               <div className={styles.wdthmid} style={{ display: "flex" }}>
                 <div style={{ marginTop: "3em" }}>
                   <TooltipHost
@@ -2467,6 +2480,20 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                   </TooltipHost>
                 </div>
               </div>
+
+            </div>
+            <div className={styles.divrow}>
+              <div className={styles.wdthfrst} style={{ display: "flex" }}>
+                <div style={{ width: "13em" }}> </div>
+                <div style={{ marginLeft: "1em", width: "13em" }}>
+                </div>
+                {/* <div style={{ color: "#dc3545" }}>
+                  {this.validator.message("ExpiryLeadPeriod", this.state.expiryLeadPeriod, "required")}{""}</div> */}
+                <div style={{ color: "#dc3545", display: this.state.leadmsg }}>
+                  Enter only numbers less than 100
+                </div>
+              </div>
+
 
             </div>
             <div> {this.state.statusMessage.isShowMessage ?

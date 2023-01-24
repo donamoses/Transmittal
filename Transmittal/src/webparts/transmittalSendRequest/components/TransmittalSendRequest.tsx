@@ -2139,7 +2139,6 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                     // await this._adaptiveCard("Approval", this.state.approverEmail, this.state.approverName, "Project", task.data.ID);
                   }//taskID
                 }//r
-
               }//DelegatedFor
             }//DelegatedTo
           }//duedate checking
@@ -2202,7 +2201,6 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               }//taskID
             }//r
           }
-
         }
         else {
           const detaildata9 = {
@@ -2310,14 +2308,12 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
           statusMessage: { isShowMessage: true, message: this.underApproval, messageType: 4 },
         });
       }
-
       setTimeout(() => {
         window.location.replace(window.location.protocol + "//" + window.location.hostname + this.props.siteUrl + "/Lists/" + this.props.documentIndexList);
       }, 10000);
 
     }//newheaderid
   }
-
   //Adaptive Card
   private _LaUrlGettingAdaptive = async () => {
     const laUrl: any[] = await this._Service.getListItems(this.props.hubUrl, this.props.requestList);
@@ -2334,8 +2330,6 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
       cancelConfirmMsg: "",
       confirmDialog: false,
     });
-
-
   }
   //Cancel confirm
   private _confirmYesCancel = () => {
@@ -2354,8 +2348,6 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
       cancelConfirmMsg: "none",
       confirmDialog: true,
     });
-    //this.validator.hideMessages();
-    // window.location.replace(this.RedirectUrl);
   }
   //For dialog box of cancel
   private _dialogCloseButton = () => {
@@ -2409,8 +2401,6 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 <Label >Revision :</Label><div className={styles.divLabel}> {this.state.revision}</div>
               </div>
             </div>
-
-
             <div hidden={this.state.hideProject}>
               <div className={styles.header}>
                 <h3 className="ExampleCard-title title-222">Project Details</h3>
@@ -2420,7 +2410,6 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 <div><Label >Project Number : {this.state.projectNumber}</Label></div>
               </div>
             </div>
-
             <div className={styles.header}>
               <h3 className="ExampleCard-title title-222">Workflow Details</h3>
             </div>
@@ -2431,21 +2420,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               <div className={styles.divMetadataCol2}>
                 <Label >Requester :</Label> <div className={styles.divLabel}>{this.state.currentUser}</div>
               </div>
-              {/* <div hidden={this.state.hideProject}>
-                <div className={styles.divMetadataCol3}>
-                  <TooltipHost
-                    content="Check if the document need to approve in same revision"
-                    //id={tooltipId}
-                    calloutProps={calloutProps}
-                    styles={hostStyles}>
-                    <Checkbox label="Approve in same revision ? " boxSide="end"
-                      onChange={this._onSameRevisionChecked}
-                      checked={this.state.sameRevision} />
-                  </TooltipHost>
-                </div>
-              </div> */}
             </div>
-
             <div className={styles.flex}>
               <div className={styles.width}>
                 <div hidden={this.state.hideProject}>

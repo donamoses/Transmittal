@@ -166,20 +166,20 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
     const userMessageSettings: any[] = await this._Service.gethubUserMessageListItems(this.props.hubSiteUrl, this.props.userMessageSettings)
     console.log(userMessageSettings);
     for (var i in userMessageSettings) {
-      if (userMessageSettings[i].Title == "ReviewSubmitSuccess") {
+      if (userMessageSettings[i].Title === "ReviewSubmitSuccess") {
         this.documentReviewedSuccess = userMessageSettings[i].Message;
       }
-      else if (userMessageSettings[i].Title == "ReviewDraftSuccess") {
+      else if (userMessageSettings[i].Title === "ReviewDraftSuccess") {
         this.documentSavedAsDraft = userMessageSettings[i].Message;
       }
-      else if (userMessageSettings[i].Title == "NoAccess") {
+      else if (userMessageSettings[i].Title === "NoAccess") {
         this.setState({
           noAccess: userMessageSettings[i].Message,
         });
         this.noAccess = userMessageSettings[i].Message;
 
       }
-      else if (userMessageSettings[i].Title == "InvalidQueryParams") {
+      else if (userMessageSettings[i].Title === "InvalidQueryParams") {
         this.setState({
           invalidQueryParam: userMessageSettings[i].Message,
         });
@@ -206,7 +206,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
     let detailid = params.get('dtlid');
     this.workFlow = params.get('wf');
     if (this.props.project) {
-      if (id != "" && id != null && detailid != "" && detailid != null && this.workFlow == "dcc" && this.workFlow !== null) {
+      if (id !== "" && id !== null && detailid !== "" && detailid !== null && this.workFlow === "dcc" && this.workFlow !== null) {
         this.headerId = parseInt(id);
         this.valid = "ok";
         this.detailID = parseInt(detailid);
@@ -216,7 +216,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
           ifDccComment: "none",
         });
       }
-      else if (id != "" && id != null && detailid != "" && detailid != null) {
+      else if (id !== "" && id !== null && detailid !== "" && detailid !== null) {
         this.headerId = parseInt(id);
         this.valid = "ok";
         this.detailID = parseInt(detailid);
@@ -226,7 +226,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
           divForReview: "",
         });
       }
-      else if (id == "" || id == null || detailid == "" || detailid == null || this.workFlow !== "dcc" || this.workFlow == null) {
+      else if (id === "" || id === null || detailid === "" || detailid === null || this.workFlow !== "dcc" || this.workFlow === null) {
         this.setState({ accessDeniedMsgBar: "", loaderDisplay: "none", invalidMessage: this.state.invalidQueryParam });
         setTimeout(() => {
           this.setState({ accessDeniedMsgBar: 'none', });
@@ -238,7 +238,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
 
     }
     else {
-      if (id != "" && id != null && detailid != "" && detailid != null && this.workFlow !== "dcc") {
+      if (id !== "" && id !== null && detailid !== "" && detailid !== null && this.workFlow !== "dcc") {
         this.headerId = parseInt(id);
         this.valid = "ok";
         this.detailID = parseInt(detailid);
@@ -291,8 +291,8 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
       const DocumentIndexItem: any = await this._Service.getIndexData(this.props.siteUrl, this.props.documentIndex, this.documentIndexId);
       console.log("DocumentIndexItem", DocumentIndexItem);
       //cheching if department selected
-      if (DocumentIndexItem.DepartmentID != null) {
-        this.departmentExists == "Exists";
+      if (DocumentIndexItem.DepartmentID !== null) {
+        this.departmentExists === "Exists";
         let deptid = parseInt(DocumentIndexItem.DepartmentID);
         const departmentItem: any = await this._Service.gethubItemById(this.props.hubSiteUrl, this.props.departmentList, deptid);
         //let AG = DepartmentItem[0].AccessGroups;
@@ -302,7 +302,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
         let accessGroupID;
         console.log(accessGroupItem.length);
         for (let a = 0; a < accessGroupItem.length; a++) {
-          if (accessGroupItem[a].Title == accessGroupvar) {
+          if (accessGroupItem[a].Title === accessGroupvar) {
             accessGroupID = accessGroupItem[a].GroupID;
             this.GetGroupMembers(this.props.context, accessGroupID);
           }
@@ -311,8 +311,8 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
       //if no department  
       else {
         //alert("with bussinessUnit");
-        if (DocumentIndexItem.BusinessUnitID != null) {
-          this.departmentExists == "Exists";
+        if (DocumentIndexItem.BusinessUnitID !== null) {
+          this.departmentExists === "Exists";
           let bussinessUnitID = parseInt(DocumentIndexItem.BusinessUnitID);
           const bussinessUnitItem: any = await this._Service.gethubItemById(this.props.hubSiteUrl, this.props.bussinessUnitList, bussinessUnitID);
           console.log("departmentItem", bussinessUnitItem);
@@ -322,7 +322,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
           let accessGroupID;
           console.log(accessGroupItem.length);
           for (let a = 0; a < accessGroupItem.length; a++) {
-            if (accessGroupItem[a].Title == accessGroupvar) {
+            if (accessGroupItem[a].Title === accessGroupvar) {
               accessGroupID = accessGroupItem[a].GroupID;
               this.GetGroupMembers(this.props.context, accessGroupID);
             }
@@ -340,9 +340,9 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
       .then(Items => {
         // console.log(Items);
         this.taskID = Items[0].TaskID;
-        if (this.state.currentUserEmail == Items[0].Responsible.EMail) {
+        if (this.state.currentUserEmail === Items[0].Responsible.EMail) {
           this.setState({ access: "", accessDeniedMsgBar: "none", comments: Items[0].ResponsibleComment, });
-          if (Items[0].ResponseStatus == "Reviewed" || Items[0].ResponseStatus == "Returned with comments") {
+          if (Items[0].ResponseStatus === "Reviewed" || Items[0].ResponseStatus === "Returned with comments") {
             this.setState({ buttonHidden: "none", statusKey: Items[0].ResponseStatus });
           }
         }
@@ -394,7 +394,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
   private _checkingCurrent(userEmail: any) {
 
     for (var k in userEmail) {
-      if (this.state.currentUserEmail == userEmail[k].mail) {
+      if (this.state.currentUserEmail === userEmail[k].mail) {
         this.valid = "Yes";
         this.setState({
           loaderDisplay: "none",
@@ -404,7 +404,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
         break;
       }
     }
-    if (this.valid != "Yes") {
+    if (this.valid !== "Yes") {
 
       this.setState({
         loaderDisplay: "none", access: "none", accessDeniedMsgBar: "", invalidMessage: this.noAccess,
@@ -449,13 +449,13 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
             documentControllerEmail: workFlowHeaderItems.DocumentController.EMail,
             documentControllerName: workFlowHeaderItems.DocumentController.Title,
           });
-          //if ((workFlowHeaderItems.PreviousReviewHeader != "0" || workFlowHeaderItems.PreviousReviewHeader != previousheadervalue)) {
-          if ((workFlowHeaderItems.PreviousReviewHeader != "0" && workFlowHeaderItems.Workflow == "Review")) {
+          //if ((workFlowHeaderItems.PreviousReviewHeader !== "0" || workFlowHeaderItems.PreviousReviewHeader !== previousheadervalue)) {
+          if ((workFlowHeaderItems.PreviousReviewHeader !== "0" && workFlowHeaderItems.Workflow === "Review")) {
             this.setState({ hideReviewersTable: "", });
             this._loadPreviousReturnWithComments(workFlowHeaderItems.PreviousReviewHeader);
           }
           this._documentIndexListBind(this.documentIndexId);
-          if (workFlowHeaderItems.DocumentController == null) { this.setState({ ifDccComment: "none", }); }
+          if (workFlowHeaderItems.DocumentController === null) { this.setState({ ifDccComment: "none", }); }
           else {
             this._loadPreviousReturnWithComments(workFlowHeaderItems.PreviousReviewHeader);
             this._documentIndexListBind(this.documentIndexId);
@@ -527,7 +527,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
       });
       console.log("dccReviewItems", this.state.dccReviewItems);
     }
-    if (this.props.project && this.workFlow == "dcc") {
+    if (this.props.project && this.workFlow === "dcc") {
       const dccComments: any[] = await this._Service.getdccreviewComment(this.props.siteUrl, this.props.workFlowDetail, previousReviewHeader);
       if (dccComments.length > 0) {
         this.setState({
@@ -560,12 +560,12 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
     console.log("projectInformation", projectInformation);
     if (projectInformation.length > 0) {
       for (var k in projectInformation) {
-        if (projectInformation[k].Key == "ProjectName") {
+        if (projectInformation[k].Key === "ProjectName") {
           this.setState({
             projectName: projectInformation[k].Title,
           });
         }
-        if (projectInformation[k].Key == "ProjectNumber") {
+        if (projectInformation[k].Key === "ProjectNumber") {
           this.setState({
             projectNumber: projectInformation[k].Title,
           });
@@ -577,7 +577,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
   public _drpdwnStatus(option: { key: any; text: any }) {
     // alert(option.key);
     this.setState({ statusKey: option.key, status: option.text });
-    if (option.key == "Returned with comments") {
+    if (option.key === "Returned with comments") {
       this.setState({ commentvalid: "", commentrequired: true });
     }
     else {
@@ -598,7 +598,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
     let date = today.toLocaleString();
     let cancelCount = 0;
     //checking validation
-    if (this.state.status == "Reviewed") {
+    if (this.state.status === "Reviewed") {
       if (this.validator.fieldValid("status")) {
         const detaildata1 = {
           ResponsibleComment: this.state.comments,
@@ -607,7 +607,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
         }
         await this._Service.updateItem(this.props.siteUrl, this.props.workFlowDetail, detaildata1, this.detailID)
           .then(async deleteTask => {
-            if (this.taskID != null) {
+            if (this.taskID !== null) {
               let list = this._Service.deletehubItemById(this.props.hubSiteUrl, this.props.workflowTaskListName, this.taskID);
             }
           }).then(detailLIstUpdate => {
@@ -615,23 +615,23 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
               .then(async ResponseStatus => {
                 if (ResponseStatus.length > 0) { //checking all reviewers response status
                   for (var k in ResponseStatus) {
-                    if (ResponseStatus[k].ResponseStatus == "Reviewed") {
+                    if (ResponseStatus[k].ResponseStatus === "Reviewed") {
                       count++;
                     }
-                    else if (ResponseStatus[k].ResponseStatus == "Returned with comments") {
+                    else if (ResponseStatus[k].ResponseStatus === "Returned with comments") {
                       reviewStatus = "Returned with comments";
                     }
-                    else if (ResponseStatus[k].ResponseStatus == "Cancelled") {
+                    else if (ResponseStatus[k].ResponseStatus === "Cancelled") {
                       cancelCount++;
                     }
-                    else if (ResponseStatus[k].ResponseStatus == "Under Review") {
+                    else if (ResponseStatus[k].ResponseStatus === "Under Review") {
                       this.setState({
                         reviewPending: "Yes",
                       });
                     }
                   }
                   //all reviewers reviewed
-                  if (ResponseStatus.length == count || (ResponseStatus.length == add(count, cancelCount))) {
+                  if (ResponseStatus.length === count || (ResponseStatus.length === add(count, cancelCount))) {
                     this.setState({
                       buttonHidden: "none",
                     });
@@ -741,7 +741,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                     StartDate: this.currentDate,
                                     AssignedToId: taskDelegation[0].DelegatedTo.ID,
                                     Workflow: "Approval",
-                                    Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                                    Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                                     DelegatedOn: (this.state.delegatedToId !== "" ? this.currentDate : " "),
                                     Source: (this.props.project ? "Project" : "QDMS"),
                                     DelegatedFromId: taskDelegation[0].DelegatedFor.ID,
@@ -825,7 +825,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                 StartDate: this.currentDate,
                                 AssignedToId: user.Id,
                                 Workflow: "Approval",
-                                Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                                Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                                 Source: (this.props.project ? "Project" : "QDMS"),
                                 Link: {
                                   Description: this.state.documentName + "-- Approve",
@@ -905,7 +905,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                               StartDate: this.currentDate,
                               AssignedToId: user.Id,
                               Workflow: "Approval",
-                              Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                              Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                               Source: (this.props.project ? "Project" : "QDMS"),
                               Link: {
                                 Description: this.state.documentName + "-- Approve",
@@ -955,7 +955,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                     }).catch(reject => console.error('Error getting Id of user by Email ', reject));
                   }
                   //any of the reviewer returned with comments
-                  else if (reviewStatus == "Returned with comments" && this.state.reviewPending == "No") {
+                  else if (reviewStatus === "Returned with comments" && this.state.reviewPending === "No") {
                     this.setState({
                       buttonHidden: "none",
                     });
@@ -996,7 +996,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                       });
                   }
                   //if any review process pending
-                  else if (this.state.reviewPending == "Yes") {
+                  else if (this.state.reviewPending === "Yes") {
                     this.setState({
                       buttonHidden: "none",
                     });
@@ -1040,7 +1040,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
         }
         this._Service.updateItem(this.props.siteUrl, this.props.workFlowDetail, detaildata7, this.detailID)
           .then(async deleteTask => {
-            if (this.taskID != null) {
+            if (this.taskID !== null) {
               this._Service.deletehubItemById(this.props.hubSiteUrl, this.props.workflowTaskListName, this.taskID);
             }
           }).then(detailLIstUpdate => {
@@ -1048,23 +1048,23 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
               .then(async ResponseStatus => {
                 if (ResponseStatus.length > 0) { //checking all reviewers response status
                   for (var k in ResponseStatus) {
-                    if (ResponseStatus[k].ResponseStatus == "Reviewed") {
+                    if (ResponseStatus[k].ResponseStatus === "Reviewed") {
                       count++;
                     }
-                    else if (ResponseStatus[k].ResponseStatus == "Returned with comments") {
+                    else if (ResponseStatus[k].ResponseStatus === "Returned with comments") {
                       reviewStatus = "Returned with comments";
                     }
-                    else if (ResponseStatus[k].ResponseStatus == "Cancelled") {
+                    else if (ResponseStatus[k].ResponseStatus === "Cancelled") {
                       cancelCount++;
                     }
-                    else if (ResponseStatus[k].ResponseStatus == "Under Review") {
+                    else if (ResponseStatus[k].ResponseStatus === "Under Review") {
                       this.setState({
                         reviewPending: "Yes",
                       });
                     }
                   }
                   //all reviewers reviewed
-                  if (ResponseStatus.length == count || (ResponseStatus.length == add(count, cancelCount))) {
+                  if (ResponseStatus.length === count || (ResponseStatus.length === add(count, cancelCount))) {
                     this.setState({
                       buttonHidden: "none",
                     });
@@ -1176,7 +1176,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                     StartDate: this.currentDate,
                                     AssignedToId: taskDelegation[0].DelegatedTo.ID,
                                     Workflow: "Approval",
-                                    Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                                    Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                                     DelegatedOn: (this.state.delegatedToId !== "" ? this.currentDate : " "),
                                     Source: (this.props.project ? "Project" : "QDMS"),
                                     DelegatedFromId: taskDelegation[0].DelegatedFor.ID,
@@ -1260,7 +1260,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                 StartDate: this.currentDate,
                                 AssignedToId: user.Id,
                                 Workflow: "Approval",
-                                Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                                Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                                 Source: (this.props.project ? "Project" : "QDMS"),
                                 Link: {
                                   Description: this.state.documentName + "-- Approve",
@@ -1340,7 +1340,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                               StartDate: this.currentDate,
                               AssignedToId: user.Id,
                               Workflow: "Approval",
-                              Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                              Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                               Source: (this.props.project ? "Project" : "QDMS"),
                               Link: {
                                 Description: this.state.documentName + "-- Approve",
@@ -1390,7 +1390,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                     }).catch(reject => console.error('Error getting Id of user by Email ', reject));
                   }
                   //any of the reviewer returned with comments
-                  else if (reviewStatus == "Returned with comments" && this.state.reviewPending == "No") {
+                  else if (reviewStatus === "Returned with comments" && this.state.reviewPending === "No") {
                     this.setState({
                       buttonHidden: "none",
                     });
@@ -1430,7 +1430,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                       });
                   }
                   //if any review process pending
-                  else if (this.state.reviewPending == "Yes") {
+                  else if (this.state.reviewPending === "Yes") {
                     this.setState({
                       buttonHidden: "none",
                     });
@@ -1470,7 +1470,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
     var today = new Date();
     let date = today.toLocaleString();
     //Updationg DocumentRevisionlog
-    if (this.props.project && this.workFlow == "dcc") {
+    if (this.props.project && this.workFlow === "dcc") {
       this._Service.getdccreviewlog(this.props.siteUrl, this.props.documentRevisionLog, this.headerId, this.documentIndexId)
         .then(ifyes => {
           if (ifyes.length > 0) {
@@ -1533,7 +1533,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
         notificationPreference: notificationPreference[0].Preference,
       });
     }
-    else if (this.state.criticalDocument == true) {
+    else if (this.state.criticalDocument === true) {
       //console.log("Send mail for critical document");
       this.status = "Yes";
     }
@@ -1543,7 +1543,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
     Subject = emailNoficationSettings[0].Subject;
     Body = emailNoficationSettings[0].Body;
 
-    if (type == "DocApproval") {
+    if (type === "DocApproval") {
       link = `<a href=${window.location.protocol + "//" + window.location.hostname + this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + detailID}>Link</a>`;
       //for binding current reviewers comments in table
       if (this.props.project) {
@@ -1609,7 +1609,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
           });
       }
     }
-    else if (type == "DocReview") {
+    else if (type === "DocReview") {
       link = `<a href=${window.location.protocol + "//" + window.location.hostname + this.props.siteUrl + "/SitePages/" + this.props.documentReviewSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + detailID}>Link</a>`;
       if (this.props.project) {
         await this._Service.getdetails(this.props.siteUrl, this.props.workFlowDetail, this.headerId)
@@ -1644,7 +1644,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
       }
     }
     //returned with comments mail body
-    else if (type == "DocReturn") {
+    else if (type === "DocReturn") {
       if (this.props.project) {
         await this._Service.getdetail(this.props.siteUrl, this.props.workFlowDetail, this.headerId)
           .then(currentReviewersItems => {
@@ -1722,11 +1722,11 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
     let replacelink = replaceString(replaceBody, '[Link]', link);
     let var1: any[] = replacelink.split('/');
     let FinalBody = replacelink;
-    if (this.state.notificationPreference == "Send all emails") {
+    if (this.state.notificationPreference === "Send all emails") {
       this.status = "Yes";
       //console.log("Send mail for all");                 
     }
-    else if (this.state.notificationPreference == "Send mail for critical document" && this.state.criticalDocument == true) {
+    else if (this.state.notificationPreference === "Send mail for critical document" && this.state.criticalDocument === true) {
       //console.log("Send mail for critical document");
       this.status = "Yes";
     }
@@ -1738,7 +1738,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
       });
     }
     //mail sending
-    if (this.status == "Yes") {
+    if (this.status === "Yes") {
       //Check if TextField value is empty or not  
       if (email) {
         //Create Body for Email  
@@ -1747,7 +1747,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
             "subject": replacedSubjectWithDueDate,
             "body": {
               "contentType": "HTML",
-              "content": FinalBody + "<br></br>" + (type == "DocReturn" ? DocumentLink : "") + "<br></br>" + finalBody
+              "content": FinalBody + "<br></br>" + (type === "DocReturn" ? DocumentLink : "") + "<br></br>" + finalBody
             },
             "toRecipients": [
               {
@@ -1803,7 +1803,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
     let critical;
     var today = new Date();
     let date = today.toLocaleString();
-    if (this.validator.fieldValid("status") && this.validator.fieldValid("comments")) {
+    if (this.validator.fieldValid("status")) {
       this.validator.hideMessages();
       const detaildata16 = {
         ResponsibleComment: this.state.comments,
@@ -1812,12 +1812,12 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
       }
       this._Service.updateItem(this.props.siteUrl, this.props.workFlowDetail, detaildata16, this.detailID)
         .then(async deleteTask => {
-          if (this.taskID != null) {
+          if (this.taskID !== null) {
             this._Service.deletehubItemById(this.props.hubSiteUrl, this.props.workflowTaskListName, this.taskID);
           }
         });
       //if dcc review return with comments
-      if (this.state.status == "Returned with comments") {
+      if (this.state.status === "Returned with comments") {
         this.setState({
           buttonHidden: "none",
         });
@@ -1864,7 +1864,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
           reviewers: headerItemsForDCCSubmit.ReviewersId,
         });
         console.log(this.state.reviewers);
-        if (this.state.reviewers != null) {
+        if (this.state.reviewers !== null) {
           this.setState({
             buttonHidden: "none",
           });
@@ -1979,7 +1979,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                       DueDate: this.state.DueDate,
                                       StartDate: this.currentDate,
                                       AssignedToId: taskDelegation[0].DelegatedTo.ID,
-                                      Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                                      Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                                       DelegatedOn: (this.state.delegatedToId !== "" ? this.currentDate : " "),
                                       Source: (this.props.project ? "Project" : "QDMS"),
                                       DelegatedFromId: taskDelegation[0].DelegatedFor.ID,
@@ -2057,7 +2057,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                               DueDate: this.state.DueDate,
                               StartDate: this.currentDate,
                               AssignedToId: hubsieUser.Id,
-                              Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                              Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                               Source: (this.props.project ? "Project" : "QDMS"),
                               Workflow: "Review",
                               Link: {
@@ -2133,7 +2133,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                             DueDate: this.state.DueDate,
                             StartDate: this.currentDate,
                             AssignedToId: hubsieUser.Id,
-                            Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                            Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                             Source: (this.props.project ? "Project" : "QDMS"),
                             Workflow: "Review",
                             Link: {
@@ -2255,10 +2255,10 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                             HeaderIDId: Number(this.headerId),
                             Workflow: "Approval",
                             Title: this.state.documentName,
-                            ResponsibleId: (this.state.delegatedToId != "" ? this.state.delegateToIdInSubSite : this.state.approverId),
+                            ResponsibleId: (this.state.delegatedToId !== "" ? this.state.delegateToIdInSubSite : this.state.approverId),
                             DueDate: this.state.DueDate,
                             OwnerId: this.state.ownerID,
-                            DelegatedFromId: (this.state.delegatedToId != "" ? this.state.delegateForIdInSubSite : parseInt("")),
+                            DelegatedFromId: (this.state.delegatedToId !== "" ? this.state.delegateForIdInSubSite : parseInt("")),
                             ResponseStatus: "Under Approval",
                             SourceDocument: {
                               Description: this.state.documentName,
@@ -2290,12 +2290,12 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                                 Description: "Approval request for  '" + this.state.documentName + "' by '" + this.state.requestor + "' on '" + this.state.requestorDate + "'",
                                 DueDate: this.state.DueDate,
                                 StartDate: this.currentDate,
-                                AssignedToId: (this.state.delegatedToId != "" ? this.state.delegatedToId : user.Id),
+                                AssignedToId: (this.state.delegatedToId !== "" ? this.state.delegatedToId : user.Id),
                                 Workflow: "Approval",
-                                Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                                Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                                 DelegatedOn: (this.state.delegatedToId !== "" ? this.currentDate : " "),
                                 Source: (this.props.project ? "Project" : "QDMS"),
-                                DelegatedFromId: (this.state.delegatedToId != "" ? this.state.delegatedFromId : 0),
+                                DelegatedFromId: (this.state.delegatedToId !== "" ? this.state.delegatedFromId : 0),
                                 Link: {
                                   Description: this.state.documentName + "-- Approve",
                                   Url: this.props.siteUrl + "/SitePages/" + this.props.documentApprovalSitePage + ".aspx?hid=" + this.headerId + "&dtlid=" + r.data.ID + ""
@@ -2372,7 +2372,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                         StartDate: this.currentDate,
                         AssignedToId: user.Id,
                         Workflow: "Approval",
-                        Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                        Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                         Source: (this.props.project ? "Project" : "QDMS"),
                         Link: {
                           Description: this.state.documentName + "-- Approve",
@@ -2449,7 +2449,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                       StartDate: this.currentDate,
                       AssignedToId: user.Id,
                       Workflow: "Approval",
-                      Priority: (this.state.criticalDocument == true ? "Critical" : ""),
+                      Priority: (this.state.criticalDocument === true ? "Critical" : ""),
                       Source: (this.props.project ? "Project" : "QDMS"),
                       Link: {
                         Description: this.state.documentName + "-- Approve",
@@ -2717,7 +2717,7 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                             {this.state.currentReviewItems.map((item, key) => {
                               return (<tr className={styles.tr}>
                                 <td className={styles.th}>{item.Responsible.Title}</td>
-                                <td className={styles.th}>{(item.ResponseDate == null) ? "Not Reviewed Yet" : moment(item.ResponseDate).format('DD/MM/YYYY, h:mm a')}</td>
+                                <td className={styles.th}>{(item.ResponseDate === null) ? "Not Reviewed Yet" : moment(item.ResponseDate).format('DD/MM/YYYY, h:mm a')}</td>
                                 <td className={styles.th}>{item.ResponseStatus}</td>
                                 <td className={styles.th}>{item.ResponsibleComment}</td>
                               </tr>);
@@ -2728,44 +2728,42 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                     </AccordionItem>
                   </Accordion>
                 </div>
-                <div>
-                  <Dropdown
-                    placeholder="Select Status"
-                    label="Status"
-                    options={Status}
-                    onChanged={this._drpdwnStatus}
-                    selectedKey={this.state.statusKey}
-                    required />
-                  <div style={{ color: "#dc3545" }}>{this.validator.message("status", this.state.statusKey, "required")}{" "}</div>
+                <div className={styles.header}>
+                  <h3 className="ExampleCard-title title-222"></h3>
                 </div>
-                <TextField label="Comments" id="Comments" value={this.state.comments} onChange={this._commentBoxChange} multiline autoAdjustHeight required={this.state.commentrequired} />
-                <div style={{ display: this.state.commentvalid }}>
-                  <div style={{ color: "#dc3545" }}>{this.validator.message("reviewercomment", this.state.comments, "required")}{" "}</div></div>
+                <div className={styles.divMetadata}>
+                  <div style={{ width: "50%", }}>
+                    <Dropdown
+                      placeholder="Select Status"
+                      label="Status"
+                      options={Status}
+                      onChanged={this._drpdwnStatus}
+                      selectedKey={this.state.statusKey}
+                      required />
+                    <div style={{ color: "#dc3545" }}>{this.validator.message("status", this.state.statusKey, "required")}{" "}</div>
+                  </div>
+                  <div style={{ width: "100%", marginLeft: "12px" }}>
+                    <TextField label="Comments" required={this.state.statusKey === "Returned with comments"} id="Comments" value={this.state.comments} onChange={this._commentBoxChange} multiline autoAdjustHeight />
+                    {this.state.statusKey === "Returned with comments" && <div style={{ color: "#dc3545" }}>{this.validator.message("comments", this.state.comments, "required")}{" "}</div>}
+                  </div>
+                </div>
+                {/* Show Message bar for Notification*/}
+                {this.state.statusMessage.isShowMessage ?
+                  <MessageBar
+                    messageBarType={this.state.statusMessage.messageType}
+                    isMultiline={false}
+                    dismissButtonAriaLabel="Close"
+                  >{this.state.statusMessage.message}</MessageBar>
+                  : ''}
+                <div className={styles.divRow}>
+                  <div style={{ fontStyle: "italic", fontSize: "12px", position: "absolute" }}><span style={{ color: "red", fontSize: "23px" }}>*</span>fields are mandatory </div>
 
-                <DialogFooter>
-                  {/* Show Message bar for Notification*/}
-                  {this.state.statusMessage.isShowMessage ?
-                    <MessageBar
-                      messageBarType={this.state.statusMessage.messageType}
-                      isMultiline={false}
-                      dismissButtonAriaLabel="Close"
-                    >{this.state.statusMessage.message}</MessageBar>
-                    : ''}
-                  <table style={{ float: "right", rowGap: "0px" }}>
-                    <tr>
-                      <td style={{ display: "flex", padding: "0 0 0 33rem" }}>
-                        <Label style={{ color: "red", fontSize: "23px" }}>*</Label>
-                        <label style={{ fontStyle: "italic", fontSize: "12px" }}>fields are mandatory </label>
-                      </td>
-
-                      <PrimaryButton id="b1" style={{ float: "right", borderRadius: "10px", border: "1px solid gray" }} onClick={this._cancel}>Cancel</PrimaryButton>
-                      <div style={{ display: this.state.buttonHidden }}>
-                        <PrimaryButton id="b2" style={{ float: "right", marginRight: "10px", borderRadius: "10px", border: "1px solid gray" }} onClick={this._docReviewSubmit}>Submit</PrimaryButton>
-                        <PrimaryButton id="b2" style={{ float: "right", marginRight: "10px", borderRadius: "10px", border: "1px solid gray" }} onClick={this._docReviewSaveAsDraft}>Save as Draft</PrimaryButton>
-                      </div>
-                    </tr>
-                  </table>
-                </DialogFooter>
+                  <div className={styles.rgtalign} >
+                    <PrimaryButton id="b2" className={styles.btn} onClick={this._docReviewSaveAsDraft} style={{ display: this.state.buttonHidden }}>Save as Draft</PrimaryButton >
+                    <PrimaryButton id="b2" className={styles.btn} onClick={this._docReviewSubmit} style={{ display: this.state.buttonHidden }}>Submit</PrimaryButton >
+                    <PrimaryButton id="b1" className={styles.btn} onClick={this._cancel}>Cancel</PrimaryButton >
+                  </div>
+                </div>
                 {/* Cancel Dialog Box */}
                 <div style={{ display: this.state.cancelConfirmMsg }}>
                   <div>
@@ -2785,60 +2783,61 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
               </div>
             </div>
             {/*For DCC Webpart view */}
-            <div style={{ border: "1px solid black" }}>
-              <div style={{ display: this.state.divForDCC, padding: "9px 14px 0px 13px" }}>
+            <div style={{ display: this.state.divForDCC, }}>
+              <div style={{ border: "1px solid black", padding: "9px 14px 0px 13px" }}>
                 <div className={styles.transmittalReviewDocument}>
                   <div className={styles.title}> {escape(this.props.webPartName)} </div>
                   <div hidden={this.state.hideproject}>
-                    <div className={styles.flex}>
-                      <div className={styles.width}><Label >Project Name : {this.state.projectName} </Label></div>
-                      <div className={styles.width}><Label >Project Number : {this.state.projectNumber}</Label></div>
+                    <div className={styles.header}>
+                      <div className={styles.divMetadataCol1}>
+                        <h3 >Project Details</h3>
+                        <a href={this.RevisionHistoryUrl} style={{ marginLeft: "79%", marginTop: "17px" }} target="_blank">Revision History</a>
+                      </div>
+                    </div>
+                    <div className={styles.divMetadata}>
+                      <div className={styles.divMetadataCol1}>
+                        <Label >Project Name : </Label><div className={styles.divLabel}>{this.state.projectName}</div>
+                      </div>
+                      <div className={styles.divMetadataCol3}>
+                        <Label >Project Number :</Label><div className={styles.divLabel}> {this.state.projectNumber}</div>
+                      </div>
                     </div>
                   </div>
                   <div></div>
-                  <div className={styles.flex} style={{ marginTop: "10px" }}>
-                    <div className={styles.width} style={{ fontWeight: "bold", }}>Document ID :{this.state.documentID}</div>
-                    <div className={styles.width}>
-                      <Link underline href={this.RevisionHistoryUrl} target="_blank" > Revision History </Link>
+
+                  <div className={styles.header}>
+                    <div className={styles.divMetadataCol1}>
+                      <h3 >Document Details</h3>
                     </div>
                   </div>
+                  <div className={styles.divMetadata}>
+                    <div className={styles.divMetadataCol1}>
+                      <Label >Document ID : </Label><div className={styles.divLabel}>{this.state.documentID}</div>
+                    </div>
+                    <div className={styles.divMetadataCol3}>
+                      <Label >Revision :</Label><div className={styles.divLabel}> {this.state.revision}</div>
+                    </div>
 
-                  <div className={styles.innerRow1}>
-                    <Label>Document: <a href={this.state.linkToDoc} target="_blank">{this.state.documentName}</a></Label>
                   </div>
-
-                  <div className={styles.innerRow}>
-                    <Label>Revision: {this.state.revision}</Label>
+                  <div className={styles.divRow}>
+                    <Label >Document :</Label><div className={styles.divLabel}>  <a href={this.state.linkToDoc} target="_blank">{this.state.documentName}</a></div>
                   </div>
-                  <div className={styles.flex}>
-                    <div className={styles.width}>  <Label>Owner :{this.state.owner}</Label> </div>
-                    <div className={styles.width}><Label>Due Date :{this.state.dueDate}</Label> </div>
+                  <div className={styles.header}>
+                    <h3 className="ExampleCard-title title-222">Workflow Details</h3>
                   </div>
-                  <div className={styles.flex}>
-                    <div className={styles.width}> <Label>Requester :{this.state.requestor}</Label></div>
-                    <div><Label>Requested Date :{this.state.requestorDate}</Label> </div>
+                  <div className={styles.divMetadata}>
+                    <div className={styles.divMetadataCol1}>
+                      <Label >Owner : </Label><div className={styles.divLabel}> {this.state.owner}</div>
+                    </div>
+                    <div className={styles.divMetadataCol2}><Label>Due Date :</Label> <div className={styles.divLabel}> {this.state.dueDate}</div></div>
+                    <div className={styles.divMetadataCol3}><Label>Requested Date :</Label><div className={styles.divLabel}>{this.state.requestorDate} </div></div>
                   </div>
-                  <div className={styles.innerRow}>
-                    <Label>Requester Comment: </Label>{this.state.requestorComment}
+                  <div className={styles.divMetadata}>
+                    <div style={{ display: "flex" }}>
+                      <Label >Requester :</Label> <div className={styles.divLabel}>{this.state.requestor}</div>
+                    </div>
+                    <div style={{ marginLeft: "18.98rem", display: "flex" }}><Label>Requester Comment : </Label><div className={styles.divLabel}>{this.state.requestorComment}</div></div>
                   </div>
-                  {/* <div className={styles.innerRow} style={{ display: this.state.currentReviewComment }}>
-                      <table className={styles.tableClass}>
-                        <tr className={styles.tr}>
-                          <th className={styles.th}>Reviewer</th>
-                          <th className={styles.th}>Review Date</th>
-                          <th className={styles.th}>Review Comment</th>
-                        </tr>
-                        <tbody className={styles.tbody}>
-                        {this.state.currentReviewItems.map((item, key) => {
-                            return (<tr className={styles.tr}>
-                            <td className={styles.th}>{item.Responsible.Title}</td>
-                              <td className={styles.th}>{moment.utc(item.ResponseDate).format('DD/MM/YYYY, h:mm a')}</td>
-                              <td className={styles.th}>{item.ResponsibleComment}</td>
-                            </tr>);
-                             })}
-                        </tbody>
-                      </table>
-                    </div> */}
                   <div className={styles.innerRow} style={{ display: this.state.hideReviewersTable }}>
                     <table className={styles.tableClass}>
                       <tr className={styles.tr}>
@@ -2858,21 +2857,28 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                       </tbody>
                     </table>
                   </div>
-                  <div>
-                    <Dropdown
-                      placeholder="Select Status"
-                      label="Status"
-                      options={Status}
-                      onChanged={this._drpdwnStatus}
-                      selectedKey={this.state.statusKey}
-                      required />
-                    <div style={{ color: "#dc3545" }}>{this.validator.message("status", this.state.statusKey, "required")}{" "}</div>
+                  <div className={styles.header}>
+                    <h3 className="ExampleCard-title title-222"></h3>
                   </div>
-                  <TextField label="Comments" id="Comments" value={this.state.comments} onChange={this._commentBoxChange} multiline autoAdjustHeight required={this.state.commentrequired} />
-                  <div style={{ display: this.state.commentvalid }}>  <div style={{ color: "#dc3545" }}>{this.validator.message("comments", this.state.comments, "required")}{" "}</div></div>
+                  <div className={styles.divMetadata}>
+                    <div style={{ width: "50%", }}>
+                      <Dropdown
+                        placeholder="Select Status"
+                        label="Status"
+                        options={Status}
+                        onChanged={this._drpdwnStatus}
+                        selectedKey={this.state.statusKey}
+                        required />
+                      <div style={{ color: "#dc3545" }}>{this.validator.message("status", this.state.statusKey, "required")}{" "}</div>
+                    </div>
+                    <div style={{ width: "100%", marginLeft: "12px" }}>
+                      <TextField label="Comments" required={this.state.statusKey === "Returned with comments"} id="Comments" value={this.state.comments} onChange={this._commentBoxChange} multiline autoAdjustHeight />
+                      {this.state.statusKey === "Returned with comments" && <div style={{ color: "#dc3545" }}>{this.validator.message("comments", this.state.comments, "required")}{" "}</div>}
+                    </div>
+                  </div>
                 </div>
-                <DialogFooter>
-                  {/* Show Message bar for Notification*/}
+                {/* Show Message bar for Notification*/}
+                <div>
                   {this.state.statusMessage.isShowMessage ?
                     <MessageBar
                       messageBarType={this.state.statusMessage.messageType}
@@ -2880,21 +2886,16 @@ export default class TransmittalReviewDocument extends React.Component<ITransmit
                       dismissButtonAriaLabel="Close"
                     >{this.state.statusMessage.message}</MessageBar>
                     : ''}
-                  <table style={{ float: "right", rowGap: "0px" }}>
-                    <tr>
-                      <td style={{ display: "flex", padding: "0 0 0 33rem" }}>
-                        <Label style={{ color: "red", fontSize: "23px" }}>*</Label>
-                        <label style={{ fontStyle: "italic", fontSize: "12px" }}>fields are mandatory </label>
-                      </td>
+                </div>
+                <div className={styles.divRow}>
+                  <div style={{ fontStyle: "italic", fontSize: "12px", position: "absolute" }}><span style={{ color: "red", fontSize: "23px" }}>*</span>fields are mandatory </div>
 
-                      <PrimaryButton id="b1" style={{ float: "right", borderRadius: "10px", border: "1px solid gray" }} onClick={this._cancel}>Cancel</PrimaryButton>
-                      <div style={{ display: this.state.buttonHidden }}>
-                        <PrimaryButton id="b2" style={{ float: "right", marginRight: "10px", borderRadius: "10px", border: "1px solid gray" }} onClick={this._docDCCReviewSubmit}>Submit</PrimaryButton>
-                        <PrimaryButton id="b2" style={{ float: "right", marginRight: "10px", borderRadius: "10px", border: "1px solid gray" }} onClick={this._docReviewSaveAsDraft}>Save as Draft</PrimaryButton>
-                      </div>
-                    </tr>
-                  </table>
-                </DialogFooter>
+                  <div className={styles.rgtalign} >
+                    <PrimaryButton id="b2" className={styles.btn} onClick={this._docReviewSaveAsDraft} style={{ display: this.state.buttonHidden }}>Save as Draft</PrimaryButton >
+                    <PrimaryButton id="b2" className={styles.btn} onClick={this._docDCCReviewSubmit} style={{ display: this.state.buttonHidden }}>Submit</PrimaryButton >
+                    <PrimaryButton id="b1" className={styles.btn} onClick={this._cancel}>Cancel</PrimaryButton >
+                  </div>
+                </div>
                 {/* Cancel Dialog Box */}
                 <div style={{ display: this.state.cancelConfirmMsg }}>
                   <div>

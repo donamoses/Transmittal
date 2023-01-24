@@ -1296,34 +1296,56 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
           <div className={styles.border}>
             <div className={styles.alignCenter}> {this.props.webpartHeader}</div>
             <br></br>
-            <div style={{ display: "flex" }}>
-              <div className={styles.width}><Label >Document ID : {this.state.documentID}</Label></div>
-              <div><Link onClick={this._openRevisionHistory} target="_blank" underline>Revision History</Link></div>
-            </div>
-
-            <div >
-              <Label >Document : <a href={this.state.linkToDoc} target="_blank">{this.state.documentName}</a></Label>
-              <div hidden={this.state.hideProject}>
-                <div className={styles.flex} >
-                  <div className={styles.width}><Label >Project Name : {this.state.projectName}</Label></div>
-                  <div ><Label>Project Number : {this.state.projectNumber} </Label></div>
+            <div hidden={this.state.hideProject}>
+              <div className={styles.header}>
+                <div className={styles.divMetadataCol1}>
+                  <h3 >Project Details</h3>
+                  <a href={this.props.siteUrl + "/SitePages/RevisionHistory.aspx?did=" + this.documentIndexID} style={{ marginLeft: "79%", marginTop: "17px" }} target="_blank">Revision History</a>
                 </div>
               </div>
-              <div className={styles.flex}>
-                <div className={styles.width}><Label >Revision : {this.state.revision}</Label></div>
-                {/* <div hidden={this.state.hideProject}><Label>Revision Level : {this.state.revisionLevel} </Label></div> */}
+              <div className={styles.divMetadata}>
+                <div className={styles.divMetadataCol1}>
+                  <Label className={styles.bold}>Project Name : </Label><div className={styles.divLabel}>{this.state.projectName}</div>
+                </div>
+                <div className={styles.divMetadataCol3}>
+                  <Label className={styles.bold}>Project Number :</Label><div className={styles.divLabel}> {this.state.projectNumber}</div>
+                </div>
               </div>
-              <div className={styles.flex}>
-                <div className={styles.width}><Label >Owner : {this.state.ownerName} </Label></div>
-                <div><Label >Due Date : {this.state.dueDate}</Label></div>
+            </div>
+            <div className={styles.header}>
+              <div className={styles.divMetadataCol1}>
+                <h3 >Document Details</h3>
               </div>
-              <div className={styles.flex}>
-                <div className={styles.width}><Label>Requester : {this.state.requesterName} </Label></div>
-                <div><Label >Requested Date : {this.state.requestedDate} </Label></div>
+            </div>
+            <div className={styles.divMetadata}>
+              <div className={styles.divMetadataCol1}>
+                <Label >Document ID : </Label><div className={styles.divLabel}>{this.state.documentID}</div>
               </div>
-              <div className={styles.flex}>
-                <div><Label> Requester Comment : </Label>{this.state.requesterComment}</div>
+              <div className={styles.divMetadataCol3}>
+                <Label >Revision :</Label><div className={styles.divLabel}> {this.state.revision}</div>
               </div>
+
+            </div>
+            <div className={styles.divRow}>
+              <Label >Document :</Label><div className={styles.divLabel}>  <a href={this.state.linkToDoc} target="_blank">{this.state.documentName}</a></div>
+            </div>
+            <div className={styles.header}>
+              <h3 className="ExampleCard-title title-222">Workflow Details</h3>
+            </div>
+            <div className={styles.divMetadata}>
+              <div className={styles.divMetadataCol1}>
+                <Label className={styles.bold}>Owner : </Label><div className={styles.divLabel}> {this.state.ownerName}</div>
+              </div>
+              <div className={styles.divMetadataCol2}><Label className={styles.bold}>Due Date :</Label> <div className={styles.divLabel}> {this.state.dueDate}</div></div>
+              <div className={styles.divMetadataCol3}><Label className={styles.bold}>Requested Date :</Label><div className={styles.divLabel}>{this.state.requestedDate} </div></div>
+            </div>
+            <div className={styles.divMetadata}>
+              <div style={{ display: "flex" }}>
+                <Label className={styles.bold}>Requester :</Label> <div className={styles.divLabel}>{this.state.requesterName}</div>
+              </div>
+              <div style={{ marginLeft: "16.9em", display: "flex" }}><Label className={styles.bold}>Requester Comment: </Label><div className={styles.divLabel}>{this.state.requesterComment}</div></div>
+            </div>
+            <div >
               <br></br>
               <div hidden={this.state.hideProject} >
                 <div style={{ display: this.state.dccTableDiv }}>
@@ -1394,16 +1416,11 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
 
               </div>
             </div>
-            <div >
-              {/* <div className={styles.mt}>
-                <div hidden={this.state.hideProject}>
-                  <div className={styles.flex} >
-                    <div className={styles.width}><Label >Transmittal Revision : {this.state.transmittalRevision}</Label></div>
-                    <div ><Checkbox label="Publish For Transmittal " onChange={this._onPublishTransmittal} /></div>
-                  </div>
-                </div>
-              </div> */}
-              <div className={styles.mt}>
+            <div className={styles.header}>
+              <h3 className="ExampleCard-title title-222"></h3>
+            </div>
+            <div className={styles.divMetadata}>
+              <div style={{ width: "100%", }}>
                 <Dropdown
                   placeholder="Select Status"
                   label="Status"
@@ -1413,8 +1430,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
                   required />
                 <div style={{ color: "#dc3545" }}>{this.validator.message("Docstatus", this.state.statusKey, "required")}{" "}</div>
               </div>
-              {/* <div style={{ color: "#dc3545" }}>{this.validator.message("Docstatus", this.state.statusKey, "required")}{" "}</div> */}
-              <div className={styles.mt} hidden={this.state.hidepublish}>
+              <div hidden={this.state.hidepublish} style={{ width: "100%", marginLeft: "10px" }}>
                 <div style={{ display: this.state.isdocx }}>
                   <Dropdown id="t2" required={true}
                     label="Publish Option"
@@ -1432,7 +1448,7 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
                     onChanged={this._drpdwnPublishFormat} /></div>
                 <div style={{ color: "#dc3545" }}>
                   {this.validator.message("publish", this.state.publishOption, "required")}{""}</div></div>
-              <div className={styles.mt} hidden={this.state.hideProject} >
+              <div hidden={this.state.hideProject} style={{ width: "100%", marginLeft: "10px" }}>
                 <div hidden={this.state.hideacceptance}>
                   <Dropdown id="transmittalcode" required={true}
                     placeholder="Select an option"
@@ -1440,7 +1456,11 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
                     options={this.state.acceptanceCodearray}
                     onChanged={this._acceptanceChanged}
                     selectedKey={this.state.acceptanceCode}
-                  /></div></div>
+                  /></div>
+
+              </div>
+            </div>
+            <div >
               <div className={styles.mt}>
                 < TextField label="Comments" id="comments" value={this.state.comments} onChange={this._commentsChange} multiline required={this.state.commentRequired} autoAdjustHeight></TextField></div>
               <div style={{ display: this.state.commentValid }}>
@@ -1462,17 +1482,16 @@ export default class TransmittalApproveDocument extends React.Component<ITransmi
                   <Label>***PLEASE DON'T REFRESH***</Label>
                 </div>
               </div>
-              <DialogFooter>
+              <div className={styles.divRow}>
+                <div style={{ fontStyle: "italic", fontSize: "12px", position: "absolute" }}><span style={{ color: "red", fontSize: "23px" }}>*</span>fields are mandatory </div>
 
-                <div className={styles.rgtalign}>
-                  <div style={{ fontStyle: "italic", fontSize: "12px" }}><span style={{ color: "red", fontSize: "23px" }}>*</span>fields are mandatory </div>
-                </div>
                 <div className={styles.rgtalign} >
                   <PrimaryButton id="b2" className={styles.btn} onClick={this._saveAsDraft} style={{ display: this.state.savedisable }}>Save as Draft</PrimaryButton >
                   <PrimaryButton id="b2" className={styles.btn} onClick={this._docSave} style={{ display: this.state.savedisable }}>Submit</PrimaryButton >
                   <PrimaryButton id="b1" className={styles.btn} onClick={this._onCancel}>Cancel</PrimaryButton >
                 </div>
-              </DialogFooter>
+              </div>
+
               {/* {/ Cancel Dialog Box /} */}
               <div style={{ display: this.state.cancelConfirmMsg }}>
                 <div>

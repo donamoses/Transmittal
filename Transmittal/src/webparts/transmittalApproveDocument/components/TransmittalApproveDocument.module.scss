@@ -9,6 +9,56 @@
     margin-bottom: 10px;
   }
 
+  .divMetadataCol1 {
+    width: 100%;
+    display: flex;
+  }
+
+  .divMetadataCol2 {
+    width: 100%;
+    margin-left: 15px;
+    display: flex;
+  }
+
+  .divMetadataCol3 {
+    width: 100%;
+    margin-left: 15px;
+    display: flex;
+  }
+
+  .divRow {
+    display: flex;
+    margin-top: 10px;
+  }
+
+  .divMetadata {
+    width: 100%;
+    display: flex;
+    margin-top: 10px;
+  }
+
+  .divMetadataCol4 {
+    width: 100%;
+    margin-left: 15px;
+    display: flex;
+  }
+
+  .bold {
+    font-weight: bold;
+  }
+
+  .header {
+    border-bottom: 1px solid rgb(161, 159, 157);
+    display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .divLabel {
+    margin-top: 5px;
+    margin-left: 5px;
+  }
+
   div.flex {
     display: flex;
   }
