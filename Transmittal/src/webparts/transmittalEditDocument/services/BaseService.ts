@@ -99,6 +99,10 @@ export class BaseService {
     public getdirectpublish(url: string, listname: string): Promise<any> {
         return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("Title eq 'EMEC_PermissionWebpart'")()
     }
+    public getrename(url: string, listname: string): Promise<any> {
+        return this.sphub.web.getList(url + "/Lists/" + listname)
+            .items.filter("Title eq 'EMEC_PermissionWebpart'")()
+    }
     public getnotification(url: string, listname: string, emailuser: string): Promise<any> {
         return this.sphub.web.getList(url + "/Lists/" + listname).items.filter("EmailUser/EMail eq '" + emailuser + "'").select("Preference")()
     }
@@ -119,5 +123,9 @@ export class BaseService {
         return this._sp.web.getList(url + "/Lists/" + listname)
             .items.getById(documentindexid)
             .select("DocumentStatus,SourceDocumentID,WorkflowStatus")()
+    }
+    public getIndexdatabind(url: string, listname: string, documentindexid: number, items: any, expand: any): Promise<any> {
+        return this._sp.web.getList(url + "/Lists/" + listname)
+            .items.getById(documentindexid).select(items).expand(expand)()
     }
 } 

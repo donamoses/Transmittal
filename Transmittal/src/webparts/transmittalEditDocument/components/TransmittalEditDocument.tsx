@@ -28,7 +28,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
   private revokeExpiry: string;
   private sourceDocumentID: any;
   private sourceDocumentLibraryId: any;
-  // private mode;
+  private mode: any;
   private documentIndexID: any;
   private revokeExpiryError: string;
   private documentNameExtension: any;
@@ -42,7 +42,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
   // private indexUrl;
   private isDocument: string;
   private myfile: any;
-  // private permissionpostUrl;
+  private permissionpostUrl: string;
   public constructor(props: ITransmittalEditDocumentProps) {
     super(props);
     this.state = {
@@ -247,7 +247,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
                 this.setState({
                   qdmsEditDocumentView: "none", projectEditDocumentView: "", accessDeniedMessageBar: "none", loaderDisplay: "none"
                 });
-                // this._bindDataEditProject(this.documentIndexID);
+                this._bindDataEditProject(this.documentIndexID);
 
                 // this._checkPermission('Project_EditDocument');
               }
@@ -297,7 +297,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
                 this.setState({
                   qdmsEditDocumentView: "", projectEditDocumentView: "none", accessDeniedMessageBar: "none", loaderDisplay: "none"
                 });
-                // this._bindDataEditQdms(this.documentIndexID);
+                this._bindDataEditQdms(this.documentIndexID);
                 // this._accessGroups('QDMS_EditDocument');
               }
               else {
@@ -335,6 +335,353 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
       }
     }
     this._userMessageSettings();
+  }
+  // Bind data in qdms
+  public async _bindDataEditQdms(documentindexid: any) {
+    this._checkRename('QDMS_RenameDocument');
+    const indexItems = await this._Service.getItemById(this.props.siteUrl, this.props.documentIndexList, parseInt(documentindexid));
+
+    console.log("dataForEdit", indexItems);
+    let tempReviewers: any[] = [];
+    let temReviewersID: any[] = [];
+    let items;
+    let expand;
+    let subcategoryArray = [];
+    let sorted_subcategory: any[];
+    if (documentindexid != "" && documentindexid != null) {
+      items = "Title,Owner/Title,Owner/ID,Owner/EMail,SubCategoryID,WorkflowStatus,SourceDocument,SubCategory,Approver/Title,Approver/ID,ApprovedDate,BusinessUnit,BusinessUnitID,Category,CategoryID,DepartmentName,DepartmentID,DocumentID,DocumentName,ExpiryDate,Reviewers/ID,Reviewers/Title,ExpiryLeadPeriod,CategoryID,CriticalDocument,Template,PublishFormat,ApprovedDate,DirectPublish,CreateDocument,LegalEntity";
+      expand = "Owner,Approver,Reviewers";
+      this._Service.getIndexdatabind(this.props.siteUrl, this.props.documentIndexList, documentindexid, items, expand)
+        .then(async dataForEdit => {
+          console.log("dataForEdit", dataForEdit);
+          this.setState({
+            title: dataForEdit.Title,
+            documentid: dataForEdit.DocumentID,
+            documentName: dataForEdit.DocumentName,
+            businessUnit: dataForEdit.BusinessUnit,
+            department: dataForEdit.DepartmentName,
+            category: dataForEdit.Category,
+            ownerName: dataForEdit.Owner.Title,
+            expiryLeadPeriod: dataForEdit.ExpiryLeadPeriod,
+            owner: dataForEdit.Owner.ID,
+            ownerEmail: dataForEdit.Owner.EMail,
+            legalEntity: dataForEdit.LegalEntity,
+            subCategory: dataForEdit.SubCategory,
+            businessUnitID: dataForEdit.BusinessUnitID,
+            departmentId: dataForEdit.DepartmentID
+          });
+          if (indexItems.ApproverId != null) {
+            this.setState({
+              approver: dataForEdit.Approver.ID,
+              approverName: dataForEdit.Approver.Title
+            });
+          }
+          if (dataForEdit.SourceDocument != null) {
+            this.setState({
+              linkToDoc: dataForEdit.SourceDocument.Url,
+            });
+          }
+          for (var k in dataForEdit.Reviewers) {
+            temReviewersID.push(dataForEdit.Reviewers[k].ID);
+            this.setState({
+              reviewers: temReviewersID,
+            });
+            tempReviewers.push(dataForEdit.Reviewers[k].Title);
+          }
+
+          if (indexItems.SubCategoryID != null) {
+            this.setState({
+              subCategoryId: parseInt(dataForEdit.SubCategoryID)
+            });
+          }
+          if (dataForEdit.ExpiryDate != null) {
+            let date = new Date(dataForEdit.ExpiryDate);
+            this.setState({ expiryDate: date, expiryCheck: true, hideExpiry: "" });
+          }
+          if (dataForEdit.CriticalDocument == true) {
+            this.setState({ criticalDocument: true });
+          }
+          if (dataForEdit.CreateDocument == true) {
+            this.setState({ createDocument: true, hideCreate: "", createDocumentCheckBoxDiv: "none", replaceDocument: "", hidePublish: "none", hideDoc: "none" });
+            this.isDocument = "Yes";
+          }
+          if (dataForEdit.CreateDocument == false) {
+            this._checkdirectPublish('QDMS_DirectPublish');
+
+          }
+          if (dataForEdit.Template == true) {
+            this.setState({ templateDocument: true });
+          }
+          if (dataForEdit.DirectPublish == true) {
+            let date = new Date(dataForEdit.ApprovedDate);
+            this.setState({ directPublishCheck: true, hidePublish: "none", publishOptionKey: dataForEdit.PublishFormat, approvalDateEdit: date });
+          }
+          this.setState({
+            reviewersName: tempReviewers,
+          });
+
+        });
+    }
+
+  }
+  // Bind data from project
+  public _bindDataEditProject(documentindexid: any) {
+    this._checkRename('Project_RenameDocument');
+    this._Service.getItemById(this.props.siteUrl, this.props.documentIndexList, documentindexid)
+      .then(async indexItems => {
+        console.log("dataForEdit", indexItems);
+        let tempReviewers: any[] = [];
+        let temReviewersID: any[] = [];
+        let items;
+        let expand;
+        let subcategoryArray: any[] = [];
+        let sorted_subcategory: any[];
+        if (indexItems.CategoryID != null) {
+          await this._Service.gethubListItems(this.props.hubUrl, this.props.subCategory)
+            .then(subcategory => {
+              for (let i = 0; i < subcategory.length; i++) {
+                if (subcategory[i].CategoryId == indexItems.CategoryID) {
+                  let subcategorydata = {
+                    key: subcategory[i].ID,
+                    text: subcategory[i].SubCategory,
+                  };
+                  subcategoryArray.push(subcategorydata);
+                }
+              }
+              sorted_subcategory = _.orderBy(subcategoryArray, 'text', ['asc']);
+              this.setState({
+                subCategoryArray: sorted_subcategory
+              });
+            });
+        }
+        if (documentindexid != "" && documentindexid != null && this.mode != "expiry") {
+          items = "Title,SubCategoryID,SubCategory,BusinessUnit,Category,DepartmentName,SourceDocument,CustomerDocumentNo,SubcontractorDocumentNo,Owner/Title,Owner/ID,Owner/EMail,Approver/Title,Approver/ID,ApprovedDate,WorkflowStatus,DocumentID,DocumentName,ExpiryDate,Reviewers/ID,Reviewers/Title,ExpiryLeadPeriod,CategoryID,CriticalDocument,CreateDocument,Template,PublishFormat,ApprovedDate,RevisionCoding/ID,RevisionCoding/Title,RevisionLevel/ID,RevisionLevel/Title,DocumentController/ID,DocumentController/Title,TransmittalDocument,ExternalDocument,DirectPublish";
+          expand = "Owner,Approver,Reviewers,RevisionCoding,RevisionLevel,DocumentController";
+          this._Service.getIndexdatabind(this.props.siteUrl, this.props.documentIndexList, documentindexid, items, expand)
+            .then(dataForEdit => {
+              console.log("dataForEdit", dataForEdit);
+              this.setState({
+                title: dataForEdit.Title,
+                documentid: dataForEdit.DocumentID,
+                businessUnit: dataForEdit.BusinessUnit,
+                department: dataForEdit.DepartmentName,
+                category: dataForEdit.Category,
+                ownerName: dataForEdit.Owner.Title,
+                approverName: dataForEdit.Approver.Title,
+                expiryLeadPeriod: dataForEdit.ExpiryLeadPeriod,
+                owner: dataForEdit.Owner.ID,
+                workflowStatus: dataForEdit.WorkflowStatus,
+                subCategory: dataForEdit.SubCategory,
+                documentName: dataForEdit.DocumentName,
+                subContractorNumber: dataForEdit.SubcontractorDocumentNo,
+                customerNumber: dataForEdit.CustomerDocumentNo,
+
+              });
+              for (var k in dataForEdit.Reviewers) {
+                temReviewersID.push(dataForEdit.Reviewers[k].ID);
+                this.setState({
+                  reviewers: temReviewersID,
+                });
+                tempReviewers.push(dataForEdit.Reviewers[k].Title);
+              }
+              if (dataForEdit.SourceDocument != null) {
+                this.setState({
+                  linkToDoc: dataForEdit.SourceDocument.Url,
+                });
+              }
+              if (dataForEdit.ExpiryDate != null) {
+                let date = new Date(dataForEdit.ExpiryDate);
+                this.setState({ expiryDate: date, expiryCheck: true, hideExpiry: "", });
+              }
+              if (dataForEdit.CriticalDocument == true) {
+                this.setState({ criticalDocument: true });
+              }
+              if (dataForEdit.CreateDocument == true) {
+                this.isDocument = "Yes";
+                this.setState({ createDocument: true, hideCreate: "", createDocumentCheckBoxDiv: "none", replaceDocument: "", hidePublish: "none", hideDoc: "none" });
+              }
+              if (dataForEdit.CreateDocument == false) {
+
+                this._checkdirectPublish('Project_DirectPublish');
+              }
+              if (dataForEdit.Template == true) {
+                this.setState({ templateDocument: true });
+              }
+              if (dataForEdit.DirectPublish == true) {
+                let date = new Date(dataForEdit.ApprovedDate);
+                this.setState({ directPublishCheck: true, hidePublish: "none", publishOptionKey: dataForEdit.PublishFormat, approvalDateEdit: date });
+              }
+              if (indexItems.RevisionCodingId != null) {
+                this.setState({
+                  revisionCodingId: dataForEdit.RevisionCoding.ID
+                });
+              }
+              if (indexItems.SubCategoryID != null) {
+                this.setState({
+                  subCategoryId: parseInt(dataForEdit.SubCategoryID)
+                });
+              }
+              if (indexItems.RevisionLevelId != null) {
+                this.setState({
+                  revisionLevelId: dataForEdit.RevisionLevel.ID
+                });
+              }
+              this.setState({
+                reviewersName: tempReviewers,
+              });
+
+              this._project();
+              if (dataForEdit.ExternalDocument == true) {
+                this.setState({ externalDocument: true });
+              }
+              if (dataForEdit.TransmittalDocument == true) {
+                this.setState({ transmittalCheck: true });
+              }
+              if (indexItems.DocumentControllerId != null) {
+                this.setState({
+                  dcc: dataForEdit.DocumentController.ID,
+                  dccName: dataForEdit.DocumentController.Title
+                });
+              }
+              if (indexItems.ApproverId != null) {
+                this.setState({
+                  approver: dataForEdit.Approver.ID,
+                  approverName: dataForEdit.Approver.Title
+                });
+              }
+
+            });
+        }
+
+      });
+  }
+  //Bind data on Project
+  public async _project() {
+    let revisionLevelArray = [];
+    let sorted_RevisionLevel = [];
+    let revisionSettingsArray = [];
+    let sorted_RevisionSettings = [];
+    //Get Revision Level
+    const revisionLevelItem: any = await this._Service.getDrpdwnListItems(this.props.siteUrl, this.props.revisionLevelList)
+    for (let i = 0; i < revisionLevelItem.length; i++) {
+      let revisionLevelItemdata = {
+        key: revisionLevelItem[i].ID,
+        text: revisionLevelItem[i].Title
+      };
+      revisionLevelArray.push(revisionLevelItemdata);
+    }
+    sorted_RevisionLevel = _.orderBy(revisionLevelArray, 'text', ['asc']);
+    //Get RevisionSettings
+    const revisionSettingsItem: any = await this._Service.getDrpdwnListItems(this.props.siteUrl, this.props.revisionSettingsList)
+    for (let i = 0; i < revisionSettingsItem.length; i++) {
+      let revisionSettingsItemdata = {
+        key: revisionSettingsItem[i].ID,
+        text: revisionSettingsItem[i].Title
+      };
+      revisionSettingsArray.push(revisionSettingsItemdata);
+    }
+    sorted_RevisionSettings = _.orderBy(revisionSettingsArray, 'text', ['asc']);
+    //Get Project Information
+    const projectInformation = await this._Service.getListItems(this.props.siteUrl, this.props.projectInformationListName);
+    console.log("projectInformation", projectInformation);
+    if (projectInformation.length > 0) {
+      for (var k in projectInformation) {
+        if (projectInformation[k].Key == "ProjectName") {
+          this.setState({
+            projectName: projectInformation[k].Title,
+          });
+        }
+        if (projectInformation[k].Key == "ProjectNumber") {
+          this.setState({
+            projectNumber: projectInformation[k].Title,
+          });
+        }
+      }
+    }
+    this.setState({
+      revisionSettingsArray: sorted_RevisionSettings,
+      revisionLevelArray: sorted_RevisionLevel
+    });
+  }
+  // Check permission to rename
+  public async _checkRename(type: any) {
+    this.setState({ checkrename: "" });
+    const laUrl = await this._Service.getrename(this.props.hubUrl, this.props.requestList)
+    console.log("Posturl", laUrl[0].PostUrl);
+    this.permissionpostUrl = laUrl[0].PostUrl;
+    let siteUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl;
+    const postURL = this.permissionpostUrl;
+
+    const requestHeaders: Headers = new Headers();
+    requestHeaders.append("Content-type", "application/json");
+    const body: string = JSON.stringify({
+      'PermissionTitle': type,
+      'SiteUrl': siteUrl,
+      'CurrentUserEmail': this.currentEmail
+
+    });
+    const postOptions: IHttpClientOptions = {
+      headers: requestHeaders,
+      body: body
+    };
+    let responseText: string = "";
+    let response = await this.props.context.httpClient.post(postURL, HttpClient.configurations.v1, postOptions);
+    let responseJSON = await response.json();
+    responseText = JSON.stringify(responseJSON);
+    console.log(responseJSON);
+    if (response.ok) {
+      console.log(responseJSON['Status']);
+      if (responseJSON['Status'] == "Valid") {
+        this.setState({
+          titleReadonly: false,
+          checkrename: "none"
+        });
+      }
+      else {
+        this.setState({
+          titleReadonly: true,
+          checkrename: "none"
+        });
+      }
+    }
+
+    else { }
+  }
+  // On direct publih checked
+  public async _checkdirectPublish(type: any) {
+    const laUrl = await this._Service.getdirectpublish(this.props.hubUrl, this.props.requestList)
+    console.log("Posturl", laUrl[0].PostUrl);
+    this.permissionpostUrl = laUrl[0].PostUrl;
+    let siteUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl;
+    const postURL = this.permissionpostUrl;
+
+    const requestHeaders: Headers = new Headers();
+    requestHeaders.append("Content-type", "application/json");
+    const body: string = JSON.stringify({
+      'PermissionTitle': type,
+      'SiteUrl': siteUrl,
+      'CurrentUserEmail': this.currentEmail
+
+    });
+    const postOptions: IHttpClientOptions = {
+      headers: requestHeaders,
+      body: body
+    };
+    let responseText: string = "";
+    let response = await this.props.context.httpClient.post(postURL, HttpClient.configurations.v1, postOptions);
+    let responseJSON = await response.json();
+    responseText = JSON.stringify(responseJSON);
+    console.log(responseJSON);
+    if (response.ok) {
+      console.log(responseJSON['Status']);
+      if (responseJSON['Status'] == "Valid") {
+        this.setState({ checkdirect: "none", hideDirect: "", hidePublish: "none" });
+      }
+      else {
+        this.setState({ checkdirect: "none", hideDirect: "none", hidePublish: "none" });
+      }
+    }
+    else { }
   }
   //Messages
   private async _userMessageSettings() {
