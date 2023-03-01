@@ -3,7 +3,7 @@
   "solution": {
     "name": "transmittal-client-side-solution",
     "id": "5acd4bf8-8980-43ba-b38c-1fe0800dca42",
-    "version": "1.0.0.0",
+    "version": "1.0.0.1",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
