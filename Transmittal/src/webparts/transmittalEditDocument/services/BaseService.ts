@@ -128,4 +128,7 @@ export class BaseService {
         return this._sp.web.getList(url + "/Lists/" + listname)
             .items.getById(documentindexid).select(items).expand(expand)()
     }
+    public getLibrary(url: string, listname: string): Promise<any> {
+        return this._sp.web.getList(url + "/" + listname)()
+    }
 } 

@@ -2220,7 +2220,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       { key: 'Native', text: 'Native' },
     ];
     const Source: IDropdownOption[] = [
-      { key: 'QDMS', text: 'QDMS' },
+      { key: 'QDMS', text: 'Quality' },
       { key: 'Current Site', text: 'Current Site' }
     ];
     const AddIcon: IIconProps = { iconName: 'Add' };
@@ -2493,8 +2493,6 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                   Enter only numbers less than 100
                 </div>
               </div>
-
-
             </div>
             <div> {this.state.statusMessage.isShowMessage ?
               <MessageBar

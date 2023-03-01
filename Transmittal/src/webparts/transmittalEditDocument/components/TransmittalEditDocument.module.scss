@@ -48,11 +48,19 @@
   .wdthmid {
     width: 33%;
     margin-top: 10px;
+    padding-left: 1em;
+    padding-right: 1em;
   }
 
   .wdthlst {
-    width: 33%;
     margin-top: 10px;
+    width: 33%
+  }
+
+  .mandatory {
+    font-style: italic;
+    font-size: 12px;
+    margin-right: 27rem;
   }
 
   .mt {
