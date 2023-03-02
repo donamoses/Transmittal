@@ -2409,36 +2409,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                     label="Expiry Reminder(Days)" onChange={this._expLeadPeriodChange}
                     value={this.state.expiryLeadPeriod}>
                   </TextField></div>
-                {/* <div style={{ color: "#dc3545" }}>
-                  {this.validator.message("ExpiryLeadPeriod", this.state.expiryLeadPeriod, "required")}{""}</div> */}
-
               </div>
-
-              <div className={styles.wdthmid} style={{ display: "flex" }}>
-                <div style={{ marginTop: "3em" }}>
-                  <TooltipHost
-                    content="Check if the document is for transmittal"
-                    //id={tooltipId}
-                    calloutProps={calloutProps}
-                    styles={hostStyles}>
-                    <Checkbox label="Transmittal Document " boxSide="start"
-                      onChange={this._onTransmittalChecked}
-                      checked={this.state.transmittalCheck} />
-                  </TooltipHost>
-                </div>
-                <div style={{ marginTop: "3em", marginLeft: "1em" }}>
-                  <TooltipHost
-                    content="Check if the document is a subcontractor document"
-                    //id={tooltipId}
-                    calloutProps={calloutProps}
-                    styles={hostStyles}>
-                    <Checkbox label="External Document " boxSide="start"
-                      onChange={this._onExternalDocumentChecked}
-                      checked={this.state.externalDocument} />
-                  </TooltipHost>
-                </div>
-              </div>
-
             </div>
             <div className={styles.divrow}>
               <div className={styles.wdthfrst} style={{ display: "flex" }}>
@@ -2488,11 +2459,8 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                 <Label>***PLEASE DON'T REFRESH***</Label>
               </div>
             </div>
+            <div className={styles.mandatory}><span style={{ color: "red", fontSize: "23px" }}>*</span>fields are mandatory </div>
             <DialogFooter>
-
-              <div className={styles.rgtalign}>
-                <div className={styles.mandatory}><span style={{ color: "red", fontSize: "23px" }}>*</span>fields are mandatory </div>
-              </div>
               <div className={styles.rgtalign} >
                 <PrimaryButton id="b2" className={styles.btn} disabled={this.state.saveDisable} onClick={this._onCreateDocument}>Submit</PrimaryButton >
                 <PrimaryButton id="b1" className={styles.btn} onClick={this._onCancel}>Cancel</PrimaryButton >
