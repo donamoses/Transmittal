@@ -2226,6 +2226,11 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     const AddIcon: IIconProps = { iconName: 'Add' };
     const calloutProps = { gapSpace: 0 };
     const hostStyles: Partial<ITooltipHostStyles> = { root: { display: 'inline-block' } };
+    const uploadOrTemplateRadioBtnOptionQdms:
+      IChoiceGroupOption[] = [
+        { key: 'Upload', text: 'Upload existing file' },
+        { key: 'Template', text: 'Create document existing template', styles: { field: { marginLeft: '3em' } } },
+      ];
     const uploadOrTemplateRadioBtnOptions:
       IChoiceGroupOption[] = [
         { key: 'Upload', text: 'Upload existing file' },
@@ -2235,8 +2240,294 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
 
     return (
       <section className={`${styles.transmittalCreateDocument}`}>
-        {/* Create Document Project*/}
+        {/* Create Document QDMS */}
+        <div style={{ display: this.state.createDocumentView }} >
+          <div className={styles.border}>
+            <div className={styles.alignCenter}>{this.props.webpartHeader}</div>
+            <div>
+              <TextField required id="t1"
+                label="Title"
+                onChange={this._titleChange}
+                value={this.state.title} ></TextField>
+              <div style={{ color: "#dc3545" }}>
+                {this.validator.message("Title", this.state.title, "required|alpha_num_dash_space|max:200")}{" "}</div>
+            </div>
+            <div className={styles.divrow}>
+              <div className={styles.wdthfrst}>
+                <Dropdown id="t3" label="Department"
+                  selectedKey={this.state.departmentId}
+                  placeholder="Select an option"
+                  options={this.state.departmentOption}
+                  onChanged={this._departmentChange} />
+                <div style={{ color: "#dc3545", textAlign: "center" }}>
+                  {this.validator.message("BU/Dep", this.state.departmentId, "required")}{""}
+                </div>
+              </div>
+              <div className={styles.wdthmid}>
+                <Dropdown id="t2" required={true} label="Category"
+                  placeholder="Select an option"
+                  selectedKey={this.state.categoryId}
+                  options={this.state.categoryOption}
+                  onChanged={this._categoryChange} />
+                <div style={{ color: "#dc3545" }}>
+                  {this.validator.message("category", this.state.categoryId, "required")}{" "}
+                </div>
+              </div>
+              <div className={styles.wdthlst}>
+                <Dropdown id="t2" label="Sub Category"
+                  placeholder="Select an option"
+                  selectedKey={this.state.subCategoryId}
+                  options={this.state.subCategoryArray}
+                  onChanged={this._subCategoryChange} /> </div>
+            </div>
+            <div className={styles.divrow}>
+              <div className={styles.wdthfrst}>
+                <PeoplePicker
+                  context={this.props.context as any}
+                  titleText="Owner"
+                  personSelectionLimit={1}
+                  groupName={""} // Leave this blank in case you want to filter from all users    
+                  showtooltip={true}
+                  required={true}
+                  disabled={false}
+                  ensureUser={true}
+                  onChange={this._selectedOwner}
+                  defaultSelectedUsers={[this.state.ownerName]}
+                  showHiddenInUI={false}
+                  principalTypes={[PrincipalType.User]}
+                  resolveDelay={1000} />
+                <div style={{ color: "#dc3545" }}>
+                  {this.validator.message("Owner", this.state.owner, "required")}{" "}</div>
+              </div>
+              <div className={styles.wdthmid}>
+                <PeoplePicker
+                  context={this.props.context as any}
+                  titleText="Reviewer(s)"
+                  personSelectionLimit={20}
+                  groupName={""} // Leave this blank in case you want to filter from all users
+                  showtooltip={true}
+                  required={true}
+                  disabled={false}
+                  ensureUser={true}
+                  showHiddenInUI={false}
+                  onChange={(items) => this._selectedReviewers(items)}
+                  principalTypes={[PrincipalType.User]}
+                  resolveDelay={1000} />
+              </div>
+              <div className={styles.wdthlst}>
+                <PeoplePicker
+                  context={this.props.context as any}
+                  titleText="Approver"
+                  personSelectionLimit={1}
+                  groupName={""} // Leave this blank in case you want to filter from all users    
+                  showtooltip={true}
+                  required={false}
+                  disabled={false}
+                  ensureUser={true}
+                  onChange={this._selectedApprover}
+                  showHiddenInUI={false}
+                  defaultSelectedUsers={[this.state.approverName]}
+                  principalTypes={[PrincipalType.User]}
+                  resolveDelay={1000} />
+                <div style={{ display: this.state.validApprover, color: "#dc3545" }}>Not able to change approver</div>
+                <div style={{ color: "#dc3545" }}>
+                  {this.validator.message("Approver", this.state.approver, "required")}{" "}</div>
+              </div>
+            </div>
+            <div className={styles.divrow}>
+              <div className={styles.wdthrgt} style={{ display: this.state.hideDoc }}>
+                <ChoiceGroup selectedKey={this.state.uploadOrTemplateRadioBtn}
+                  onChange={this.onUploadOrTemplateRadioBtnChange}
+                  options={uploadOrTemplateRadioBtnOptionQdms} styles={choiceGroupStyles}
+                /></div>
+              <div className={styles.wdthlst} >
+                <div style={{ display: this.state.hidetemplate }}>
+                  <Dropdown id="t7"
+                    label="Select a Template"
+                    placeholder="Select an option"
+                    selectedKey={this.state.templateId}
+                    options={this.state.templateDocuments}
+                    onChanged={this._templatechange} /></div>
+                <div style={{ display: this.state.hideupload, marginTop: "2em" }}>
+                  <input type="file" name="myFile" id="addqdms" onChange={this._add}></input>
+                </div>
+                <div style={{ display: this.state.insertdocument, color: "#dc3545" }}>Please select valid Document or Please uncheck Create Document</div>
+              </div>
+            </div>
+            <div className={styles.divrow}>
+              <div className={styles.wdthfrst} style={{ marginTop: '3em' }}>
+                <TooltipHost
+                  content="Is the document a template?"
+                  //id={tooltipId}
+                  calloutProps={calloutProps}
+                  styles={hostStyles}>
+                  <Checkbox label="Template Document? " boxSide="start" onChange={this._onTemplateChecked} checked={this.state.templateDocument} />
+                </TooltipHost>
 
+              </div>
+              <div className={styles.wdthmid} style={{ display: this.state.hideDirect, marginTop: '3em' }}>
+                <TooltipHost
+                  content="The document to published library without sending it for review/approval"
+                  //id={tooltipId}
+                  calloutProps={calloutProps}
+                  styles={hostStyles}>
+                  <Checkbox label="Direct Publish?" boxSide="start" onChange={this._onDirectPublishChecked} checked={this.state.directPublishCheck} />
+                </TooltipHost>
+              </div>
+              <div className={styles.wdthlst} style={{ display: this.state.hidePublish }}>
+                <div style={{ display: this.state.isdocx }}>
+                  <Dropdown id="t2" required={true}
+                    label="Publish Option"
+                    selectedKey={this.state.publishOption}
+                    placeholder="Select an option"
+                    options={publishOptions}
+                    onChanged={this._publishOptionChange} /></div>
+                <div style={{ display: this.state.nodocx }}>
+                  <Dropdown id="t2" required={true}
+                    label="Publish Option"
+                    selectedKey={this.state.publishOption}
+                    placeholder="Select an option"
+                    options={publishOption}
+                    onChanged={this._publishOptionChange} /></div>
+                <div style={{ color: "#dc3545" }}>
+                  {this.validator.message("publish", this.state.publishOption, "required")}{""}</div>
+              </div>
+            </div>
+            <div className={styles.divrow}>
+              <div className={styles.wdthfrst} style={{ display: "flex" }}>
+                <div style={{ width: "13em" }}> <DatePicker label="Expiry Date"
+                  value={this.state.expiryDate}
+                  onSelectDate={this._onExpDatePickerChange}
+                  placeholder="Select a date..."
+                  ariaLabel="Select a date"
+                  minDate={new Date()}
+                  formatDate={this._onFormatDate} /></div>
+                {/* <div style={{ color: "#dc3545" }}>
+                  {this.validator.message("expiryDate", this.state.expiryDate, "required")}{""}</div> */}
+                <div style={{ marginLeft: "1em", width: "13em" }}>
+                  <TextField id="ExpiryLeadPeriod" name="ExpiryLeadPeriod"
+                    label="Expiry Reminder(Days)" onChange={this._expLeadPeriodChange}
+                    value={this.state.expiryLeadPeriod}>
+                  </TextField></div>
+                {/* <div style={{ color: "#dc3545" }}>
+                  {this.validator.message("ExpiryLeadPeriod", this.state.expiryLeadPeriod, "required")}{""}</div> */}
+
+              </div>
+
+              <div className={styles.wdthmid} style={{ display: "flex" }}>
+                <div style={{ marginTop: "3em" }}>
+                  <TooltipHost
+                    content="Check if the document is for transmittal"
+                    //id={tooltipId}
+                    calloutProps={calloutProps}
+                    styles={hostStyles}>
+                    <Checkbox label="Transmittal Document " boxSide="start"
+                      onChange={this._onTransmittalChecked}
+                      checked={this.state.transmittalCheck} />
+                  </TooltipHost>
+                </div>
+                <div style={{ marginTop: "3em", marginLeft: "1em" }}>
+                  <TooltipHost
+                    content="Check if the document is a subcontractor document"
+                    //id={tooltipId}
+                    calloutProps={calloutProps}
+                    styles={hostStyles}>
+                    <Checkbox label="External Document " boxSide="start"
+                      onChange={this._onExternalDocumentChecked}
+                      checked={this.state.externalDocument} />
+                  </TooltipHost>
+                </div>
+              </div>
+
+            </div>
+            <div className={styles.divrow}>
+              <div className={styles.wdthfrst} style={{ display: "flex" }}>
+                <div style={{ width: "13em" }}> </div>
+                <div style={{ marginLeft: "1em", width: "13em" }}>
+                </div>
+                {/* <div style={{ color: "#dc3545" }}>
+                  {this.validator.message("ExpiryLeadPeriod", this.state.expiryLeadPeriod, "required")}{""}</div> */}
+                <div style={{ color: "#dc3545", display: this.state.leadmsg }}>
+                  Enter only numbers less than 100
+                </div>
+              </div>
+            </div>
+            <div> {this.state.statusMessage.isShowMessage ?
+              <MessageBar
+                messageBarType={this.state.statusMessage.messageType}
+                isMultiline={false}
+                dismissButtonAriaLabel="Close"
+              >{this.state.statusMessage.message}</MessageBar>
+              : ''} </div>
+            <div className={styles.mt}>
+              <div hidden={this.state.hideLoading}><Spinner label={'Publishing...'} /></div>
+            </div>
+            <div className={styles.mt}>
+              <div style={{ display: this.state.hideCreateLoading }}><Spinner label={'Creating...'} /></div>
+            </div>
+            <div className={styles.mt}>
+              <div style={{ display: this.state.norefresh, color: "Red", fontWeight: "bolder", textAlign: "center" }}>
+                <Label>***PLEASE DON'T REFRESH***</Label>
+              </div>
+            </div>
+            <div> {this.state.statusMessage.isShowMessage ?
+              <MessageBar
+                messageBarType={this.state.statusMessage.messageType}
+                isMultiline={false}
+                dismissButtonAriaLabel="Close"
+              >{this.state.statusMessage.message}</MessageBar>
+              : ''} </div>
+            <div className={styles.mt}>
+              <div hidden={this.state.hideLoading}><Spinner label={'Publishing...'} /></div>
+            </div>
+            <div className={styles.mt}>
+              <div style={{ display: this.state.hideCreateLoading }}><Spinner label={'Creating...'} /></div>
+            </div>
+            <div className={styles.mt}>
+              <div style={{ display: this.state.norefresh, color: "Red", fontWeight: "bolder", textAlign: "center" }}>
+                <Label>***PLEASE DON'T REFRESH***</Label>
+              </div>
+            </div>
+            <DialogFooter>
+
+              <div className={styles.rgtalign}>
+                <div className={styles.mandatory}><span style={{ color: "red", fontSize: "23px" }}>*</span>fields are mandatory </div>
+              </div>
+              <div className={styles.rgtalign} >
+                <PrimaryButton id="b2" className={styles.btn} disabled={this.state.saveDisable} onClick={this._onCreateDocument}>Submit</PrimaryButton >
+                <PrimaryButton id="b1" className={styles.btn} onClick={this._onCancel}>Cancel</PrimaryButton >
+              </div>
+            </DialogFooter>
+            {/* {/ Cancel Dialog Box /} */}
+            <div style={{ display: this.state.cancelConfirmMsg }}>
+              <div>
+                <Dialog
+                  hidden={this.state.confirmDialog}
+                  dialogContentProps={this.dialogContentProps}
+                  onDismiss={this._dialogCloseButton}
+                  styles={this.dialogStyles}
+                  modalProps={this.modalProps}>
+                  <DialogFooter>
+                    <PrimaryButton onClick={this._confirmYesCancel} text="Yes" />
+                    <DefaultButton onClick={this._confirmNoCancel} text="No" />
+                  </DialogFooter>
+                </Dialog>
+              </div>
+            </div>
+            <br />
+          </div>
+
+
+
+
+
+
+
+
+
+
+        </div>
+        {/* Create Document Project*/}
         <div style={{ display: this.state.createDocumentProject }} >
           <div className={styles.border}>
             <div >
