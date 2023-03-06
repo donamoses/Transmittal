@@ -190,6 +190,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
   }
   // On load
   public async componentDidMount() {
+    console.log(this.props.project)
     //Get Current User
     this._Service.getCurrentUser()
       .then(async (user: any) => {
@@ -210,6 +211,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       this._checkdirectPublish('Project_DirectPublish');
     }
     else {
+      this._bindData();
       this._checkdirectPublish('QDMS_DirectPublish');
       this.setState({ createDocumentView: "", createDocumentProject: "none", loaderDisplay: "none" });
     }
@@ -863,7 +865,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
         }
         else {
           //Validation without direct publish
-          if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver') && this.validator.fieldValid('legalentity')
+          if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver')
             // && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod')
           ) {
             this.setState({
@@ -874,7 +876,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             this.validator.hideMessages();
           }
           //Validation with direct publish
-          else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && (this.state.directPublishCheck === true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver') && this.validator.fieldValid('legalentity')
+          else if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && (this.state.directPublishCheck === true) && this.validator.fieldValid('publish') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver')
             //  && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod')
           ) {
             this.setState({
@@ -971,7 +973,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     // Get document id settings
     const documentIdSettings = await this._Service.getListItems(this.props.siteUrl, this.props.documentIdSettings);
     console.log("documentIdSettings", documentIdSettings);
-    prefix = "EMEC";
+    prefix = documentIdSettings[0].Prefix;
     separator = documentIdSettings[0].Separator;
     sequenceNumber = documentIdSettings[0].SequenceDigit;
     // Project id prefix
@@ -989,7 +991,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       //   idcode = this.state.legalEntity;
       // }
       // else {
-      idcode = this.state.legalEntity;
+      idcode = prefix;
       // }
     }
     if (documentIdSettings) {
@@ -1020,10 +1022,10 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             }
             else {
               if (this.state.departmentCode !== "") {
-                documentid = this.state.legalEntity + separator + this.state.departmentCode + separator + this.state.incrementSequenceNumber;
+                documentid = idcode + separator + this.state.departmentCode + separator + this.state.incrementSequenceNumber;
               }
               else {
-                documentid = this.state.legalEntity + separator + this.state.businessUnitCode + separator + this.state.incrementSequenceNumber;
+                documentid = idcode + separator + this.state.businessUnitCode + separator + this.state.incrementSequenceNumber;
               }
               // documentid = idcode+ separator + this.state.incrementSequenceNumber;
             }
@@ -1049,10 +1051,10 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             }
             else {
               if (this.state.departmentCode !== "") {
-                documentid = this.state.legalEntity + separator + this.state.departmentCode + separator + this.state.incrementSequenceNumber;
+                documentid = idcode + separator + this.state.departmentCode + separator + this.state.incrementSequenceNumber;
               }
               else {
-                documentid = this.state.legalEntity + separator + this.state.businessUnitCode + separator + this.state.incrementSequenceNumber;
+                documentid = idcode + separator + this.state.businessUnitCode + separator + this.state.incrementSequenceNumber;
               }
               // documentid = idcode+ separator + this.state.incrementSequenceNumber;
             }
@@ -2347,7 +2349,8 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                     placeholder="Select an option"
                     selectedKey={this.state.templateId}
                     options={this.state.templateDocuments}
-                    onChanged={this._templatechange} /></div>
+                    onChanged={this._templatechange} />
+                </div>
                 <div style={{ display: this.state.hideupload, marginTop: "2em" }}>
                   <input type="file" name="myFile" id="addqdms" onChange={this._add}></input>
                 </div>
@@ -2355,24 +2358,41 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
               </div>
             </div>
             <div className={styles.divrow}>
-              <div className={styles.wdthfrst} style={{ marginTop: '3em' }}>
-                <TooltipHost
-                  content="Is the document a template?"
-                  //id={tooltipId}
-                  calloutProps={calloutProps}
-                  styles={hostStyles}>
-                  <Checkbox label="Template Document? " boxSide="start" onChange={this._onTemplateChecked} checked={this.state.templateDocument} />
-                </TooltipHost>
-
+              <div className={styles.wdthfrst} style={{ display: "flex" }}>
+                <div style={{ width: "13em" }}> <DatePicker label="Expiry Date"
+                  value={this.state.expiryDate}
+                  onSelectDate={this._onExpDatePickerChange}
+                  placeholder="Select a date..."
+                  ariaLabel="Select a date"
+                  minDate={new Date()}
+                  formatDate={this._onFormatDate} /></div>
+                {/* <div style={{ color: "#dc3545" }}>
+                  {this.validator.message("expiryDate", this.state.expiryDate, "required")}{""}</div> */}
+                <div style={{ marginLeft: "1em", width: "13em" }}>
+                  <TextField id="ExpiryLeadPeriod" name="ExpiryLeadPeriod"
+                    label="Expiry Reminder(Days)" onChange={this._expLeadPeriodChange}
+                    value={this.state.expiryLeadPeriod}>
+                  </TextField></div>
               </div>
-              <div className={styles.wdthmid} style={{ display: this.state.hideDirect, marginTop: '3em' }}>
-                <TooltipHost
-                  content="The document to published library without sending it for review/approval"
-                  //id={tooltipId}
-                  calloutProps={calloutProps}
-                  styles={hostStyles}>
-                  <Checkbox label="Direct Publish?" boxSide="start" onChange={this._onDirectPublishChecked} checked={this.state.directPublishCheck} />
-                </TooltipHost>
+              <div className={styles.wdthmid} style={{ display: "flex" }}>
+                <div style={{ marginTop: '3em', marginRight: '3em' }} >
+                  <TooltipHost
+                    content="Is the document a template?"
+                    //id={tooltipId}
+                    calloutProps={calloutProps}
+                    styles={hostStyles}>
+                    <Checkbox label="Template Document? " boxSide="start" onChange={this._onTemplateChecked} checked={this.state.templateDocument} />
+                  </TooltipHost>
+                </div>
+                <div style={{ display: this.state.hideDirect, marginTop: '3em' }}>
+                  <TooltipHost
+                    content="The document to published library without sending it for review/approval"
+                    //id={tooltipId}
+                    calloutProps={calloutProps}
+                    styles={hostStyles}>
+                    <Checkbox label="Direct Publish?" boxSide="start" onChange={this._onDirectPublishChecked} checked={this.state.directPublishCheck} />
+                  </TooltipHost>
+                </div>
               </div>
               <div className={styles.wdthlst} style={{ display: this.state.hidePublish }}>
                 <div style={{ display: this.state.isdocx }}>
@@ -2395,24 +2415,6 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             </div>
             <div className={styles.divrow}>
               <div className={styles.wdthfrst} style={{ display: "flex" }}>
-                <div style={{ width: "13em" }}> <DatePicker label="Expiry Date"
-                  value={this.state.expiryDate}
-                  onSelectDate={this._onExpDatePickerChange}
-                  placeholder="Select a date..."
-                  ariaLabel="Select a date"
-                  minDate={new Date()}
-                  formatDate={this._onFormatDate} /></div>
-                {/* <div style={{ color: "#dc3545" }}>
-                  {this.validator.message("expiryDate", this.state.expiryDate, "required")}{""}</div> */}
-                <div style={{ marginLeft: "1em", width: "13em" }}>
-                  <TextField id="ExpiryLeadPeriod" name="ExpiryLeadPeriod"
-                    label="Expiry Reminder(Days)" onChange={this._expLeadPeriodChange}
-                    value={this.state.expiryLeadPeriod}>
-                  </TextField></div>
-              </div>
-            </div>
-            <div className={styles.divrow}>
-              <div className={styles.wdthfrst} style={{ display: "flex" }}>
                 <div style={{ width: "13em" }}> </div>
                 <div style={{ marginLeft: "1em", width: "13em" }}>
                 </div>
@@ -2423,24 +2425,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                 </div>
               </div>
             </div>
-            <div> {this.state.statusMessage.isShowMessage ?
-              <MessageBar
-                messageBarType={this.state.statusMessage.messageType}
-                isMultiline={false}
-                dismissButtonAriaLabel="Close"
-              >{this.state.statusMessage.message}</MessageBar>
-              : ''} </div>
-            <div className={styles.mt}>
-              <div hidden={this.state.hideLoading}><Spinner label={'Publishing...'} /></div>
-            </div>
-            <div className={styles.mt}>
-              <div style={{ display: this.state.hideCreateLoading }}><Spinner label={'Creating...'} /></div>
-            </div>
-            <div className={styles.mt}>
-              <div style={{ display: this.state.norefresh, color: "Red", fontWeight: "bolder", textAlign: "center" }}>
-                <Label>***PLEASE DON'T REFRESH***</Label>
-              </div>
-            </div>
+
             <div> {this.state.statusMessage.isShowMessage ?
               <MessageBar
                 messageBarType={this.state.statusMessage.messageType}
