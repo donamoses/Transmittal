@@ -926,7 +926,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
     let sorted_PublishedDocument: any[];
     // this.QDMSUrl = Web(window.location.protocol + "//" + window.location.hostname + "/sites/" + this.props.QDMSUrl);
     //alert(this.QDMSUrl);
-    if (option.key == "QDMS") {
+    if (option.key == "Quality") {
       let publishedDocument: any[] = await this._Service.getqdmsLibraryItems(this.props.QDMSUrl, this.props.publisheddocumentLibrary);
       for (let i = 0; i < publishedDocument.length; i++) {
         if (publishedDocument[i].Template == true) {
@@ -961,7 +961,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
     let type: any;
     let publishName: any;
     this.isDocument = "Yes";
-    if (this.state.sourceId == "QDMS") {
+    if (this.state.sourceId == "Quality") {
       await this._Service.getqdmsselectLibraryItems(this.props.QDMSUrl, this.props.publisheddocumentLibrary)
         .then(publishdoc => {
           console.log(publishdoc);
@@ -1298,7 +1298,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
         let newDocumentName: any;
 
         // Get template
-        if (this.state.sourceId == "QDMS") {
+        if (this.state.sourceId == "Quality") {
           let publishdoc = await this._Service.getqdmsselectLibraryItems(this.props.QDMSUrl, this.props.publisheddocumentLibrary);
           console.log(publishdoc);
           for (let i = 0; i < publishdoc.length; i++) {
@@ -2439,7 +2439,7 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
       { key: 'Native', text: 'Native' },
     ];
     const Source: IDropdownOption[] = [
-      { key: 'QDMS', text: 'Quality' },
+      { key: 'Quality', text: 'Quality' },
       { key: 'Current Site', text: 'Current Site' }
     ];
     const back: IIconProps = { iconName: 'ChromeBack' };
@@ -2782,7 +2782,6 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
                 {/* editDocument div close */}
 
               </PivotItem>
-
               <PivotItem headerText="Version History">
                 <div>
                   <IconButton iconProps={back} title="Back" onClick={this._back} />
