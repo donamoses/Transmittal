@@ -1,0 +1,55 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "transmittal-create-document-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/transmittalCreateDocument/TransmittalCreateDocumentWebPart.js",
+          "manifest": "./src/webparts/transmittalCreateDocument/TransmittalCreateDocumentWebPart.manifest.json"
+        }
+      ]
+    },
+    "transmittal-approve-document-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/transmittalApproveDocument/TransmittalApproveDocumentWebPart.js",
+          "manifest": "./src/webparts/transmittalApproveDocument/TransmittalApproveDocumentWebPart.manifest.json"
+        }
+      ]
+    },
+    "transmittal-send-request-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/transmittalSendRequest/TransmittalSendRequestWebPart.js",
+          "manifest": "./src/webparts/transmittalSendRequest/TransmittalSendRequestWebPart.manifest.json"
+        }
+      ]
+    },
+    "transmittal-review-document-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/transmittalReviewDocument/TransmittalReviewDocumentWebPart.js",
+          "manifest": "./src/webparts/transmittalReviewDocument/TransmittalReviewDocumentWebPart.manifest.json"
+        }
+      ]
+    },
+    "transmittal-edit-document-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/transmittalEditDocument/TransmittalEditDocumentWebPart.js",
+          "manifest": "./src/webparts/transmittalEditDocument/TransmittalEditDocumentWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "TransmittalCreateDocumentWebPartStrings": "lib/webparts/transmittalCreateDocument/loc/{locale}.js",
+    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
+    "TransmittalApproveDocumentWebPartStrings": "lib/webparts/transmittalApproveDocument/loc/{locale}.js",
+    "TransmittalSendRequestWebPartStrings": "lib/webparts/transmittalSendRequest/loc/{locale}.js",
+    "TransmittalReviewDocumentWebPartStrings": "lib/webparts/transmittalReviewDocument/loc/{locale}.js",
+    "TransmittalEditDocumentWebPartStrings": "lib/webparts/transmittalEditDocument/loc/{locale}.js"
+  }
+}

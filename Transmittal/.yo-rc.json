@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": false,
+    "version": "1.15.2",
+    "libraryName": "transmittal",
+    "libraryId": "5acd4bf8-8980-43ba-b38c-1fe0800dca42",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "Transmittal",
+    "solutionShortDescription": "Transmittal description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "nodeVersion": "14.20.0",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.4.1"
+    },
+    "componentType": "webpart"
+  }
+}
