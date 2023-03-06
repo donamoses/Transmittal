@@ -707,7 +707,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     let sorted_PublishedDocument: any[];
     // this.QDMSUrl = Web(window.location.protocol + "//" + window.location.hostname + "/sites/" + this.props.QDMSUrl);
     //alert(this.QDMSUrl);
-    if (option.key === "QDMS") {
+    if (option.key === "Quality") {
       let publishedDocument: any[] = await this._Service.getqdmsLibraryItems(this.props.QDMSUrl, this.props.publisheddocumentLibrary);
       for (let i = 0; i < publishedDocument.length; i++) {
         if (publishedDocument[i].Template === true) {
@@ -742,7 +742,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     let type: any;
     let publishName: any;
     this.isDocument = "Yes";
-    if (this.state.sourceId === "QDMS") {
+    if (this.state.sourceId === "Quality") {
       await this._Service.getqdmsselectLibraryItems(this.props.QDMSUrl, this.props.publisheddocumentLibrary).then((publishdoc: any) => {
         console.log(publishdoc);
         for (let i = 0; i < publishdoc.length; i++) {
@@ -1206,7 +1206,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
         let extension: any;
         let newDocumentName;
         // Get template
-        if (this.state.sourceId === "QDMS") {
+        if (this.state.sourceId === "Quality") {
           await this._Service.getqdmsselectLibraryItems(this.props.QDMSUrl, this.props.publisheddocumentLibrary).then((publishdoc: any) => {
             console.log(publishdoc);
             for (let i = 0; i < publishdoc.length; i++) {
@@ -2220,7 +2220,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
       { key: 'Native', text: 'Native' },
     ];
     const Source: IDropdownOption[] = [
-      { key: 'QDMS', text: 'QDMS' },
+      { key: 'Quality', text: 'Quality' },
       { key: 'Current Site', text: 'Current Site' }
     ];
     const AddIcon: IIconProps = { iconName: 'Add' };
