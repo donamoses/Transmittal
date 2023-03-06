@@ -2663,7 +2663,6 @@ export default class TransmittalEditDocument extends React.Component<ITransmitta
                       <div style={{ display: this.state.validDocType, color: "#dc3545" }}>Please select valid Document </div>
                       <div style={{ display: this.state.insertdocument, color: "#dc3545" }}>Please select valid Document or Please uncheck Create Document</div>
                     </div>
-
                     <div className={styles.wdthlst} style={{ display: this.state.hideSelectTemplate }} >
                       <Dropdown id="t7"
                         label="Select a Template"

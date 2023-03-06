@@ -79,8 +79,9 @@
   }
 
   .rgtalign {
-    width: 100%;
+    //width: 100%;
     text-align: right;
+    margin-left: 58.99rem;
   }
 
   .container {
@@ -88,6 +89,36 @@
     margin: 0px auto;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
   }
+}
+
+.divLabel {
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+.documentMainDiv {
+  width: 100%;
+  display: flex;
+  margin-bottom: 9px;
+}
+
+.radioDiv {
+  margin-top: 20px;
+}
+
+.templateDiv {
+  margin-left: 51px;
+  width: 46%;
+}
+
+.uploadDiv {
+  margin-top: 30px;
+  margin-left: 71px;
+}
+
+.divColumn2 {
+  width: 97%;
+  margin-left: 10px;
 }
 
 .welcome {
