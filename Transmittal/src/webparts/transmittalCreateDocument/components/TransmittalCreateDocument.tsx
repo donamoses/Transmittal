@@ -185,7 +185,10 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
   // Validator
   public componentWillMount = () => {
     this.validator = new SimpleReactValidator({
-      messages: { required: "This field is mandatory" }
+      messages: {
+        required: "This field is mandatory",
+        expirylead: "Please Enter Expiry remainder days"
+      }
     });
   }
   // On load
@@ -714,6 +717,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
           let publishedDocumentdata = {
             key: publishedDocument[i].ID,
             text: publishedDocument[i].DocumentName,
+            templateCategory: publishedDocument[i].Category
           };
           publishedDocumentArray.push(publishedDocumentdata);
         }
@@ -736,9 +740,9 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     this.setState({ templateDocuments: sorted_PublishedDocument, sourceId: option.key });
   }
   //Template change
-  public async _templatechange(option: { key: any; text: any }) {
+  public async _templatechange(option: { key: any; text: any, templateCategory: string }) {
     this.setState({ insertdocument: "none" });
-    this.setState({ templateId: option.key, templateKey: option.text });
+    this.setState({ templateId: option.key, templateKey: option.templateCategory, });
     let type: any;
     let publishName: any;
     this.isDocument = "Yes";
@@ -747,7 +751,6 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
         console.log(publishdoc);
         for (let i = 0; i < publishdoc.length; i++) {
           if (publishdoc[i].Id === this.state.templateId) {
-
             publishName = publishdoc[i].LinkFilename;
           }
         }
@@ -829,11 +832,11 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
   //On create button click
   public async _onCreateDocument() {
     if (this.state.createDocument === true && this.isDocument === "Yes" || this.state.createDocument === false) {
-      if (this.state.expiryDate !== null || this.state.expiryDate !== undefined) {
+      if (this.state.expiryDate !== null) {
         if (this.props.project) {
           //Validation without direct publish
-          if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver')
-            // && this.validator.fieldValid('expiryDate') && this.validator.fieldValid('ExpiryLeadPeriod')
+          if (this.validator.fieldValid('Title') && this.validator.fieldValid('category') && this.validator.fieldValid('BU/Dep') && this.validator.fieldValid('Owner') && this.validator.fieldValid('Approver') && this.validator.fieldValid('ExpiryLeadPeriod')
+            // && this.validator.fieldValid('expiryDate') 
             // && this.validator.fieldValid('Revision') 
             && this.validator.fieldValid('DocumentController')) {
             this.setState({
@@ -1105,6 +1108,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     // With document
     if (this.state.createDocument === true) {
       // Create document index item
+
       await this._createDocumentIndex();
       // Get file from form
       if ((document.querySelector(upload) as HTMLInputElement).files[0] != null) {
@@ -1221,8 +1225,13 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             newDocumentName = this.state.documentName + "." + extension;
             this.documentNameExtension = newDocumentName;
             docinsertname = this.state.documentid + '.' + extension;
-
-            let qdmsURl = this.props.QDMSUrl + "/" + this.props.publisheddocumentLibrary + "/" + this.state.category + "/" + publishName;
+            let qdmsURl;
+            if (this.state.sourceId === "Quality") {
+              qdmsURl = this.props.QDMSUrl + "/" + this.props.publisheddocumentLibrary + "/" + this.state.templateKey + "/" + publishName;
+            }
+            else {
+              qdmsURl = this.props.QDMSUrl + "/" + this.props.publisheddocumentLibrary + "/" + publishName;
+            }
             await this._Service.getqdmsdocument(qdmsURl)
               .then((templateData: any) => {
                 return this._Service.uploadDocument(this.props.sourceDocumentLibrary, docinsertname, templateData);
@@ -1232,7 +1241,6 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                   .then(async (item: any) => {
                     console.log(item);
                     sourceDocumentId = item["ID"];
-
                     this.setState({ sourceDocumentId: sourceDocumentId });
                     await this._addSourceDocument();
                   }).then(async (updateDocumentIndex: any) => {
@@ -1536,6 +1544,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
     else {
       // DMS
       if (this.props.project) {
+
         let index3 = {
           Title: this.state.title,
           DocumentID: this.state.documentid,
@@ -1579,6 +1588,7 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             this.revisionHistoryUrl = this.props.siteUrl + "/SitePages/" + this.props.revisionHistoryPage + ".aspx?did=" + newdocid.data.ID + "";
             this.revokeUrl = this.props.siteUrl + "/SitePages/" + this.props.revokePage + ".aspx?did=" + newdocid.data.ID + "&mode=expiry";
           });
+
       }
       // QDMS
       else {
@@ -2449,10 +2459,9 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                 <div style={{ marginLeft: "1em", width: "13em" }}>
                   <TextField id="ExpiryLeadPeriod" name="ExpiryLeadPeriod"
                     label="Expiry Reminder(Days)" onChange={this._expLeadPeriodChange}
-                    value={this.state.expiryLeadPeriod}>
+                    value={this.state.expiryLeadPeriod} required={this.state.expiryDate !== null}>
                   </TextField></div>
-                {/* <div style={{ color: "#dc3545" }}>
-                  {this.validator.message("ExpiryLeadPeriod", this.state.expiryLeadPeriod, "required")}{""}</div> */}
+
 
               </div>
 
@@ -2484,17 +2493,17 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
             </div>
             <div className={styles.divrow}>
               <div className={styles.wdthfrst} style={{ display: "flex" }}>
-                <div style={{ width: "13em" }}> </div>
-                <div style={{ marginLeft: "1em", width: "13em" }}>
+                <div style={{ width: "8px" }}> </div>
+                <div style={{ marginLeft: "22px", width: "13em" }}>
                 </div>
-                {/* <div style={{ color: "#dc3545" }}>
-                  {this.validator.message("ExpiryLeadPeriod", this.state.expiryLeadPeriod, "required")}{""}</div> */}
+                {this.state.expiryDate !== null &&
+                  <div style={{ color: "#dc3545" }}>
+                    {this.validator.message("ExpiryLeadPeriod", this.state.expiryLeadPeriod, "required")}{""}</div>}
+
                 <div style={{ color: "#dc3545", display: this.state.leadmsg }}>
                   Enter only numbers less than 100
                 </div>
               </div>
-
-
             </div>
             <div> {this.state.statusMessage.isShowMessage ?
               <MessageBar
@@ -2514,8 +2523,6 @@ export default class TransmittalCreateDocument extends React.Component<ITransmit
                 <Label>***PLEASE DON'T REFRESH***</Label>
               </div>
             </div>
-
-
             <div className={styles.mandatory}><span style={{ color: "red", fontSize: "23px" }}>*</span>fields are mandatory </div>
             <DialogFooter>
               <div className={styles.rgtalign} >
