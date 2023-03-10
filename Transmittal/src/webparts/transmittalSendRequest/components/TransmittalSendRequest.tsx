@@ -2497,7 +2497,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 <div style={{ display: this.state.validApprover, color: "#dc3545" }}>Not able to change approver</div>
                 <div style={{ color: "#dc3545" }}>{this.validator.message("Approver", this.state.approver, "required")}{" "}</div>
               </div>
-              <div className={styles.width} style={{ paddingLeft: '15px', marginTop: '2px' }}>
+              <div className={styles.width} style={{ paddingLeft: '6px', marginTop: '0px' }}>
                 <DatePicker label="Due Date:" id="DueDate"
                   onSelectDate={this._onExpDatePickerChange}
                   placeholder="Select a date..."
