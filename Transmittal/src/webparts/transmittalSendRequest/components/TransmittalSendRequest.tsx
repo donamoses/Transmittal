@@ -120,7 +120,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     this._underProjectApprove = this._underProjectApprove.bind(this);
     this._underProjectReview = this._underProjectReview.bind(this);
     this._onSameRevisionChecked = this._onSameRevisionChecked.bind(this);
-    // this._adaptiveCard = this._adaptiveCard.bind(this);
+    this._adaptiveCard = this._adaptiveCard.bind(this);
     this._LaUrlGettingAdaptive = this._LaUrlGettingAdaptive.bind(this);
   }
   // Validator
@@ -561,7 +561,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   //  request to dcc review
   public async _dccReview(previousHeaderItem: any) {
     this._LAUrlGettingForUnderReview();
-    // this._LaUrlGettingAdaptive();
+    this._LaUrlGettingAdaptive();
     const headerdata = {
       Title: this.state.documentName,
       DocumentID: this.state.documentID,
@@ -689,7 +689,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                     await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata2, details.data.ID);
                     //notification preference checking                                 
                     this._sendmail(this.state.approverEmail, "DocDCCReview", this.state.approverName);
-                    // await this._adaptiveCard("DCC Review", this.state.approverEmail, this.state.approverName, "Project", task.data.ID)
+                    await this._adaptiveCard("DCC Review", this.state.approverEmail, this.state.approverName, "Project", task.data.ID)
                   }//taskID
                 }//r
 
@@ -746,7 +746,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 const taskdetail = await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata4, detail.data.ID);
                 //notification preference checking                                 
                 this._sendmail(this.state.dccReviewerEmail, "DocDCCReview", this.state.dccReviewerName);
-                // await this._adaptiveCard("DCC Review", this.state.dccReviewerEmail, this.state.dccReviewerName, "Project", task.data.ID)
+                await this._adaptiveCard("DCC Review", this.state.dccReviewerEmail, this.state.dccReviewerName, "Project", task.data.ID)
                 const dccreviewer = {
                   DocumentControllerId: this.state.dccReviewer
                 }
@@ -807,7 +807,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdetail, detail.data.ID);
               //notification preference checking                                 
               await this._sendmail(this.state.dccReviewerEmail, "DocDCCReview", this.state.dccReviewerName);
-              // await this._adaptiveCard("DCC Review", this.state.dccReviewerEmail, this.state.dccReviewerName, "Project", task.data.ID)
+              await this._adaptiveCard("DCC Review", this.state.dccReviewerEmail, this.state.dccReviewerName, "Project", task.data.ID)
               const dccid = {
                 DocumentControllerId: this.state.dccReviewer
               }
@@ -1147,7 +1147,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                             }
                             await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata12, detail.data.ID);
                             await this._sendmail(DelegatedTo.Email, "DocReview", DelegatedTo.Title);
-                            // await this._adaptiveCard("Review",DelegatedTo.Email,DelegatedTo.Title,"General",task.data.ID);
+                            await this._adaptiveCard("Review", DelegatedTo.Email, DelegatedTo.Title, "General", task.data.ID);
                           }//taskID
                         }//r
                       }//Delegated For
@@ -1202,7 +1202,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                       const updatetask = await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, updatetaskdetail, details.data.ID);
                       if (updatetask) {
                         await this._sendmail(user.Email, "DocReview", user.Title);
-                        // await  this._adaptiveCard("Review",user.Email,user.Title,"General",task.data.ID);
+                        await this._adaptiveCard("Review", user.Email, user.Title, "General", task.data.ID);
                       }
                     }//taskId
                   }//r
@@ -1260,7 +1260,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                     const updatetask = await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata9, details.data.ID);
                     if (updatetask) {
                       await this._sendmail(user.Email, "DocReview", user.Title);
-                      // await  this._adaptiveCard("Review",user.Email,user.Title,"General",task.data.ID);
+                      await this._adaptiveCard("Review", user.Email, user.Title, "General", task.data.ID);
                     }
                   }//taskId
                 }//r
@@ -1454,7 +1454,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                         this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata22, detail.data.ID);
                         //notification preference checking                                 
                         await this._sendmail(DelegatedTo.Email, "DocReview", DelegatedTo.Title);
-                        // await this._adaptiveCard("Review",DelegatedTo.Email,DelegatedTo.Title,"Project",task.data.ID);
+                        await this._adaptiveCard("Review", DelegatedTo.Email, DelegatedTo.Title, "Project", task.data.ID);
                       }//taskID
                     }//r
                   }//Delegated For
@@ -1510,7 +1510,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                     await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata24, detail.data.ID);
                     //notification preference checking                                 
                     await this._sendmail(user.Email, "DocReview", user.Title);
-                    // await this._adaptiveCard("Review", user.Email, user.Title, "Project", task.data.ID);
+                    await this._adaptiveCard("Review", user.Email, user.Title, "Project", task.data.ID);
                   }//taskId
                 }//r
               }//else
@@ -1567,7 +1567,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                   this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata26, detail.data.ID);
                   //notification preference checking                                 
                   await this._sendmail(user.Email, "DocReview", user.Title);
-                  // await this._adaptiveCard("Review", user.Email, user.Title, "Project", task.data.ID);
+                  await this._adaptiveCard("Review", user.Email, user.Title, "Project", task.data.ID);
                 }//taskId
               }//r
             }//else
@@ -1791,7 +1791,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                     this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata17, detailsAdd.data.ID);
                     //notification preference checking                                 
                     await this._sendmail(this.state.approverEmail, "DocApproval", this.state.approverName);
-                    // await this._adaptiveCard("Approval",this.state.approverEmail,this.state.approverName,"General",task.data.ID);
+                    await this._adaptiveCard("Approval", this.state.approverEmail, this.state.approverName, "General", task.data.ID);
 
                   }//taskID
                 }//r
@@ -1853,7 +1853,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata19, detail.data.ID);
                 //notification preference checking                                 
                 await this._sendmail(this.state.approverEmail, "DocApproval", this.state.approverName);
-                // await this._adaptiveCard("Approval", this.state.approverEmail, this.state.approverName, "General", task.data.ID);
+                await this._adaptiveCard("Approval", this.state.approverEmail, this.state.approverName, "General", task.data.ID);
 
 
               }//taskID
@@ -1917,7 +1917,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdata18, detail.data.ID);
               //notification preference checking                                 
               await this._sendmail(this.state.approverEmail, "DocApproval", this.state.approverName);
-              // await this._adaptiveCard("Approval",this.state.approverEmail,this.state.approverName,"General",task.data.ID);
+              await this._adaptiveCard("Approval", this.state.approverEmail, this.state.approverName, "General", task.data.ID);
 
             }//taskID
           }//r
@@ -2136,7 +2136,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                     await this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, taskdetail1, detail.data.ID);
                     //notification preference checking                                 
                     await this._sendmail(this.state.approverEmail, "DocApproval", this.state.approverName);
-                    // await this._adaptiveCard("Approval", this.state.approverEmail, this.state.approverName, "Project", task.data.ID);
+                    await this._adaptiveCard("Approval", this.state.approverEmail, this.state.approverName, "Project", task.data.ID);
                   }//taskID
                 }//r
               }//DelegatedFor
@@ -2197,7 +2197,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, updatedetail2, detail.data.ID);
                 //notification preference checking                                 
                 await this._sendmail(this.state.approverEmail, "DocApproval", this.state.approverName);
-                // await this._adaptiveCard("Approval", this.state.approverEmail, this.state.approverName, "Project", task.data.ID);
+                await this._adaptiveCard("Approval", this.state.approverEmail, this.state.approverName, "Project", task.data.ID);
               }//taskID
             }//r
           }
@@ -2258,7 +2258,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
               this._Service.updateItem(this.props.siteUrl, this.props.workflowDetailsList, updatedetail3, detail.data.ID);
               //notification preference checking                                 
               await this._sendmail(this.state.approverEmail, "DocApproval", this.state.approverName);
-              // await this._adaptiveCard("Approval", this.state.approverEmail, this.state.approverName, "Project", task.data.ID);
+              await this._adaptiveCard("Approval", this.state.approverEmail, this.state.approverName, "Project", task.data.ID);
             }//taskID
           }//r
         }//else no delegation
@@ -2316,13 +2316,40 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
   }
   //Adaptive Card
   private _LaUrlGettingAdaptive = async () => {
-    const laUrl: any[] = await this._Service.getListItems(this.props.hubUrl, this.props.requestList);
+    const laUrl: any[] = await this._Service.gethubListItems(this.props.hubUrl, this.props.requestList);
     console.log("Posturl" + laUrl);
     for (let i = 0; i < laUrl.length; i++) {
       if (laUrl[i].Title === "Adaptive _Card") {
         this.postUrlForAdaptive = laUrl[i].PostUrl;
       }
     }
+  }
+  public _adaptiveCard = async (Workflow: any, Email: any, Name: any, Type: any, Taskid: any) => {
+    let siteUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl;
+    const postURL = this.postUrlForAdaptive;
+    var splitted = this.state.documentName.split(".");
+    let ext = splitted[splitted.length - 1];
+    const requestHeaders: Headers = new Headers();
+    requestHeaders.append("Content-type", "application/json");
+    const body: string = JSON.stringify({
+      'SiteURL': siteUrl,
+      'Workflow': Workflow,
+      'DocumentIndexID': String(this.documentIndexID),
+      'SourceDocumentID': String(this.sourceDocumentID),
+      'HeaderID': String(this.newheaderid),
+      'DetailID': String(this.newDetailItemID),
+      'TaskID': String(Taskid),
+      'ext': ext,
+      'Email': Email,
+      'Name': Name,
+      'Type': Type
+    });
+    const postOptions: IHttpClientOptions = {
+      headers: requestHeaders,
+      body: body
+    };
+    let responseText: string = "";
+    let response = await this.props.context.httpClient.post(postURL, HttpClient.configurations.v1, postOptions);
   }
   // on cancel
   private _onCancel = () => {
@@ -2392,7 +2419,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
             </div>
             <div className={styles.divMetadata}>
               <div className={styles.divMetadataCol1}>
-                <Label >Document ID : </Label><div className={styles.divLabel}>{this.state.documentID}</div>
+                <Label >Document ID: </Label><div className={styles.divLabel}>{this.state.documentID}</div>
               </div>
               <div className={styles.divMetadataCol2} >
                 <Label >Document:</Label><div className={styles.divLabel}>  <a href={this.state.linkToDoc} target="_blank">{this.state.documentName}</a></div>
@@ -2498,7 +2525,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
                 <div style={{ color: "#dc3545" }}>{this.validator.message("Approver", this.state.approver, "required")}{" "}</div>
               </div>
               <div className={styles.width} style={{ paddingLeft: '6px', marginTop: '0px' }}>
-                <DatePicker label="Due Date:" id="DueDate"
+                <DatePicker label="Due Date*:" id="DueDate"
                   onSelectDate={this._onExpDatePickerChange}
                   placeholder="Select a date..."
                   isRequired={false}
