@@ -2325,6 +2325,7 @@ export default class TransmittalSendRequest extends React.Component<ITransmittal
     }
   }
   public _adaptiveCard = async (Workflow: any, Email: any, Name: any, Type: any, Taskid: any) => {
+
     let siteUrl = window.location.protocol + "//" + window.location.hostname + this.props.siteUrl;
     const postURL = this.postUrlForAdaptive;
     var splitted = this.state.documentName.split(".");
